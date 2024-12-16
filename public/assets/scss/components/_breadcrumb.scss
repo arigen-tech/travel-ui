@@ -1,0 +1,78 @@
+@use '../utils' as *;
+
+// Breadcrumb area start
+.it-breadcrumb {
+    &-bg {
+        position: relative;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: 1;
+        @media #{$md,$xs}{
+            height: 300px;
+        }
+        &::before{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            content: "";
+            background: var(--it-common-black);
+            opacity: .74;
+            z-index: -1;
+
+        }
+    }
+    &-title {
+        font-weight: 700;
+        font-size: 60px;
+        line-height: 1.2;
+        letter-spacing: -0.05em;
+        text-transform: uppercase;
+        text-align: center;
+        color: #fff;
+        @media #{$md}{
+            font-size: 46px;
+        }
+        @media #{$xs}{
+            font-size: 33px;
+        }
+    }
+
+    &-list {
+        &-wrap{
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -24px;
+            text-align: center;
+        }
+        &-content{
+            display: inline-block;
+            padding: 18px 30px;
+            border-radius: 5px;
+            background-color: var(--it-theme-1);
+            & span {
+                font-size: 18px;
+                font-weight: 500;
+                color: var(--it-common-white);
+                text-transform: capitalize;
+                @media #{$xs}{
+                    font-size: 13px;
+                }
+                &.dvdr {
+                    color: var(--it-common-white);
+                }
+            }
+
+        }
+    }
+}
+
+// Breadcrumb area end

@@ -1,0 +1,105 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  31. Checkout area start
+/*----------------------------------------*/
+
+.checkout{
+    &__wrapper{
+        & span {
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            padding-bottom: 35px;
+            display: inline-block;
+        }
+    }
+    &__input{
+        & input {
+            height: 55px;
+            line-height: 55px;
+            border: 2px solid #ebebeb;
+            outline: none;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            padding-left: 40px;
+            padding-right: 20px;
+            margin-bottom: 30px;
+            &:focus {
+                border: 2px solid var(--it-theme-1);
+            }            
+            @media #{$md}{
+                font-size: 13px;
+            }
+            @media #{$xs}{
+                font-size: 13px;
+                padding-left: 20px;
+            }
+        }
+    }
+    &__summary-wrapper{
+        margin-top: 57px;
+        padding: 30px 0;
+        background-color: #f1f2f9;
+        @media #{$md,$xs}{
+           margin-bottom: 30px;
+        }
+    }
+    &__list-item{
+        padding: 0 50px;
+        padding-bottom: 11px;
+        border-bottom: 1px solid #c9c9c9;
+        @media #{$lg,$md,$xs}{
+            padding: 0 28px;
+        }
+        & b {
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            font-size: 17px;
+            color: #333333;
+            padding-bottom: 20px;
+            display: inline-block;
+        }
+    }
+    &__summary-list{
+        & span {
+            color: #4a4c59;
+            display: inline-block;
+            padding-bottom: 12px;
+            @media #{$lg,$md,$xs}{
+                font-size: 14px;
+            }
+        }
+    }
+    &__bottom{
+        padding: 0 50px;
+        padding-top: 28px;
+        @media #{$lg,$md,$xs}{
+            padding:0 30px;
+            padding-top: 28px;
+        }
+        & span {
+            font-weight: 700;
+            color: #333333;
+            @media #{$lg,$md,$xs}{
+                font-size: 14px;
+            }
+        }
+    }
+}
+.checkout-form-list{
+    & input{
+
+        display: inline-block;
+        margin-right: 20px;
+        position: relative;
+        top: 1px;
+        width: 19px;
+        height: 19px;
+        border-color: rgb(221, 221, 221);
+    }
+    & label {
+        font-size: 16px;
+        color: #636363;
+    }
+}

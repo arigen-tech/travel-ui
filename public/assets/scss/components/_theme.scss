@@ -1,0 +1,353 @@
+@use '../utils' as *;
+/*-----------------------------------------------------------------------------------
+
+    Theme Name: Travels and Tour - Tour & Adventure Moment HTML Template
+    Author: Ordianit
+    Support:ordianit@gmail.com
+    Description: Travels and Tour - Tour & Adventure Moment HTML Template
+    Version: 1.0
+
+-----------------------------------------------------------------------------------
+
+/************ TABLE OF CONTENTS ***************
+
+    01. THEME DEFAULT CSS
+    02. About css start
+	03. blog css start
+	04. Categories css start
+	05. Choose-us css start
+    06. contact css start
+	07. Coverage-area css start 
+	08. Destination css start
+	09. Discover css start
+	10. error css start 
+	11. Events css start 
+	12. Featured css start 
+	13. Footer area start
+	14. Funfact css start 
+	15. Header css start
+	16. Instagram css start
+	17. Menu css start 
+	18. Offer css start
+	19. portfolio css start 
+	20. postbox css start
+	21. Recent Post css start
+	22. Shop css start
+	23. Sidebar area start
+	24. Slider css start
+	25. Funfact css start
+	26. Team css start
+	27. Testimonial css start
+	28. Video css start
+	29. Video css start
+	30. Cart area start
+	31. Checkout area start
+	32. newsletter css start
+    
+**********************************************/
+
+/*----------------------------------------*/
+/* 01. THEME DEFAULT CSS START
+/*----------------------------------------*/
+
+
+@media (min-width: 1400px){
+    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        max-width: 1200px;
+    }
+    .container-1285{
+        max-width: 1285px;
+    }
+    .container-1700{
+        max-width: 1700px;
+    }
+}
+
+@import url($font-url);
+
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/*---------------------------------
+	typography css start 
+---------------------------------*/
+body {
+    font-family: var(--it-ff-body);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--it-text-body);
+    line-height: 1.3;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    transition: .3s;
+}
+
+html,
+body{
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--it-ff-heading);
+    color: var(--it-heading-primary);
+    margin-top: 0px;
+    font-weight: 700;
+    line-height: 1.1;
+    @include transition(.3s);
+}
+
+img {
+    max-width: 100%;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+h3 {
+    font-size: 28px;
+}
+
+h4 {
+    font-size: 24px;
+}
+
+h5 {
+    font-size: 20px;
+}
+
+h6 {
+    font-size: 16px;
+}
+
+ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+p {
+    color: var(--it-text-body);
+    font-weight: 500;
+    font-size: 17px;
+    line-height: 26px;
+}
+
+.z-index-1 {
+    position: relative;
+    z-index: 1;
+}
+.z-index {
+    position: relative;
+    z-index: 2;
+}
+.z-index-3 {
+    position: relative;
+    z-index: 3;
+}
+.z-index-4 {
+    position: relative;
+    z-index: 4;
+}
+.z-index-5 {
+    position: relative;
+    z-index: 5;
+}
+.z-index-6 {
+    position: relative;
+    z-index: 6;
+}
+
+a,
+.btn,
+button,
+input,
+select,
+textarea,
+li,
+img,
+.transition-3,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @include transition(.3s);
+}
+
+a:focus,
+.button:focus {
+    text-decoration: none;
+    outline: none;
+}
+
+a:focus,
+a:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+a,
+button {
+    color: inherit;
+    outline: none;
+    border: none;
+    background: transparent;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button:focus {
+    outline: 0;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+input {
+    height:60px;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0 30px;
+    line-height: 60px;
+    color: var(--it-common-black);
+    text-transform: capitalize;
+    @include it-placeholder{
+        color: #757a7b;       
+    }
+
+}
+textarea {
+    outline: none;
+    color: var(--it-common-black);
+    width: 100%;
+    padding: 0 30px;
+    border: none;
+    text-transform: capitalize;
+    @include it-placeholder{
+        color: #757a7b;       
+    }
+}
+
+input[type="color"] {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    border-radius: 50%;
+}
+
+*::-moz-selection {
+    background: var(--it-theme-1);
+    color: var(--it-common-white);
+    text-shadow: none;
+}
+
+::-moz-selection {
+    background: var(--it-theme-1);
+    color: var(--it-common-white);
+    text-shadow: none;
+}
+
+::selection {
+    background: var(--it-theme-1);
+    color: var(--it-common-white);
+    text-shadow: none;
+}
+
+
+*::-moz-placeholder {
+    color: var(--it-common-black);
+    font-size: var(--it-fz-body);
+    opacity: 1;
+}
+
+*::placeholder {
+    color: var(--it-common-black);
+    font-size: var(--it-fz-body);
+    opacity: 1;
+}
+
+/*---------------------------------
+    common classes css start 
+---------------------------------*/
+
+.w-img {
+    & img {
+        width: 100%;
+    }
+}
+
+.m-img {
+    & img {
+        max-width: 100%;
+    }
+}
+
+.fix {
+    overflow: hidden
+}
+
+.clear {
+    clear: both;
+}
+
+.f-left {
+    float: left;
+}
+
+.f-right {
+    float: right;
+}
+
+.overflow-y-visible {
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+.p-relative {
+    position: relative;
+}
+
+.p-absolute {
+    position: absolute;
+}
+
+.include-bg {
+    @include background();
+}
+.gx-5 {
+	--bs-gutter-x: 5px;
+}
+.gx-10 {
+	--bs-gutter-x: 10px;
+}
+

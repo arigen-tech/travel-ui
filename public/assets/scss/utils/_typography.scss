@@ -1,0 +1,28 @@
+
+// font url
+$font-url: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Glass+Antiqua&display=swap" rel="stylesheet" rel="stylesheet';
+
+@font-face {
+    font-family: 'Gloss And Bloom';
+    src:url('../fonts/Gloss\ And\ Bloom\ Font.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+// font family
+$font-family: (
+    'ff': (
+        'body': "'DM Sans', sans-serif",
+        'heading': "'DM Sans', sans-serif",
+        'gloss': "'Gloss And Bloom', sans-serif",
+        'fontawesome': '"Font Awesome 6 Pro"',
+    )
+);
+
+// font size
+$font-size: (
+    'fz': (
+        'body': 16px,
+        'p': 18px,
+    )
+);

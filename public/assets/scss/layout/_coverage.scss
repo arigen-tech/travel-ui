@@ -1,0 +1,59 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  07. Coverage-area css start
+/*----------------------------------------*/
+
+
+.it-coverage {
+
+    &-shape {
+        &-1 {
+            position: absolute;
+            right: 6%;
+            animation: itupdown 0.8s infinite alternate;
+        }
+    }
+
+    &-title-box{
+        @media #{$xs} {
+            margin-bottom: 30px;
+        }
+        & .it-section-title{
+            @media #{$xs} {
+                font-size: 35px;
+            }
+            @media #{$sm} {
+                font-size: 45px;
+            }
+        }
+    }
+
+    &-button{
+        &-box{
+            & a{
+                font-size: 21px;
+                font-weight: 700;
+                color: var(--it-common-black);
+                transition: .3s;
+                margin: 0px 10px;
+                margin-bottom: 20px;
+                display: inline-block;
+                @media #{$xs} {
+                    font-size: 20px;
+                }
+                &:hover{
+                    color: var(--it-theme-1);
+                }
+                &.active{
+                    color: var(--it-theme-1);
+                }
+            }
+        }
+    }
+}
+.it-country-maps-thumb {
+    @media #{$xs} {
+        margin: 50px 0;
+    }
+}

@@ -1,0 +1,129 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  28. Video css start
+/*----------------------------------------*/
+
+.it-video {
+    &-shape {
+        &-1 {
+            position: absolute;
+            left: 6%;
+            bottom: 0;
+        }
+
+        &-2 {
+            position: absolute;
+            right: 2%;
+            bottom: 0;
+
+            @media #{$md,$sm,$xs} {
+                display: none;
+            }
+        }
+    }
+
+    &-icon {
+        text-align: end;
+
+        @media #{$xxxl,$xxl} {
+            text-align: center;
+            margin-left: 150px;
+        }
+
+        @media #{$xxl} {
+            text-align: center;
+            margin-left: -70px;
+        }
+
+        @media #{$xl} {
+            text-align: center;
+            margin-left: -70px;
+        }
+        @media #{$lg} {
+            text-align: start;
+        }
+
+        @media #{$xs} {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        @media #{$md,$sm} {
+            text-align: center;
+        }
+
+        & a {
+            position: relative;
+            font-size: 17px;
+            width: 104px;
+            height: 104px;
+            line-height: 104px;
+            display: inline-block;
+            text-align: center;
+            color: var(--it-theme-1);
+            border-radius: 50%;
+            background-color: var(--it-common-white);
+
+            &::before {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 80%;
+                height: 80%;
+                content: "";
+                background-color: rgba(255, 255, 255, 0.472);
+                animation: borderanimate2 2s linear infinite;
+                z-index: -1;
+                border-radius: 50%;
+            }
+
+            &::after {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 60%;
+                height: 60%;
+                content: "";
+                transform: scale(1.5);
+                border: 1px solid rgba(255, 255, 255, 0.472);
+                animation: borderanimate2 2s linear infinite;
+                z-index: -1;
+                border-radius: 50%;
+            }
+        }
+    }
+
+    &-overlay {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        &::after {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            content: "";
+            background-color: var(--it-common-black);
+            opacity: 0.8;
+        }
+    }
+}
+.inner-video-style{
+    & .it-section-title{
+        font-size: 48px;
+        @media #{$lg} {
+            font-size: 45px;
+        }
+        @media #{$xs} {
+            font-size: 38px;
+        }
+    }
+
+    & .it-video-shape{
+        position: absolute;
+        right: -42%;
+    }
+}

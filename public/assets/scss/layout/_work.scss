@@ -1,0 +1,119 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  29. Video css start
+/*----------------------------------------*/
+
+.it-work {
+    &-bg {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    &-shape {
+        &-1 {
+            position: absolute;
+            top: 9%;
+            left: 25%;
+
+            @media #{$lg} {
+                top: 12%;
+                left: 21%;
+            }
+        }
+
+        &-2 {
+            position: absolute;
+            top: 9%;
+            right: 25%;
+            @media #{$lg} {
+                top: 12%;
+                right: 24%;
+            }
+        }
+    }
+
+    &-item {
+        transition: .3s;
+
+        &:hover {
+            & .it-work-quantity {
+                background-color: var(--it-theme-2);
+            }
+        }
+    }
+
+    &-quantity {
+        top: 25px;
+        padding: 18px 27px;
+        display: inline-block;
+        color: var(--it-common-white);
+        background-color: var(--it-theme-1);
+        border-radius: 0 10px 10px 10px;
+        transition: .3s;
+
+        &::before {
+            font-size: 24px;
+            text-align: center;
+            display: inline-block;
+            counter-increment: count;
+            content: "0" counter(count);
+            color: var(--it-common-white);
+            border-radius: 50%;
+            transition: 0.3s
+        }
+
+        &::after {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            left: 0;
+            right: 0;
+            bottom: -16px;
+            text-align: center;
+            margin: auto;
+            content: "";
+            background-color: var(--it-common-white);
+            border-radius: 50%;
+        }
+    }
+
+    &-box {
+        background: var(--it-common-white);
+        padding: 51px 30px;
+        border: 1px solid var(--it-theme-2);
+        border-radius: 10px;
+        @media #{$sm} {
+            padding: 51px 23px;
+        }
+
+        & p {
+            margin-bottom: 0;
+        }
+    }
+
+    &-title {
+        font-size: 24px;
+        line-height: 1.7;
+        display: inline-block;
+        text-transform: capitalize;
+        color: var(--it-common-black);
+        transition: .3s;
+
+        @media #{$lg} {
+            font-size: 22px;
+        }
+        @media #{$sm} {
+            font-size: 20px;
+        }
+
+        &:hover {
+            color: var(--it-theme-1);
+        }
+    }
+}
+
+.counter-row {
+    counter-reset: count;
+}

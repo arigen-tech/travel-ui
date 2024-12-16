@@ -1,0 +1,95 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  19. portfolio css start
+/*----------------------------------------*/
+
+.it-portfolio{
+    &-title-box{
+        & .it-section-title {
+            margin-bottom: 0;
+        }
+    }
+    &-filter{
+        & .masonary-menu{
+            @media #{$xs} {
+                margin-bottom: 0;
+            }
+            & button {
+                padding: 12px 20px;
+                background: rgba(76, 160, 41, 0.2);
+                margin-left: 15px;
+                @media #{$lg} {
+                    padding: 12px;
+                }
+                &:hover, .masonary-menu button.active {
+                    color: var(--it-common-white);
+                    background-color: #4ca029;
+                }
+                &.active {
+                    color: var(--it-common-white);
+                    background-color: #4ca029;
+                  }
+            }
+        }
+    }
+}
+.it-portfolio-filter {
+    @media #{$md,$xs}{
+        padding-top: 20px;
+    }
+}
+
+.it-gallery{
+    &-item {
+        margin-bottom: 30px;
+        &:hover {
+            & .it-gallery-thumb{
+                &::after{
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
+            & .it-gallery-thumb-icon{
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(-50%) scale(1);
+            }
+        }
+    }
+    &-thumb {
+        position: relative;
+        &::after{
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(22, 27, 24, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: .4s;
+        }
+        &-icon {
+            position: absolute;
+            content: '';
+            top: 50%;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            text-align: center;
+            transform: translateY(-50%) scale(0);
+            opacity: 0;
+            visibility: hidden;
+            transition: .4s;
+            & i {
+                font-size: 28px;
+                color: var(--it-common-white);
+            }
+        }
+        & img {
+            width: 100%;
+        }
+    }
+}

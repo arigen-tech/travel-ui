@@ -1,0 +1,53 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  16. Instagram css start
+/*----------------------------------------*/
+
+.it-instagram {
+    &-thumb {
+        display: inline-block;
+        &::before{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            content: "";
+            background: rgba(0, 128, 142, 0.8);
+            border-radius: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+        }
+        &:hover{
+            &::before{
+                opacity: 1;
+                visibility: visible;
+            }
+
+            & .it-instagram-icon{
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        & img {
+            border-radius: 10px;
+        }
+    }
+
+    &-icon {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: .3s;
+        & a{
+            font-size: 30px;
+            color: var(--it-common-white);
+        }
+    }
+}

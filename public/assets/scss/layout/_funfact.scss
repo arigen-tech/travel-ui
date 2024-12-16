@@ -1,0 +1,153 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  14. Funfact css start
+/*----------------------------------------*/
+
+.it-funfact {
+    &-item{
+        @media #{$xs} {
+            display: flex;
+            justify-content: center;
+        }
+        @media #{$md,$sm,$xs} {
+            margin-bottom: 30px;
+        }
+    }
+    &-number {
+        font-weight: 700;
+        font-size: 34px;
+        letter-spacing: -0.02em;
+        color: var(--it-common-white);
+    }
+
+    &-text {
+        & p {
+            color: var(--it-common-white);
+            margin-bottom: 0;
+        }
+    }
+
+    &-icon {
+        text-align: center;
+        margin: auto;
+
+        & span {
+            color: var(--it-common-white);
+        }
+    }
+}
+
+.it-funfact-2 {
+    &-bg{
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    & .it-funfact {
+        &-item {
+            width: 100%;
+            height: 150px;
+            border-radius: 15px;
+            border: 1px solid var(--it-theme-2);
+            background: rgba(255, 255, 255, 0.3);
+            @media #{$lg,$md,$sm,$xs} {
+                margin-bottom: 30px;
+            }
+        }
+
+        &-icon {
+            font-size: 60px;
+            line-height: 65px;
+            color: var(--it-common-white);
+            margin-right: 15px;
+
+            & i {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+.it-funfact-4 {
+    & .it-funfact {
+        &-wrap {
+            padding: 70px;
+            border-radius: 5px;
+            margin-top: -110px;
+        }
+
+        &-text {
+            position: relative;
+
+            &::before {
+                position: absolute;
+                width: 46px;
+                height: 41px;
+                left: -20px;
+                top: -12px;
+                content: "";
+                background-color: var(--it-common-white);
+                opacity: .2;
+                border-radius: 36% 40% 53% 36% / 39% 42% 46% 46%;
+            }
+
+            & p{
+                color: var(--it-common-black);
+            }
+        }
+    }
+}
+
+.it-funfact-5{
+    &-overlay{
+        &::before{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            content: "";
+            background: rgba(3, 13, 14, 0.8);
+        }
+    }
+
+    &-bg{
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    & .it-funfact{
+        &-wrap{
+            & .row{
+                [class*="col-"]{
+                    &:last-child{
+                        & .it-funfact-item{
+                            border-right: 0;
+                        }
+                    }
+                }
+            }
+        }
+        &-item{
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            @media #{$xs} {
+                border-right: 0;
+            }
+        }
+        &-number {
+            font-weight: 600;
+            font-size: 70px;
+            line-height: 1;
+            color: var(--it-theme-1);
+        }
+        &-text{
+            & p{
+                @media #{$md,$sm} {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+}

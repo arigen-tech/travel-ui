@@ -1,0 +1,187 @@
+@use '../utils' as *;
+/*----------------------------------------*/
+/*  30.1 Accordian css start
+/*----------------------------------------*/
+
+.it-custom-accordion {
+    & .accordion-items {
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid var(--it-grey-1);
+    }
+
+    & .accordion-header {
+        border: 1px solid var(--it-theme-1);
+        border-radius: 5px;
+
+        &:not(.collapsed) {
+            border-radius: 5px 5px 0 0;
+        }
+
+    }
+
+    &.inner-accordion {
+        & .accordion-items {
+            margin-bottom: 30px;
+            border: 1px solid var(--it-grey-1);
+            background-color: var(--it-grey-1);
+        }
+    }
+
+    & .accordion-buttons {
+        position: relative;
+        width: 100%;
+        font-size: 17px;
+        font-weight: 700;
+        text-align: left;
+        line-height: 1.3;
+        padding: 12px 70px 12px 30px;
+        color: var(--it-common-black);
+        @media #{$xs} {
+            padding-left: 15px;
+        }
+        &:not(.collapsed) {
+            color: var(--it-common-white);
+            background: var(--it-theme-1);
+
+            &::after {
+                color: var(--it-theme-1);
+                background: var(--it-common-white);
+            }
+
+            & span {
+                color: var(--it-theme-1);
+                background: var(--it-common-white);
+
+            }
+        }
+
+        @media #{$xl} {
+            font-size: 20px;
+        }
+
+        @media #{$lg,$md} {
+            font-size: 16px;
+            padding: 15px 70px 15px 30px;
+        }
+
+        @media #{$xs} {
+            font-size: 17px;
+
+            & br {
+                display: none;
+            }
+        }
+
+        @media #{$sm} {
+            font-size: 17px;
+        }
+
+        &::after {
+            position: absolute;
+            content: "\f106";
+            font-family: 'Font Awesome 6 Pro';
+            top: 0;
+            bottom: 0;
+            right: 30px;
+            font-weight: 600;
+            font-size: 17px;
+            opacity: 1;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            margin: auto;
+            border-radius: 5px;
+            color: var(--it-common-white);
+            background: var(--it-theme-1);
+            @media #{$xs} {
+                right: 15px;
+            }
+            @media #{$xs} {
+                font-size: 18px;
+            }
+
+            &:not(.collapsed) {
+                color: var(--it-theme-1);
+            }
+        }
+
+        &.collapsed {
+            &::after {
+                content: '\f107';
+            }
+        }
+
+        & span {
+            font-size: 16px;
+            font-weight: 400;
+            padding: 9px 20px;
+            margin-right: 15px;
+            display: inline-block;
+            color: var(--it-theme-1);
+            background: rgba(76, 160, 41, 0.2);
+            border-radius: 5px;
+            @media #{$xs} {
+                display: none;
+            }
+        }
+
+    }
+
+    & .collapsed {
+        position: relative;
+        z-index: 99;
+    }
+
+    & .accordion-body {
+        font-weight: 500;
+        font-size: 17px;
+        line-height: 1.5;
+        padding: 15px 30px;
+        padding-bottom: 30px;
+        position: relative;
+        border: 1px solid var(--it-theme-1);
+        z-index: 1;
+        border-radius: 0 0 5px 5px;
+
+        @media #{$xl} {
+            font-size: 15px;
+        }
+
+        @media #{$lg} {
+            font-size: 14px;
+        }
+
+        @media #{$md} {
+            font-size: 14px;
+        }
+        @media #{$xs} {
+            font-size: 14px;
+            flex-wrap: wrap;
+            padding: 15px;
+        }
+
+        @media #{$sm} {
+            font-size: 15px;
+        }
+
+        & p {
+            line-height: 1.6;
+            color: var(--it-common-black);
+            margin-right: 49px;
+            @media #{$xs} {
+                margin-right: 0;
+                font-size: 14px;
+                padding-bottom: 25px;
+            }
+        }
+
+        & img {
+            border-radius: 5px;
+            @media #{$xs} {
+                width: 100%;
+            }
+        }
+    }
+}

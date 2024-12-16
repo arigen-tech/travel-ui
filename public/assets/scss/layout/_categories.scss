@@ -1,0 +1,103 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  04. Categories css start
+/*----------------------------------------*/
+
+.it-categories {
+    &-pd{
+        padding-top: 120px;
+        padding-bottom: 228px;
+    }
+    &-shape {
+        position: absolute;
+        right: 0;
+
+        & span {
+            color: var(--it-theme-1);
+        }
+    }
+
+    &-item{
+        padding: 27px 36px;
+        background-color: var(--it-common-white);
+        border-radius: 5px;
+        transition: .3s;
+        &:hover{
+            background-color: var(--it-theme-1);
+            .it-categories-icon{
+                & span{
+                    color: var(--it-theme-1);
+                    background-color: var(--it-common-white);
+                }
+            }
+            .it-categories-title{
+                color: var(--it-common-white);
+            }
+        }
+    }
+
+    &-icon {
+        & span {
+            display: inline-block;
+            padding: 24px 30px;
+            color: var(--it-common-white);
+            background-color: var(--it-theme-1);
+            border-radius: 36% 40% 53% 36% / 39% 42% 46% 46%;
+        }
+    }
+
+    &-title {
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 1.2;
+        letter-spacing: 0em;
+        text-transform: capitalize;
+        color: var(--it-common-black);
+        margin-bottom: 0;
+        transition: .3s;
+        &:hover{
+            color: var(--it-theme-1);
+        }
+        &-box{
+            @media #{$xs} {
+                margin-bottom: 30px;
+            }
+        }
+    }
+
+    &-arrow-box{
+        text-align: end;
+        @media #{$xs} {
+            display: none;
+        }
+        @media #{$sm} {
+            display: block;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        & button{
+            width: 62px;
+            height: 62px;
+            line-height: 62px;
+            text-align: center;
+            color: var(--it-theme-1);
+            border: 2px solid var(--it-theme-1);
+            border-radius: 50%;
+            transition: .3s;
+
+            &:hover{
+                color: var(--it-common-white);
+                border: 2px solid var(--it-theme-1);
+                background-color: var(--it-theme-1);
+            }
+            
+            &.it-cat{
+                &-prev{
+                    margin-right: 20px;
+                }
+            }
+        }
+    }
+}

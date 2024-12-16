@@ -1,0 +1,115 @@
+@use '../utils' as *;
+
+.it-btn {
+    &-primary {
+        font-size: 15px;
+        padding: 20px 30px;
+        display: inline-block;
+        color: var(--it-common-white);
+        background: var(--it-theme-1);
+        border-radius: 5px;
+        transition: .3s;
+        font-weight: 500;
+        text-transform: capitalize;
+        transition: .3s;
+        @media #{$xl,$md,$xs}{
+            padding: 20px 20px;
+        }
+
+        &:hover {
+            color: var(--it-common-white);
+            background-color: var(--it-theme-2);
+        }
+
+        &.it-white-bg{
+            color: var(--it-theme-1);
+            background-color: var(--it-common-white);
+            &:hover{
+                color: var(--it-common-white);
+                background-color: var(--it-theme-1);
+            }
+        }
+
+    }
+
+    &-secondary {
+        font-size: 15px;
+        padding: 20px 40px;
+        display: inline-block;
+        color: var(--it-common-white);
+        background: var(--it-theme-2);
+        border-radius: 5px;
+        transition: .3s;
+        font-weight: 500;
+        text-transform: capitalize;
+
+        &:hover {
+            color: var(--it-common-white);
+            background-color: var(--it-theme-1);
+        }
+    }
+
+    &-blog {
+        font-size: 14px;
+        padding: 10px 20px;
+        display: inline-block;
+        color: var(--it-common-white);
+        background: var(--it-theme-1);
+        border-radius: 5px;
+        font-weight: 500;
+        text-transform: capitalize;
+        transition: .3s;
+
+        &:hover {
+            color: var(--it-common-white);
+            background-color: var(--it-theme-2);
+        }
+
+        &.featured-btn {
+            background: rgba(76, 160, 41, 0.4);
+        }
+
+        &.featured-btn-black {
+            color: var(--it-theme-1);
+            background: var(--it-common-black);
+        }
+
+        &.blog-style-btn {
+            color: var(--it-theme-1);
+            background: rgba(17, 187, 103, 0.2);
+        }
+
+    }
+
+}
+
+.it-slide-btn-1 {
+    width: 50px;
+    height: 50px;
+    line-height: 55px;
+    background-color: var(--it-theme-1);
+    color: var(--it-common-white);
+    border-radius: 50%;
+    transition: .3s;
+    margin-right: 25px;
+
+    &:hover {
+        color: var(--it-common-white);
+        background-color: var(--it-common-black);
+    }
+}
+
+.it-slide-btn-2 {
+    width: 50px;
+    height: 50px;
+    line-height: 55px;
+    background-color: var(--it-theme-2);
+    color: var(--it-common-white);
+    border-radius: 50%;
+    transition: .3s;
+
+    &:hover {
+        color: var(--it-common-white);
+        background-color: var(--it-common-black);
+    }
+}

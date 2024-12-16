@@ -1,0 +1,148 @@
+@use '../utils' as *;
+
+/*----------------------------------------*/
+/*  26. Team css start
+/*----------------------------------------*/
+
+.it-team {
+    &-item {
+        position: relative;
+        padding: 0 0 60px 0;
+        border-radius: 10px;
+        border: 1px solid rgba(17, 48, 7, 0.1);
+        margin-bottom: 30px;
+        transition: .3s;
+
+        &:hover {
+            background-color: var(--it-theme-1);
+
+            & .it-team {
+
+                &-title {
+                    color: var(--it-common-white);
+                }
+
+                &-designation {
+                    color: var(--it-common-white);
+                }
+            }
+        }
+
+    }
+
+    &-thumb {
+        padding: 40px 50px 30px 50px;
+        @media #{$md,$lg,$xs} {
+            padding: 30px;
+        }
+        @media #{$sm} {
+            padding: 20px;
+        }
+        & img {
+            border-radius: 10px;
+        }
+    }
+
+    &-title {
+        font-size: 24px;
+        display: inline-block;
+        text-transform: capitalize;
+        color: var(--it-common-black);
+        transition: .3s;
+
+        &:hover a {
+            color: var(--it-common-black);
+        }
+    }
+
+    &-designation {
+        display: block;
+        font-weight: 400;
+        font-size: 15px;
+        line-height: 1.2;
+        color: var(--it-theme-1);
+        transition: .3s;
+    }
+
+    &-social {
+        &-box {
+            position: absolute;
+            left: 74px;
+            right: 74px;
+            bottom: -1px;
+            padding: 10px 24px;
+            display: inline-block;
+            background-color: var(--it-grey-1);
+            border-radius: 10px 10px 0 0;
+            @media #{$lg} {
+                left: 35px;
+                right: 35px;
+            }
+            @media #{$md} {
+                left: 25px;
+                right: 25px;
+            }
+            @media #{$xs} {
+                left: 15px;
+                right: 15px;
+            }
+
+            & a {
+                font-size: 15px;
+                width: 45px;
+                height: 45px;
+                line-height: 45px;
+                text-align: center;
+                margin-right: 10px;
+                display: inline-block;
+                color: var(--it-common-black);
+                background-color: var(--it-common-white);
+                border-radius: 50%;
+                transition: .3s;
+
+                &:hover {
+                    color: var(--it-common-black);
+                    background-color: var(--it-theme-2);
+                }
+            }
+        }
+    }
+}
+
+.it-team-style{
+    &-2{
+        & .it-team-social-box {
+            @media #{$xl} {
+                left: 64px;
+                right: 64px;
+            }
+            @media #{$lg} {
+                left: 30px;
+                right: 30px;
+            }
+            @media #{$md} {
+                left: 50px;
+                right: 50px;
+            }
+            @media #{$sm} {
+                left: 8px;
+                right: 8px;
+            }
+        }
+    }
+    &-3{
+        & .it-team-title {
+            text-decoration: underline;
+            &:hover a{
+                color: var(--it-theme-1);
+            }
+        }
+        & .it-team-3{
+            &-thumb{
+                & img{
+                    border-radius: 5px;
+                }
+            }
+        }
+    }
+}
