@@ -1217,34 +1217,40 @@ input[type=color] {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--it-theme-1);
+  background-color: var(--it-common-white);
+  opacity: .8;
   z-index: 999999;
   overflow: hidden;
+  display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .preloader {
-  width: 50px;
-  height: 50px;
+  width: 254px;
+  /* height: 50px; */
   display: inline-block;
   padding: 0px;
   text-align: left;
-  box-sizing: border-box;
+  position: relative;
+  /* box-sizing: border-box;
   position: absolute;
   top: 50%;
   left: 50%;
   margin-left: -25px;
-  margin-top: -25px;
+  margin-top: -25px; */
 }
 
 .preloader span {
   position: absolute;
   display: inline-block;
-  width: 50px;
-  height: 50px;
+  width: 254px;
+  height: 254px;
   border-radius: 100%;
-  background: var(--it-common-white);
+  background: var(--it-theme-2);
   -webkit-animation: preloader 1.3s linear infinite;
   animation: preloader 1.3s linear infinite;
+  top: -10%;
 }
 
 .preloader span:last-child {

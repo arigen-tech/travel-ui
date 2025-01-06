@@ -1,0 +1,194 @@
+
+.light-shadow {
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 25%);
+}
+.sidebar .sidebar-title {
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+}
+.flight-listing-page .flight-block .flight-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.flight-listing-page .flight-block .flight-area .airline-name {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+.flight-listing-page .flight-block .flight-area .airline-name img {
+    border-radius: 50%;
+}
+.dark-gray {
+    color: #7A7F85 !important;
+}
+.flight-listing-page .flight-block .flight-area .flight-detail {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+.flight-listing-page .flight-block .flight-area .flight-button {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.gap-8 {
+    gap: 8px;
+}
+.filtersection{
+    font-size: 14px;
+}
+.searchform {
+    background: var(--it-theme-2);
+}
+.MuiOutlinedInput-notchedOutline{
+    border-width: 0px !important;
+}
+.price-range-slider {
+ width: 100% !important;
+ padding: 0px !important;
+}
+.MuiOutlinedInput-input{
+    padding:0 !important;
+    border: 0px !important;
+    margin-bottom: 10px;
+}
+h5, .h5 {
+    font-size: clamp(16px, 1.094vw, 24px);
+    font-weight: 500;
+    line-height: 130%;
+}
+@media (max-width: 1699px) {
+    .flight-listing-page .flight-block .flight-area .flight-detail {
+        gap: 8px;
+    }
+}
+.flight-listing-page .flight-block .flight-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media (max-width: 1199px) {
+    .flight-listing-page .flight-block .flight-area {
+        display: grid;
+        justify-content: center;
+        gap: 32px;
+    }
+}
+
+.flight-listing-page .flight-block .flight-area .airline-name {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.flight-listing-page .flight-block .flight-area .airline-name img {
+    border-radius: 50%;
+}
+
+
+
+@media (max-width: 1199px) {
+    .flight-listing-page .flight-block .flight-area .airline-name {
+        text-align: center;
+    }
+}
+
+.flight-listing-page .flight-block .flight-area .flight-detail {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+@media (max-width: 1699px) {
+    .flight-listing-page .flight-block .flight-area .flight-detail {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 1199px) {
+    .flight-listing-page .flight-block .flight-area .flight-detail {
+        gap: 32px;
+    }
+}
+
+.flight-listing-page .flight-block .flight-area .flight-button {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+@media (max-width: 1599px) {
+    .flight-listing-page .flight-block .flight-area .flight-button {
+        gap: 8px;
+        display: block;
+    }
+
+    .flight-listing-page .flight-block .flight-area .flight-button .amount {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 1199px) {
+    .flight-listing-page .flight-block .flight-area .flight-button .amount {
+        margin-bottom: 8px;
+    }
+
+    .flight-listing-page .flight-block .flight-area .flight-button {
+        margin: 0 auto;
+    }
+}
+
+.flight-listing-page .accordion-button:not(.collapsed) i.fa-chevron-down:before {
+    content: "\f077" !important;
+}
+
+.time-detail {
+    padding-top: 40px;
+}
+
+@media (max-width: 992px) {
+    .time-detail {
+        padding-top: 10px;
+        text-align: center;
+    }
+}
+
+.time-detail .flight-date {
+    padding: 12px;
+    background: var(--accent-2);
+    border-radius: 5px;
+    display: inline-flex;
+    color: var(--white);
+}
+
+.detail-block {
+    background: rgba(77, 115, 252, 0.10);
+    padding: 64px 24px;
+    border-radius: 10px;
+}
+
+.detail-block img {
+    border-radius: 50%;
+}
+
+@media (max-width: 767px) {
+    .detail-block {
+        padding: 32px 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .detail-block {
+        text-align: center;
+    }
+}
+
+
+
+

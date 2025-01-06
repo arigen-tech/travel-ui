@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../components/header/header";
-import Footer from "../../components/footer/footer";
-import DatePicker from 'react-datepicker';
+import { useNavigate } from 'react-router-dom';
 import "react-datepicker/dist/react-datepicker.css";
 import {
   Navigation,
@@ -16,12 +14,12 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/autoplay";
+import Loader from '../../assets/img/loader.gif';
 
 const HomePage = () => {
 
-    const [checkInDate, setCheckInDate] = useState(null);
-  const [checkOutDate, setCheckOutDate] = useState(null);
   const [loading, setLoading] = useState(true); // Preloader visible initially
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate content loading (replace with real loading logic)
@@ -45,21 +43,40 @@ const HomePage = () => {
   const backgroundImageStyle4 = {
     backgroundImage: "url(assets/img/home-1/shop/shop-bg.png)",
   };
+
+  const [travellerCounts, setTravellerCounts] = useState({ adults: 1, children: 0, infants: 0 });
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const updateTravellerCount = (type, delta) => {
+    setTravellerCounts((prev) => {
+      const newCount = Math.max(0, prev[type] + delta);
+      return { ...prev, [type]: newCount };
+    });
+  };
+  
+  const handlesubmit = (e) => {
+    e.preventDefault();
+    navigate('/flightList');
+  }
+    
+
   
   return (
     
       <>
+
       {loading ? (
                   <div id="preloader">
                   <div className="preloader">
                     <span></span>
                     <span></span>
+                    <img className="loaderimg" src={Loader} />
                   </div>
                 </div>
             ) : (
               <>
             <main>
-              <div className="it-slider-area fix">
+              <div className="it-slider-area">
                 <div className="it-slider-wrapper p-relative">
                   <Swiper
                     modules={[Navigation, Pagination, Autoplay]}
@@ -85,9 +102,6 @@ const HomePage = () => {
                                 <span className="it-section-subtitle text-white">
                                   Memories For Life
                                 </span>
-                                <h3 className="it-slider-title">
-                                  Let's Explore the world
-                                </h3>
                               </div>
                             </div>
                           </div>
@@ -110,9 +124,7 @@ const HomePage = () => {
                                 <span className="it-section-subtitle text-white">
                                   Memories For Life
                                 </span>
-                                <h3 className="it-slider-title">
-                                  Let's Explore the world
-                                </h3>
+
                               </div>
                             </div>
                           </div>
@@ -135,9 +147,7 @@ const HomePage = () => {
                                 <span className="it-section-subtitle text-white">
                                   Memories For Life
                                 </span>
-                                <h3 className="it-slider-title">
-                                  Let's Explore the world
-                                </h3>
+
                               </div>
                             </div>
                           </div>
@@ -147,136 +157,272 @@ const HomePage = () => {
                   </Swiper>
 
                   <div className="it-tour-package-main">
-                      <div className="container">
+                      <div className="container px-0">
                           <div className="it-tour-package-wrap it-slider-tour-style it-tour-package-box z-index">
-                          <nav>
-                              <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                                  <button
-                                  className="nav-link active"
-                                  id="nav-home-tab"
-                                  data-bs-toggle="tab"
-                                  data-bs-target="#nav-home"
-                                  type="button"
-                                  role="tab"
-                                  aria-controls="nav-home"
-                                  aria-selected="true"
-                                  >
-                                  Flight
-                                  </button>
-                                  <button
-                                  className="nav-link"
-                                  id="nav-profile-tab"
-                                  data-bs-toggle="tab"
-                                  data-bs-target="#nav-profile"
-                                  type="button"
-                                  role="tab"
-                                  aria-controls="nav-profile"
-                                  aria-selected="false"
-                                  >
-                                  Hotels
-                                  </button>
-                                  <button
-                                  className="nav-link"
-                                  id="nav-contact-tab"
-                                  data-bs-toggle="tab"
-                                  data-bs-target="#nav-contact"
-                                  type="button"
-                                  role="tab"
-                                  aria-controls="nav-contact"
-                                  aria-selected="false"
-                                  >
-                                  Packages
-                                  </button>
-                              </div>
-                              <div className="tab-content py-4 border border-1 border-top-0" id="nav-tabContent">
-                              <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                              <div className="it-tour-package-location__wrapper">
+                          <div className="it-tour-package-location__wrapper">
                                   <div className="row">
-                                  <div className="col-xl-3 col-lg-4 col-md-6">
-                                      <div className="it-tour-package-item d-flex">
-                                      <div className="it-tour-package-icon">
-                                          <i className="fa-solid fa-location-dot"></i>
-                                      </div>
-                                      <div className="it-tour-package-text">
-                                          <h3 className="it-tour-package-title">Location</h3>
-                                          <input type="text" placeholder="Where are you going?" />
-                                      </div>
-                                      </div>
-                                  </div>
-                                  <div className="col-xl-3 col-lg-4 col-md-6">
-                                      <div className="it-tour-package-item d-flex">
-                                      <div className="it-tour-package-icon">
-                                          <i className="fa-light fa-calendar"></i>
-                                      </div>
-                                      <div className="it-tour-package-text">
-                                          <h3 className="it-tour-package-title">Check In</h3>
-                                          <div className="it-clander-input">
-                                          <DatePicker
-                                              className="form-control"
-                                              selected={checkInDate}
-                                              onChange={(date) => setCheckInDate(date)}
-                                              placeholderText="Check In"
-                                              dateFormat="yyyy-MM-dd"
-                                          />
+                                  <>
+                                    {/* Flight Search Form */}
+                                      <form>
+                                        <div className="form-header">
+                                        <div className="d-flex align-items-center justify-content-between flex-wrap">
+                                          <div className="d-flex align-items-center">
+                                          <div className="form-check d-flex align-items-center me-3 mb-2">
+                                            <input
+                                              className="form-check-input mt-0"
+                                              type="radio"
+                                              name="Radio"
+                                              id="oneway"
+                                              defaultValue="oneway"
+                                              defaultChecked
+                                            />
+                                            <label className="form-check-label fs-14 ms-2" htmlFor="oneway">
+                                              Oneway
+                                            </label>
                                           </div>
-                                      </div>
-                                      </div>
-                                  </div>
-                                  <div className="col-xl-3 col-lg-4 col-md-6">
-                                      <div className="it-tour-package-item d-flex">
-                                      <div className="it-tour-package-icon">
-                                          <i className="fa-light fa-calendar"></i>
-                                      </div>
-                                      <div className="it-tour-package-text">
-                                          <h3 className="it-tour-package-title">Check Out</h3>
-                                          <div className="it-clander-input">
-                                          <DatePicker
-                                              className="form-control"
-                                              selected={checkOutDate}
-                                              onChange={(date) => setCheckOutDate(date)}
-                                              placeholderText="Check Out"
-                                              dateFormat="yyyy-MM-dd"
-                                          />
+                                          <div className="form-check d-flex align-items-center me-3 mb-2">
+                                            <input
+                                              className="form-check-input mt-0"
+                                              type="radio"
+                                              name="Radio"
+                                              id="roundtrip"
+                                              defaultValue="roundtrip"
+                                            />
+                                            <label className="form-check-label fs-14 ms-2" htmlFor="roundtrip">
+                                              Round Trip
+                                            </label>
                                           </div>
-                                      </div>
-                                      </div>
+                                          <div className="form-check d-flex align-items-center me-3 mb-2">
+                                            <input
+                                              className="form-check-input mt-0"
+                                              type="radio"
+                                              name="Radio"
+                                              id="multiway"
+                                              defaultValue="multiway"
+                                            />
+                                            <label className="form-check-label fs-14 ms-2" htmlFor="multiway">
+                                              Multi Trip
+                                            </label>
+                                          </div>
+                                          </div>
+                                          <h6 className="fw-medium fs-16 mb-2">
+                                          Millions of cheap flights. One simple search
+                                          </h6>
+                                          </div>
+
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-md-2 form-group pe-0 firstinput">
+                                            <label htmlFor="from">From</label>
+                                            <input
+                                              type="text"
+                                              id="from"
+                                              className="form-control"
+                                              defaultValue="Newyork"
+                                            />
+                                            <small className="text-muted">Ken International Airport</small>
+                                          </div>
+                                          <div className="col-md-2 form-group">
+                                            <label htmlFor="to">To</label>
+                                            <input
+                                              type="text"
+                                              id="to"
+                                              className="form-control"
+                                              defaultValue="Las Vegas"
+                                            />
+                                            <small className="text-muted">Martini International Airport</small>
+                                          </div>
+                                          <div className="col-md-2 form-group">
+                                            <label htmlFor="departure">Departure</label>
+                                            <input
+                                              type="date"
+                                              id="departure"
+                                              className="form-control"
+                                              defaultValue="2024-10-21"
+                                            />
+                                            <small className="text-muted">Monday</small>
+                                          </div>
+                                          <div className="col-md-2 form-group">
+                                            <label htmlFor="return">Return</label>
+                                            <input
+                                              type="date"
+                                              id="return"
+                                              className="form-control"
+                                              defaultValue="2024-10-23"
+                                            />
+                                            <small className="text-muted">Wednesday</small>
+                                          </div>
+                                          <div className="col-md-3 form-group">
+                                            <label htmlFor="travellersDropdown">Travellers and cabin class</label>
+                                            <div className="dropdown mt-2">
+                                              <button
+                                                className="btn btn-light w-100 dropdown-toggle"
+                                                type="button"
+                                                id="travellersDropdown"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded={dropdownOpen}
+                                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                              >
+                                                4 Persons, 1 Adult, Economy
+                                              </button>
+                                              <ul className={`dropdown-menu travellersDropdowncontent py-3 ${dropdownOpen ? 'show' : ''}`} aria-labelledby="travellersDropdown">
+                                                <li class="travellerscol p-2 mb-2 row">
+                                                  <div className="travellers-dropdown-header">Travellers</div>
+                                                  <div className="traveller-control col-md-4">
+                                                    <span>Adults (12+ Yrs)</span>
+                                                    <div>
+                                                      <button
+                                                        type="button"
+                                                        className="btn btn-sm"
+                                                        onClick={() => updateTravellerCount('adults', -1)}
+                                                      >
+                                                        -
+                                                      </button>
+                                                      <span className="traveller-count" id="adultsCount">
+                                                        {travellerCounts.adults}
+                                                      </span>
+                                                      <button
+                                                        type="button"
+                                                        className="btn btn-sm"
+                                                        onClick={() => updateTravellerCount('adults', +1)}
+                                                      >
+                                                        +
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                  <div className="traveller-control col-md-4">
+                                                    <span>Children (2-12 Yrs)</span>
+                                                    <div>
+                                                      <button
+                                                        type="button"
+                                                        className="btn btn-sm"
+                                                        onClick={() => updateTravellerCount('children', -1)}
+                                                      >
+                                                        -
+                                                      </button>
+                                                      <span className="traveller-count" id="childrenCount">
+                                                      {travellerCounts.children}
+                                                      </span>
+                                                      <button
+                                                        type="button"
+                                                        className="btn btn-sm"
+                                                        onClick={() => updateTravellerCount('children', +1)}
+                                                        
+                                                      >
+                                                        +
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                  <div className="traveller-control col-md-4">
+                                                    <span>Infants (0-2 Yrs)</span>
+                                                    <div>
+                                                      <button
+                                                        type="button"
+                                                        className="btn btn-sm"
+                                                        onClick={() => updateTravellerCount('infants', -1)}
+                                                      >
+                                                        -
+                                                      </button>
+                                                      <span className="traveller-count" id="infantsCount">
+                                                      {travellerCounts.infants}
+                                                      </span>
+                                                      <button
+                                                        type="button"
+                                                        className="btn btn-sm"
+                                                        onClick={() => updateTravellerCount('infants', +1)}
+                                                      >
+                                                        +
+                                                      </button>
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                                <li className="travellerscol row p-2">
+                                                  <div className="travellers-dropdown-header">Class</div>
+                                                    <div className="form-check traveller-control col-md-3">
+                                                      <input
+                                                        className="form-check-input"
+                                                        type="radio"
+                                                        name="cabinClass"
+                                                        id="economy"
+                                                        defaultValue="Economy"
+                                                        defaultChecked
+                                                      />
+                                                      <label className="form-check-label" htmlFor="economy">
+                                                        Economy
+                                                      </label>
+                                                    </div>
+                                                    <div className="form-check traveller-control col-md-3">
+                                                      <input
+                                                        className="form-check-input"
+                                                        type="radio"
+                                                        name="cabinClass"
+                                                        id="premiumEconomy"
+                                                        defaultValue="Premium Economy"
+                                                      />
+                                                      <label
+                                                        className="form-check-label"
+                                                        htmlFor="premiumEconomy"
+                                                      >
+                                                        Premium Economy
+                                                      </label>
+                                                    </div>
+                                                    <div className="form-check traveller-control col-md-3">
+                                                      <input
+                                                        className="form-check-input"
+                                                        type="radio"
+                                                        name="cabinClass"
+                                                        id="business"
+                                                        defaultValue="Business"
+                                                      />
+                                                      <label className="form-check-label" htmlFor="business">
+                                                        Business
+                                                      </label>
+                                                    </div>
+                                                    <div className="form-check traveller-control col-md-3">
+                                                      <input
+                                                        className="form-check-input"
+                                                        type="radio"
+                                                        name="cabinClass"
+                                                        id="firstClass"
+                                                        defaultValue="First Class"
+                                                      />
+                                                      <label className="form-check-label" htmlFor="firstClass">
+                                                        First Class
+                                                      </label>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                  <div className="dropdown-footer">
+                                                    <button className="btn btn-secondary btn-sm" type="button" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                                                      Cancel
+                                                    </button>
+                                                    <button className="btn btn-primary btn-sm" type="button" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                                                      Apply
+                                                    </button>
+                                                  </div>
+                                                </li>
+                                              </ul>
+                                            </div>
+                                          </div>
+                                          <div className="col-md-1 form-group d-flex align-items-center py-0 pe-0 searchcol">
+                                          <div className="it-tour-package-item d-flex justify-content-end">
+                                          <div className="it-tour-package-search">
+                                              <button type="submit" onClick={handlesubmit}>
+                                                Search <i className="fa-solid fa-magnifying-glass"></i>
+                                              </button>
+                                          </div>
+                                          </div>
+                                          </div>
+                                        </div>
+                                      </form>
+                                  </>
+
+                                 
                                   </div>
-                                  <div className="col-xl-3 col-lg-4 col-md-6">
-                                      <div className="it-tour-package-item d-flex">
-                                      <div className="it-tour-package-icon">
-                                          <i className="fa-regular fa-user"></i>
-                                      </div>
-                                      <div className="it-tour-package-text">
-                                          <h3 className="it-tour-package-title">Guest</h3>
-                                          <input type="text" placeholder="Total Guests" />
-                                      </div>
-                                      <div className="it-tour-package-search">
-                                          <button type="submit">
-                                          <i className="fa-solid fa-magnifying-glass"></i>
-                                          </button>
-                                      </div>
-                                      </div>
-                                  </div>
-                                  </div>
                               </div>
-                              </div>
-                              <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                  ...
-                              </div>
-                              <div className="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                                  ...
-                              </div>
-                              </div>
-                          </nav>
                           </div>
                       </div>
                   </div>
-
-
-
-
-
-
 
 
 
