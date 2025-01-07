@@ -59,6 +59,107 @@ h5, .h5 {
     font-weight: 500;
     line-height: 130%;
 }
+.radio-tile-group {
+    display: flex;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    column-gap: 0px;
+}
+.radio-tile-group .input-container {
+    position: relative;
+}
+
+.radio-tile-group .input-container .radio-button {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile {
+    background: var(--it-theme-2);
+    border: 1px solid #c7c8c9;
+    color: #ffffff;
+    transition: all 0.5s ease-in-out;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label {
+    color: #ffffff;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile .sunrise {
+background-position: -5px -70px !important;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile .morning {
+    background-position: -38px -70px !important;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile .afternoon {
+    background-position: -66px -70px !important;
+}
+.radio-tile-group .input-container .radio-button:checked + .radio-tile .evening {
+    background-position: -95px -67px !important;
+}
+.radio-tile-group .input-container .radio-tile.sidebar-departure-radio {
+    padding: 6px 6px;
+    height: 70px;
+}
+
+.radio-tile-group .input-container .radio-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    border: 1px solid #c7c8c9;
+    background: rgba(77, 115, 252, 0.1);
+    border-radius: 0px;
+    padding: 14px 8px;
+    transition: transform 300ms ease;
+}
+.radio-tile-group .input-container .radio-tile-label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+h6, .h6 {
+    font-size: clamp(13px, 0.833vw, 22px);
+    font-weight: 500;
+    line-height: 150%;
+    letter-spacing: 0.32px;
+}
+.sunrise{
+    margin: 0 auto;
+    width: 28px;
+    height: 25px;
+    background: url('../../assets/img//filter-sprite.png');
+    background-position: -5px -42px;
+}
+.morning{
+    margin: 0 auto;
+    width: 28px;
+    height: 25px;
+    background: url('../../assets/img//filter-sprite.png');
+    background-position: -38px -43px;
+}
+.afternoon{
+    margin: 0 auto;
+    width: 28px;
+    height: 25px;
+    background: url('../../assets/img//filter-sprite.png');
+    background-position: -66px -42px;
+}
+.evening{
+    margin: 0 auto;
+    width: 28px;
+    height: 25px;
+    background: url('../../assets/img//filter-sprite.png');
+    background-position: -95px -43px;
+}
+.disabled{
+    background: #E4EBF1;
+}
 @media (max-width: 1699px) {
     .flight-listing-page .flight-block .flight-area .flight-detail {
         gap: 8px;
