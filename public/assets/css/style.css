@@ -3558,7 +3558,7 @@ body.it-magic-cursor #magic-cursor {
 
 .it-tour-package-main {
   position: absolute;
-  bottom: 60px;
+  top: 150px;
   left: 0;
   right: 0;
 }

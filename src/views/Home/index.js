@@ -63,14 +63,11 @@ const HomePage = () => {
   const handleCabinClassChange = (event) => {
     setCabinClass(event.target.value);
   };
+  const navigate = useNavigate();
+
   const handleSubmitTravellercount = (e) => {
     e.preventDefault();
-    console.log("Form submitted", {
-      tripType,
-      rows,
-      travellerCounts,
-      cabinClass,
-    });
+    navigate('/flightList')
   };
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update range values
@@ -100,11 +97,7 @@ const HomePage = () => {
   };
 
 
-  const navigate = useNavigate();
-  const handlesubmit = (e) => {
-    e.preventDefault();
-    navigate('/flightList');
-  }
+  
     
 
   
