@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   Navigation,
@@ -28,10 +29,29 @@ const HomePage = () => {
     children: 0,
     infants: 0,
   }); // Traveller counts
-  const [cabinClass, setCabinClass] = useState("Economy"); // Default cabin class
 
-  const handleTripTypeChange = (event) => {
-    setTripType(event.target.value);
+  const [cabinClass, setCabinClass] = useState("Economy"); // Default cabin class
+  const [selectedFromDate, setSelectedFromDate] = useState(new Date()); 
+  const [selectedReturnDate, setSelectedReturnDate] = useState(new Date()); // State for return date
+
+   // Format date to "10 Jan'2025"
+   const formatDate = (date) => {
+    if (!date) return "";
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    const formattedDate = date.toLocaleDateString("en-GB", options);
+    return formattedDate.replace(" ", " ").replace(" ", "'");
+  };
+
+
+
+
+
+
+  const handleTripTypeChange = (e) => {
+    setTripType(e.target.value);
+    if (e.target.value === "oneway" || e.target.value === "multiway") {
+      setSelectedReturnDate(null); // Clear return date if not needed
+    }
   };
 
   const addRow = () => {
@@ -43,7 +63,7 @@ const HomePage = () => {
       updatedRows.pop(); // Remove the last row
       setRows(updatedRows);
     } else {
-      alert("At least one row is required.");
+      alert("No more rows to delete.");
     }
   };
   const handleRowChange = (index, field, value) => {
@@ -63,6 +83,8 @@ const HomePage = () => {
   const handleCabinClassChange = (event) => {
     setCabinClass(event.target.value);
   };
+
+  
   const navigate = useNavigate();
 
   const handleSubmitTravellercount = (e) => {
@@ -97,7 +119,6 @@ const HomePage = () => {
   };
 
 
-  
     
 
   
@@ -271,18 +292,44 @@ const HomePage = () => {
                                         </div>
                                         <div className="col-md-2 form-group">
                                           <label htmlFor="departure">Departure</label>
-                                          <input type="date" id="departure" className="form-control" defaultValue="2024-10-21" />
+                                          <DatePicker
+                                              selected={selectedFromDate || new Date()} // Default to current date if no date is selected
+                                              onChange={(date) => {
+                                                setSelectedFromDate(date);
+                                                setSelectedReturnDate(null); // Reset return date if departure changes
+                                              }}
+                                              dateFormat="dd MMM yyyy"
+                                              minDate={new Date()} // Prevent past dates
+                                              customInput={
+                                                <input
+                                                  type="text"
+                                                  className="form-control"
+                                                  value={formatDate(selectedFromDate)} // Display custom format
+                                                  readOnly
+                                                />
+                                              }
+                                            />
+
                                           <small className="text-muted">Monday</small>
                                         </div>
                                         <div className={`col-md-2 form-group ${tripType === 'oneway' || tripType === 'multiway' ? 'disabled' : ''}`}>
                                           <label htmlFor="return">Return</label>
-                                          <input
-                                            type="date"
-                                            id="return"
-                                            className="form-control"
-                                            defaultValue="2024-10-23"
-                                            disabled={tripType === "oneway" || tripType === "multiway"}
+                                          <DatePicker
+                                            selected={selectedReturnDate ? selectedReturnDate : selectedFromDate} // Return date
+                                            onChange={(date) => setSelectedReturnDate(date)} // Set return date
+                                            dateFormat="dd MMM yyyy"
+                                            minDate={selectedFromDate || new Date()} // Prevent return before departure
+                                            disabled={tripType === "oneway" || tripType === "multiway"} // Disable for one-way or multi-trip
+                                            customInput={
+                                              <input
+                                                type="text"
+                                                className="form-control"
+                                                value={formatDate(selectedReturnDate ? selectedReturnDate : selectedFromDate)} // Display custom format
+                                                readOnly
+                                              />
+                                            }
                                           />
+
                                           <small className="text-muted">Wednesday</small>
                                         </div>
                                         <div className="col-md-3 form-group">
@@ -358,7 +405,11 @@ const HomePage = () => {
                                                   <button
                                                     className="btn btn-secondary btn-sm"
                                                     type="button"
-                                                    onClick={() => setDropdownOpen(false)}
+                                                    onClick={() => {
+                                                      setTravellerCounts({ adults: 1, children: 0, infants: 0 }); // Reset to default values
+                                                      setCabinClass("Economy"); // Reset cabin class if needed
+                                                      setDropdownOpen(false); // Close the dropdown
+                                                    }}
                                                   >
                                                     Cancel
                                                   </button>
@@ -411,13 +462,20 @@ const HomePage = () => {
                                             </div>
                                             <div className="col-md-4 form-group">
                                               <label htmlFor={`departure-${index}`}>Departure</label>
-                                              <input
-                                                type="date"
-                                                id={`departure-${index}`}
-                                                className="form-control"
-                                                value={row.departure?row.departure:"2024-10-21"}
-                                                onChange={(e) =>
-                                                  handleRowChange(index, "departure", e.target.value)
+                                              
+                                              <DatePicker
+                                                selected={row.departure ? new Date(row.departure) : selectedFromDate} // Default to initial departure
+                                                onChange={(date) => handleRowChange(index, "departure", date.toISOString().split("T")[0])}
+                                                dateFormat="dd MMM yyyy"
+                                                minDate={selectedFromDate} // Restrict to selected departure date or later
+                                                customInput={
+                                                  <input
+                                                    type="text"
+                                                    id={`departure-${index}`}
+                                                    className="form-control"
+                                                    value={formatDate(row.departure ? new Date(row.departure) : selectedFromDate)}
+                                                    readOnly
+                                                  />
                                                 }
                                               />
                                               <small className="text-muted">Monday</small>

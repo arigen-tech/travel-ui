@@ -163,6 +163,9 @@ button#travellersDropdown{
 .disabled{
   background-color: #e9ecef !important;
 }
+.react-datepicker-wrapper{
+  display: block!important;
+}
 @media (max-width: 767px) {
   .it-tour-package-main {
       position: relative;
