@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/travel-ui/static/css/main.54c9a0c3.css",
-    "main.js": "/travel-ui/static/js/main.7a2ca091.js",
+    "main.js": "/travel-ui/static/js/main.8669aab9.js",
     "static/css/695.2d9efde3.chunk.css": "/travel-ui/static/css/695.2d9efde3.chunk.css",
     "static/js/695.fc58d86d.chunk.js": "/travel-ui/static/js/695.fc58d86d.chunk.js",
     "static/css/690.8e5e4afb.chunk.css": "/travel-ui/static/css/690.8e5e4afb.chunk.css",
@@ -10,16 +10,16 @@
     "static/css/351.7042d5d5.chunk.css": "/travel-ui/static/css/351.7042d5d5.chunk.css",
     "static/js/351.da700aaf.chunk.js": "/travel-ui/static/js/351.da700aaf.chunk.js",
     "static/js/453.69f6a2b7.chunk.js": "/travel-ui/static/js/453.69f6a2b7.chunk.js",
-    "static/css/373.3679902e.chunk.css": "/travel-ui/static/css/373.3679902e.chunk.css",
-    "static/js/373.d8fb359b.chunk.js": "/travel-ui/static/js/373.d8fb359b.chunk.js",
+    "static/css/373.654b6048.chunk.css": "/travel-ui/static/css/373.654b6048.chunk.css",
+    "static/js/373.dc96da85.chunk.js": "/travel-ui/static/js/373.dc96da85.chunk.js",
     "static/js/662.7038086f.chunk.js": "/travel-ui/static/js/662.7038086f.chunk.js",
-    "static/js/762.b479399a.chunk.js": "/travel-ui/static/js/762.b479399a.chunk.js",
+    "static/js/762.44eb86b4.chunk.js": "/travel-ui/static/js/762.44eb86b4.chunk.js",
     "static/js/524.78b5766d.chunk.js": "/travel-ui/static/js/524.78b5766d.chunk.js",
     "static/media/loader.gif": "/travel-ui/static/media/loader.d18971652c9042511adf.gif",
     "static/media/logo.png": "/travel-ui/static/media/logo.4ff41d09aab08cc138a5.png",
     "index.html": "/travel-ui/index.html",
     "main.54c9a0c3.css.map": "/travel-ui/static/css/main.54c9a0c3.css.map",
-    "main.7a2ca091.js.map": "/travel-ui/static/js/main.7a2ca091.js.map",
+    "main.8669aab9.js.map": "/travel-ui/static/js/main.8669aab9.js.map",
     "695.2d9efde3.chunk.css.map": "/travel-ui/static/css/695.2d9efde3.chunk.css.map",
     "695.fc58d86d.chunk.js.map": "/travel-ui/static/js/695.fc58d86d.chunk.js.map",
     "690.8e5e4afb.chunk.css.map": "/travel-ui/static/css/690.8e5e4afb.chunk.css.map",
@@ -28,14 +28,14 @@
     "351.7042d5d5.chunk.css.map": "/travel-ui/static/css/351.7042d5d5.chunk.css.map",
     "351.da700aaf.chunk.js.map": "/travel-ui/static/js/351.da700aaf.chunk.js.map",
     "453.69f6a2b7.chunk.js.map": "/travel-ui/static/js/453.69f6a2b7.chunk.js.map",
-    "373.3679902e.chunk.css.map": "/travel-ui/static/css/373.3679902e.chunk.css.map",
-    "373.d8fb359b.chunk.js.map": "/travel-ui/static/js/373.d8fb359b.chunk.js.map",
+    "373.654b6048.chunk.css.map": "/travel-ui/static/css/373.654b6048.chunk.css.map",
+    "373.dc96da85.chunk.js.map": "/travel-ui/static/js/373.dc96da85.chunk.js.map",
     "662.7038086f.chunk.js.map": "/travel-ui/static/js/662.7038086f.chunk.js.map",
-    "762.b479399a.chunk.js.map": "/travel-ui/static/js/762.b479399a.chunk.js.map",
+    "762.44eb86b4.chunk.js.map": "/travel-ui/static/js/762.44eb86b4.chunk.js.map",
     "524.78b5766d.chunk.js.map": "/travel-ui/static/js/524.78b5766d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.54c9a0c3.css",
-    "static/js/main.7a2ca091.js"
+    "static/js/main.8669aab9.js"
   ]
 }
