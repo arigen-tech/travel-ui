@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Navigation,
-  Pagination,
-  Scrollbar,
-  A11y,
-  Autoplay,
-} from "swiper/modules";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -17,6 +11,16 @@ import "swiper/css/scrollbar";
 import "swiper/css/autoplay";
 import Loader from '../../assets/img/loader.gif';
 import Select from "react-select";
+import {GET_DEFAULT_AIRPORT, GET_SEARCH_AIRPORT} from "../../config/apiConfig"
+import {getRequest} from "../../service/apiService";
+import {
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Autoplay,
+} from "swiper/modules";
+// import {handleInputChange} from "react-select/dist/declarations/src/utils";
 const HomePage = () => {
 
   const [loading, setLoading] = useState(true); // Preloader visible initially
@@ -33,14 +37,16 @@ const HomePage = () => {
   const [cabinClass, setCabinClass] = useState("Economy"); // Default cabin class
   const [selectedFromDate, setSelectedFromDate] = useState(new Date()); 
   const [selectedReturnDate, setSelectedReturnDate] = useState(new Date()); // State for return date
-
-
+  const [searchSubstring,setSearchSubstring] = useState("");
+  const [airport,setAirport]=useState([]);
+  const [fromAirport,setFromAirport]=useState([]);
+  // const [options,setOptions]=useState([]);
   const locationOptions = [
     {value: "Delhi"},
     {value: "Mumbai"},
     {value: "Bangalore"},
     {value: "Chennai"},
-  
+
   ];
 
 
@@ -52,7 +58,43 @@ const HomePage = () => {
     const formattedDate = date.toLocaleDateString("en-GB", options);
     return formattedDate.replace(" ", " ").replace(" ", "'");
   };
+  function setDefaultAirport(){
+    // const option = airport.map((airport) => ({
+    //   value: airport.id,
+    //   label: airport.city,
+    // }));
+    // setOptions(option);
+  }
+  async function fetchFrequentAirport() {
+    try{
+      const data = await getRequest(GET_DEFAULT_AIRPORT);
+      if(data.status === 200 && Array.isArray(data.response))
+      {
+        setAirport(data.response);
+        setFromAirport(data.response);
+      }
 
+      else {
+        setAirport([]);
+        setFromAirport([]);
+        console.error("Unexpected API response format:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching amenities data:", error);
+    } finally {
+      setLoading(false);
+    }
+
+  };
+  useEffect(() => {
+    fetchFrequentAirport();
+    // Simulate content loading (replace with real loading logic)
+    const timer = setTimeout(() => {
+      setLoading(false); // Hide preloader
+    }, 3000); // Simulate 3 seconds load time
+
+    return () => clearTimeout(timer); // Cleanup on component unmount
+  }, []);
 
 
 
@@ -106,14 +148,6 @@ const HomePage = () => {
     setValue(newValue); // Update range values
   };
 
-  useEffect(() => {
-    // Simulate content loading (replace with real loading logic)
-    const timer = setTimeout(() => {
-      setLoading(false); // Hide preloader
-    }, 3000); // Simulate 3 seconds load time
-
-    return () => clearTimeout(timer); // Cleanup on component unmount
-  }, []);
 
 
   const backgroundImageStyle = {
@@ -130,9 +164,50 @@ const HomePage = () => {
   };
 
 
-    
+//   const handleFromAirportInputChange = async (inputValue, { action }) => {
+//     if (action !== "input-change") return; // Only proceed on input typing
+// debugger;
+//     setLoading(true); // Start loading
+//     try {
+//       let data;
+//       if (!inputValue) {
+//         data = await getRequest(GET_DEFAULT_AIRPORT); // Await the async function
+//       } else {
+//         data = await getRequest(`${GET_SEARCH_AIRPORT}${inputValue}`); // Fetch search results
+//       }
+//
+//       if (data?.status === 200 && Array.isArray(data.response)) {
+//         setAirport(data.response);
+//         setFromAirport(data.response);
+//       } else {
+//         console.error("Unexpected response format:", data);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching airport data:", error);
+//     } finally {
+//       setLoading(false); // End loading
+//     }
+//   };
 
-  
+  const handleFromAirportInputChange = async (inputValue, { action }) => {
+    if (action !== "input-change") return; // Only process user typing events
+
+    setLoading(true);
+    try {
+      const data = await getRequest(`${GET_SEARCH_AIRPORT}${inputValue}`);
+      if (data?.status === 200 && Array.isArray(data.response)) {
+        setAirport(data.response);
+        setFromAirport(data.response);
+      } else {
+        console.error("Unexpected response format:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching searched airports:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     
       <>
@@ -294,12 +369,17 @@ const HomePage = () => {
                                         <div className="col-md-2 form-group firstinput">
                                           <label htmlFor="from">From</label>
                                           <Select
-                                            id="from"
-                                            options={locationOptions}
-                                            defaultValue={locationOptions[0]} // Default to Delhi
-                                            getOptionLabel={(e) => e.value} // Display only the value
-                                            getOptionValue={(e) => e.value}
-                                            classNamePrefix="react-select"
+                                              id="from"
+                                              options={airport}
+                                              // onInputChange={handleFromAirportInputChange}
+                                              // onChange={(selectedOption) => console.log("Selected:", selectedOption)}
+                                              // value={selectedAirport}
+                                              defaultValue={airport[0]}
+                                              getOptionLabel={(e) => e.city} // Display city name
+                                              getOptionValue={(e) => e.city} // Use city as value
+                                              classNamePrefix="react-select"
+                                              isLoading={loading} // Display loading indicator
+                                              placeholder="Select an airport"
                                           />
                                           <small className="text-muted">Indiragandhi International Airport</small>
                                         </div>
@@ -307,10 +387,10 @@ const HomePage = () => {
                                           <label htmlFor="to">To</label>
                                           <Select
                                             id="to"
-                                            options={locationOptions}
-                                            defaultValue={locationOptions[1]} // Default to Mumbai
-                                            getOptionLabel={(e) => e.value} // Display only the value
-                                            getOptionValue={(e) => e.value}
+                                            options={airport}
+                                            defaultValue={airport[1]} // Default to Mumbai
+                                            getOptionLabel={(e) => e.city} // Display only the value
+                                            getOptionValue={(e) => e.city}
                                             classNamePrefix="react-select"
                                           />                                        
                                           <small className="text-muted">CSM International Airport</small>
