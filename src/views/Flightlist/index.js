@@ -8,6 +8,7 @@ import Airindia from '../../assets/img/AI.png';
 import Routeplan from '../../assets/img/route-plan.png';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Slider, Box, TextField } from "@mui/material";
+import Select from "react-select";
 
 const Flightlist = () => {
 
@@ -24,6 +25,16 @@ const Flightlist = () => {
   const [cabinClass, setCabinClass] = useState("Economy"); // Default cabin class
   const [selectedFromDate, setSelectedFromDate] = useState(new Date()); 
   const [selectedReturnDate, setSelectedReturnDate] = useState(new Date()); // State for return date
+
+
+  const locationOptions = [
+    {value: "Delhi"},
+    {value: "Mumbai"},
+    {value: "Bangalore"},
+    {value: "Chennai"},
+  
+  ];
+
 
    // Format date to "10 Jan'2025"
    const formatDate = (date) => {
@@ -120,7 +131,8 @@ const Flightlist = () => {
                           <div className="it-tour-package-location__wrapper">
                                   <div className="row">
                                     {/* Flight Search Form */}
-                                    <form>
+                                   {/* Flight Search Form */}
+                                   <form>
                                       <div className="form-header">
                                         <div className="d-flex align-items-center justify-content-between flex-wrap">
                                           <div className="d-flex align-items-center">
@@ -176,14 +188,28 @@ const Flightlist = () => {
                                         </div>
                                       </div>
                                       <div className="row">
-                                        <div className="col-md-2 form-group pe-0 firstinput">
+                                        <div className="col-md-2 form-group firstinput">
                                           <label htmlFor="from">From</label>
-                                          <input type="text" id="from" className="form-control" defaultValue="Delhi" />
+                                          <Select
+                                            id="from"
+                                            options={locationOptions}
+                                            defaultValue={locationOptions[0]} // Default to Delhi
+                                            getOptionLabel={(e) => e.value} // Display only the value
+                                            getOptionValue={(e) => e.value}
+                                            classNamePrefix="react-select"
+                                          />
                                           <small className="text-muted">Indiragandhi International Airport</small>
                                         </div>
                                         <div className="col-md-2 form-group">
                                           <label htmlFor="to">To</label>
-                                          <input type="text" id="to" className="form-control" defaultValue="Mumbai" />
+                                          <Select
+                                            id="to"
+                                            options={locationOptions}
+                                            defaultValue={locationOptions[1]} // Default to Mumbai
+                                            getOptionLabel={(e) => e.value} // Display only the value
+                                            getOptionValue={(e) => e.value}
+                                            classNamePrefix="react-select"
+                                          />                                        
                                           <small className="text-muted">CSM International Airport</small>
                                         </div>
                                         <div className="col-md-2 form-group">
@@ -334,7 +360,7 @@ const Flightlist = () => {
                                       {tripType === "multiway" &&
                                         rows.map((row, index) => (
                                           <div className="row mt-2" key={index}>
-                                            <div className="col-md-4 form-group pe-0 firstinput">
+                                            <div className="col-md-4 form-group firstinput">
                                               <label htmlFor={`from-${index}`}>From</label>
                                               <input
                                                 type="text"

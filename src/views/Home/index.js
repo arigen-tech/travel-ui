@@ -16,7 +16,7 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import "swiper/css/autoplay";
 import Loader from '../../assets/img/loader.gif';
-
+import Select from "react-select";
 const HomePage = () => {
 
   const [loading, setLoading] = useState(true); // Preloader visible initially
@@ -33,6 +33,17 @@ const HomePage = () => {
   const [cabinClass, setCabinClass] = useState("Economy"); // Default cabin class
   const [selectedFromDate, setSelectedFromDate] = useState(new Date()); 
   const [selectedReturnDate, setSelectedReturnDate] = useState(new Date()); // State for return date
+
+
+  const locationOptions = [
+    {value: "Delhi"},
+    {value: "Mumbai"},
+    {value: "Bangalore"},
+    {value: "Chennai"},
+  
+  ];
+
+
 
    // Format date to "10 Jan'2025"
    const formatDate = (date) => {
@@ -280,14 +291,28 @@ const HomePage = () => {
                                         </div>
                                       </div>
                                       <div className="row">
-                                        <div className="col-md-2 form-group pe-0 firstinput">
+                                        <div className="col-md-2 form-group firstinput">
                                           <label htmlFor="from">From</label>
-                                          <input type="text" id="from" className="form-control" defaultValue="Delhi" />
+                                          <Select
+                                            id="from"
+                                            options={locationOptions}
+                                            defaultValue={locationOptions[0]} // Default to Delhi
+                                            getOptionLabel={(e) => e.value} // Display only the value
+                                            getOptionValue={(e) => e.value}
+                                            classNamePrefix="react-select"
+                                          />
                                           <small className="text-muted">Indiragandhi International Airport</small>
                                         </div>
                                         <div className="col-md-2 form-group">
                                           <label htmlFor="to">To</label>
-                                          <input type="text" id="to" className="form-control" defaultValue="Mumbai" />
+                                          <Select
+                                            id="to"
+                                            options={locationOptions}
+                                            defaultValue={locationOptions[1]} // Default to Mumbai
+                                            getOptionLabel={(e) => e.value} // Display only the value
+                                            getOptionValue={(e) => e.value}
+                                            classNamePrefix="react-select"
+                                          />                                        
                                           <small className="text-muted">CSM International Airport</small>
                                         </div>
                                         <div className="col-md-2 form-group">
@@ -438,7 +463,7 @@ const HomePage = () => {
                                       {tripType === "multiway" &&
                                         rows.map((row, index) => (
                                           <div className="row mt-2" key={index}>
-                                            <div className="col-md-4 form-group pe-0 firstinput">
+                                            <div className="col-md-4 form-group firstinput">
                                               <label htmlFor={`from-${index}`}>From</label>
                                               <input
                                                 type="text"

@@ -19,7 +19,7 @@ const PrivateRoute = ({ element, path }) => {
 };
 function App() {
   return (
-    <Router basename="/travel-ui">
+    <Router>
       <Suspense fallback={<div className='loader'><img src={Loader}/></div>}>
         <Routes>
             <Route path="/" element={<PrivateRoute element={<Layout />} />}>
