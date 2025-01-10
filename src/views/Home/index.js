@@ -37,6 +37,8 @@ const HomePage = () => {
     const [defaultAirports, setDefaultAirports] = useState([]);
     const [fromAirport, setFromAirport] = useState([]);
     const [toAirport, setToAirport] = useState([]);
+    const [multiAirport, setMultiAirport] = useState([]);
+
     // const [options,setOptions]=useState([]);
     const locationOptions = [
         {value: "Delhi"},
@@ -72,6 +74,7 @@ const HomePage = () => {
                 setDefaultAirports(data.response);
                 setFromAirport(data.response[0]);
                 setToAirport(data.response[1]);
+                // setMultiAirport([{fromAirport:data.response[0],toAirport:data.response[1]}]);
             } else {
                 setFromAirports([]);
                 setToAirports([]);
@@ -100,12 +103,24 @@ const HomePage = () => {
     const handleTripTypeChange = (e) => {
         setTripType(e.target.value);
         if (e.target.value === "oneway" || e.target.value === "multiway") {
+            if(e.target.value === "multiway"){
+                setMultiAirport((prevAirports) => [
+                    ...prevAirports,
+                    { fromAirport: defaultAirports[0], toAirport: defaultAirports[1] },
+                ]);
+            }
+
+
             setSelectedReturnDate(null); // Clear return date if not needed
         }
     };
 
     const addRow = () => {
         setRows([...rows, {from: "", to: "", departure: ""}]);
+        setMultiAirport((prevAirports) => [
+            ...prevAirports,
+            { fromAirport: defaultAirports[0], toAirport: defaultAirports[1] },
+        ]);
     };
     const deleteRow = () => {
         if (rows.length > 1) {
@@ -171,6 +186,7 @@ const HomePage = () => {
 
         } else {
             try {
+                debugger;
                 let url = GET_SEARCH_AIRPORT + inputValue;
                 console.log(url);
                 const data = await getRequest(url);
@@ -195,7 +211,28 @@ const HomePage = () => {
         updateAirportData(num, inputValue);
 
     };
+    const handleMultiChange = (key, selectedOption,index) => {
+        debugger;
+        setMultiAirport((prevAirports) => {
+            // Create a copy of the previous state
+            let updatedAirports = [...prevAirports];
 
+            // Update the specific key (fromAirport or toAirport) at the given index
+            if (key === 1) {
+                updatedAirports[index] = {
+                    ...updatedAirports[index],
+                    fromAirport: selectedOption,
+                };
+            } else if (key === 2) {
+                updatedAirports[index] = {
+                    ...updatedAirports[index],
+                    toAirport: selectedOption,
+                };
+            }
+            // Return the updated array
+            return updatedAirports;
+        });
+    };
 
     return (
 
@@ -395,8 +432,7 @@ const HomePage = () => {
                                                                         getOptionValue={(e) => e || ""}
                                                                         classNamePrefix="react-select"
                                                                     />
-                                                                    <small className="text-muted">CSM International
-                                                                        Airport</small>
+                                                                    <small className="text-muted">{toAirport !== undefined ? toAirport.airportName : ("")}</small>
                                                                 </div>
                                                                 <div className="col-md-2 form-group">
                                                                     <label htmlFor="departure">Departure</label>
@@ -566,24 +602,30 @@ const HomePage = () => {
                                                                         <div className="col-md-4 form-group firstinput">
                                                                             <label
                                                                                 htmlFor={`from-${index}`}>From</label>
-                                                                            <input
-                                                                                type="text"
+                                                                            <Select
                                                                                 id={`from-${index}`}
-                                                                                className="form-control"
-                                                                                value={row.from ? row.from : "Delhi"}
-                                                                                onChange={(e) => handleRowChange(index, "from", e.target.value)}
+                                                                                options={fromAirports}
+                                                                                value={multiAirport[index]?.fromAirport || null}
+                                                                                onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(1, inputValue, actionMeta)}
+                                                                                onChange={(selectedOption) => handleMultiChange(1,selectedOption,index)}
+                                                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                                getOptionValue={(e) => e || ""}
+                                                                                classNamePrefix="react-select"
                                                                             />
                                                                             <small className="text-muted">Indiragandhi
                                                                                 International Airport</small>
                                                                         </div>
                                                                         <div className="col-md-4 form-group">
                                                                             <label htmlFor={`to-${index}`}>To</label>
-                                                                            <input
-                                                                                type="text"
+                                                                            <Select
                                                                                 id={`to-${index}`}
-                                                                                className="form-control"
-                                                                                value={row.to ? row.to : "Mumbai"}
-                                                                                onChange={(e) => handleRowChange(index, "to", e.target.value)}
+                                                                                options={toAirports}
+                                                                                value={multiAirport[index]?.toAirport || null}
+                                                                                onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(2, inputValue, actionMeta)}
+                                                                                onChange={(selectedOption) => handleMultiChange(2,selectedOption,index)}
+                                                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                                getOptionValue={(e) => e || ""}
+                                                                                classNamePrefix="react-select"
                                                                             />
                                                                             <small className="text-muted">CSM
                                                                                 International Airport</small>
