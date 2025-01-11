@@ -412,13 +412,20 @@ const HomePage = () => {
                                                                         onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(1, inputValue, actionMeta)}
                                                                         onChange={(selectedOption) => setFromAirport(selectedOption)}
                                                                         value={fromAirport}
-                                                                        getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                        // getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                        formatOptionLabel={(option) => (
+                                                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                                                                <span style={{ fontSize: '0.8em', color: '#888' }}>{option.airportName || "Unknown Airport"}</span>
+                                                                            </div>
+                                                                        )}
                                                                         getOptionValue={(e) => e || ""}
                                                                         classNamePrefix="react-select"
                                                                         placeholder="Select an airport"
                                                                     />
-                                                                    <small
-                                                                        className="text-muted">{fromAirport !== undefined ? fromAirport.airportName : ("")}</small>
+                                                                    {/*<small className="text-muted">{fromAirport !== undefined ? fromAirport.airportName : ("")}</small>*/}
                                                                 </div>
                                                                 <div className="col-md-2 form-group">
                                                                     <label htmlFor="to">To</label>
@@ -428,11 +435,19 @@ const HomePage = () => {
                                                                         value={toAirport}
                                                                         onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(2, inputValue, actionMeta)}
                                                                         onChange={(selectedOption) => setToAirport(selectedOption)}
-                                                                        getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                        // getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                        formatOptionLabel={(option) => (
+                                                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                                                                <span style={{ fontSize: '0.8em', color: '#888' }}>{option.airportName || "Unknown Airport"}</span>
+                                                                            </div>
+                                                                        )}
                                                                         getOptionValue={(e) => e || ""}
                                                                         classNamePrefix="react-select"
                                                                     />
-                                                                    <small className="text-muted">{toAirport !== undefined ? toAirport.airportName : ("")}</small>
+                                                                    {/*<small className="text-muted">{toAirport !== undefined ? toAirport.airportName : ("")}</small>*/}
                                                                 </div>
                                                                 <div className="col-md-2 form-group">
                                                                     <label htmlFor="departure">Departure</label>
@@ -608,27 +623,44 @@ const HomePage = () => {
                                                                                 value={multiAirport[index]?.fromAirport || null}
                                                                                 onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(1, inputValue, actionMeta)}
                                                                                 onChange={(selectedOption) => handleMultiChange(1,selectedOption,index)}
-                                                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                                formatOptionLabel={(option) => (
+                                                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                                                                        <span style={{ fontSize: '0.8em', color: '#888' }}>{option.airportName || "Unknown Airport"}</span>
+                                                                                    </div>
+                                                                                )}
                                                                                 getOptionValue={(e) => e || ""}
                                                                                 classNamePrefix="react-select"
                                                                             />
-                                                                            <small className="text-muted">Indiragandhi
-                                                                                International Airport</small>
+                                                                            {/*<small className="text-muted">Indiragandhi*/}
+                                                                            {/*    International Airport</small>*/}
                                                                         </div>
                                                                         <div className="col-md-4 form-group">
                                                                             <label htmlFor={`to-${index}`}>To</label>
+                                                                            {/*<label htmlFor={`to-${index}`}>To</label>*/}
                                                                             <Select
                                                                                 id={`to-${index}`}
                                                                                 options={toAirports}
                                                                                 value={multiAirport[index]?.toAirport || null}
                                                                                 onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(2, inputValue, actionMeta)}
                                                                                 onChange={(selectedOption) => handleMultiChange(2,selectedOption,index)}
-                                                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                                // getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
                                                                                 getOptionValue={(e) => e || ""}
+                                                                                formatOptionLabel={(option) => (
+                                                                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                                                                        <span style={{ fontSize: '0.8em', color: '#888' }}>{option.airportName || "Unknown Airport"}</span>
+                                                                                    </div>
+                                                                                )}
                                                                                 classNamePrefix="react-select"
+
                                                                             />
-                                                                            <small className="text-muted">CSM
-                                                                                International Airport</small>
+                                                                            {/*<small className="text-muted">CSM*/}
+                                                                            {/*    International Airport</small>*/}
                                                                         </div>
                                                                         <div className="col-md-4 form-group">
                                                                             <label
