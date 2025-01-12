@@ -11,10 +11,11 @@ import "swiper/css/scrollbar";
 import "swiper/css/autoplay";
 import Loader from '../../assets/img/loader.gif';
 import Select from "react-select";
-import {GET_DEFAULT_AIRPORT, GET_SEARCH_AIRPORT} from "../../config/apiConfig"
-import {getRequest} from "../../service/apiService";
+import {GET_DEFAULT_AIRPORT, GET_SEARCH_AIRPORT,GET_FLIGHT} from "../../config/apiConfig"
+import {getRequest, postRequest} from "../../service/apiService";
 import {Autoplay, Navigation, Pagination,} from "swiper/modules";
 // import {handleInputChange} from "react-select/dist/declarations/src/utils";
+
 const HomePage = () => {
 
     const [loading, setLoading] = useState(true); // Preloader visible initially
@@ -22,6 +23,7 @@ const HomePage = () => {
     const [tripType, setTripType] = useState("oneway"); // Default trip type
     const [rows, setRows] = useState([{from: "", to: "", departure: ""}]); // Rows for Multi Trip
     const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown toggle
+    // export const [flightSearchResponse, setFlightSearchResponse] = useState({});
     const [travellerCounts, setTravellerCounts] = useState({
         adults: 1,
         children: 0,
@@ -152,9 +154,37 @@ const HomePage = () => {
 
     const navigate = useNavigate();
 
+
+
+    async function searchFlights(json) {
+        setLoading(true);
+        const data = await postRequest(GET_FLIGHT, json);
+        setLoading(false);
+        localStorage.setItem('flightSearchResponse',data);
+        navigate('/flightList');
+        // setFlightSearchResponse(data.response);
+    }
+
     const handleSubmitTravellercount = (e) => {
+        let json= {
+            directFlight: "false",
+            adultCount: travellerCounts.adults,
+            childCount: travellerCounts.children,
+            infantCount: travellerCounts.infants,
+            flightCabinClass: "1",
+            journeyType: tripType==="oneway"?1:2,
+            preferredDepartureTime: selectedFromDate.toISOString().split('.')[0],
+            origin: fromAirport.iataCode,
+            destination: toAirport.iataCode,
+            preferredReturnDepartureTime: selectedReturnDate?selectedReturnDate.toISOString().split('.')[0]:null
+        }
+        searchFlights(json);
+
+        console.log(json);
+
+        debugger;
         e.preventDefault();
-        navigate('/flightList')
+
     };
     const handleChange = (event, newValue) => {
         setValue(newValue); // Update range values
@@ -176,37 +206,40 @@ const HomePage = () => {
 
 
     const updateAirportData = async (num, inputValue) => {
-
-        debugger;
-        if (inputValue.trim() === "" && num === 1) {
+        try {
+        if (inputValue.trim().length<3 && num === 1) {
             setFromAirports(defaultAirports);
 
         } else if (inputValue.trim() === "" && num === 2) {
             setToAirports(defaultAirports);
 
         } else {
-            try {
+
                 debugger;
                 let url = GET_SEARCH_AIRPORT + inputValue;
                 console.log(url);
                 const data = await getRequest(url);
                 if (data?.status === 200 && Array.isArray(data.response)) {
-                    if (num === 1)
+                    if (num === 1){
+                        debugger;
                         setFromAirports(data.response);
-                    else
+                    }
+
+                    else{
                         setToAirports(data.response);
+                    }
+
                 } else {
                     console.error("Unexpected response format:", data);
                 }
-            } catch (error) {
-                console.error("Error fetching searched airports:", error);
-            } finally {
-
             }
+        }catch (error) {
+            console.error("Error fetching searched airports:", error);
+        } finally {
+
         }
     };
     const handleFromAirportInputChange = (num, inputValue, {action}) => {
-        debugger;
         if (action !== "input-change") return; // Only process user typing events
         updateAirportData(num, inputValue);
 
@@ -412,7 +445,7 @@ const HomePage = () => {
                                                                         onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(1, inputValue, actionMeta)}
                                                                         onChange={(selectedOption) => setFromAirport(selectedOption)}
                                                                         value={fromAirport}
-                                                                        // getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                        getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
                                                                         formatOptionLabel={(option) => (
                                                                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                                                         <span>
@@ -435,7 +468,7 @@ const HomePage = () => {
                                                                         value={toAirport}
                                                                         onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(2, inputValue, actionMeta)}
                                                                         onChange={(selectedOption) => setToAirport(selectedOption)}
-                                                                        // getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                        getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
                                                                         formatOptionLabel={(option) => (
                                                                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                                                         <span>
@@ -623,6 +656,7 @@ const HomePage = () => {
                                                                                 value={multiAirport[index]?.fromAirport || null}
                                                                                 onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(1, inputValue, actionMeta)}
                                                                                 onChange={(selectedOption) => handleMultiChange(1,selectedOption,index)}
+                                                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
                                                                                 formatOptionLabel={(option) => (
                                                                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                                                         <span>
@@ -646,7 +680,7 @@ const HomePage = () => {
                                                                                 value={multiAirport[index]?.toAirport || null}
                                                                                 onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(2, inputValue, actionMeta)}
                                                                                 onChange={(selectedOption) => handleMultiChange(2,selectedOption,index)}
-                                                                                // getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
                                                                                 getOptionValue={(e) => e || ""}
                                                                                 formatOptionLabel={(option) => (
                                                                                     <div style={{ display: 'flex', flexDirection: 'column' }}>

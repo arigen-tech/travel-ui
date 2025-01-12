@@ -12,3 +12,4 @@ export const LOGIN='/authController/login';
 export const GET_HOTEL_DETAILS = `/masterController/hotels`;
 export const GET_DEFAULT_AIRPORT = '/masterController/frequentAirport';
 export const GET_SEARCH_AIRPORT = '/masterController/searchAirport/';
+export const GET_FLIGHT = '/flight/search';
