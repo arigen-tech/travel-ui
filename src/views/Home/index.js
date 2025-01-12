@@ -92,11 +92,12 @@ const HomePage = () => {
 
     }
     useEffect(() => {
+        localStorage.removeItem('flightSearchResponse');
         fetchFrequentAirport();
         // Simulate content loading (replace with real loading logic)
         const timer = setTimeout(() => {
             setLoading(false); // Hide preloader
-        }, 3000); // Simulate 3 seconds load time
+        }, 1); // Simulate 3 seconds load time
 
         return () => clearTimeout(timer); // Cleanup on component unmount
     }, []);
@@ -160,7 +161,7 @@ const HomePage = () => {
         setLoading(true);
         const data = await postRequest(GET_FLIGHT, json);
         setLoading(false);
-        localStorage.setItem('flightSearchResponse',data);
+        localStorage.setItem('flightSearchResponse',JSON.stringify(data));
         navigate('/flightList');
         // setFlightSearchResponse(data.response);
     }

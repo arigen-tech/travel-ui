@@ -11,7 +11,7 @@ import { Slider, Box, TextField } from "@mui/material";
 import Select from "react-select";
 
 const Flightlist = () => {
-
+  const [searchResponse,setSearchResponse]=useState(JSON.parse(localStorage.getItem('flightSearchResponse')));
   const [loading, setLoading] = useState(true); // Preloader visible initially
   const [value, setValue] = useState([130, 250]); // Initial range values
   const [tripType, setTripType] = useState("oneway"); // Default trip type
@@ -92,14 +92,17 @@ const Flightlist = () => {
     });
   };
   const handleChange = (event, newValue) => {
+
     setValue(newValue); // Update range values
   };
 
   useEffect(() => {
+    console.log(searchResponse.response);
+
     // Simulate content loading (replace with real loading logic)
     const timer = setTimeout(() => {
       setLoading(false); // Hide preloader
-    }, 3000); // Simulate 3 seconds load time
+    }, 1); // Simulate 3 seconds load time
 
     return () => clearTimeout(timer); // Cleanup on component unmount
   }, []);
