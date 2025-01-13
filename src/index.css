@@ -166,6 +166,34 @@ button#travellersDropdown{
 .react-datepicker-wrapper{
   display: block!important;
 }
+.react-select__single-value{
+  font-size: 15px !important;
+    font-weight: bold !important;
+}
+.react-select__control{
+  border-width: 0px !important;
+}
+.react-select__value-container{
+  height: 42px;
+  padding: 0px 0px !important;
+}
+.react-select__input{
+  height: 42px;
+}
+.react-select__indicators{
+  display: none !important;
+}
+.react-select__control--is-focused{
+  box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25) !important;
+  
+}
+.react-select__menu .react-select__option:hover {
+  background: var(--it-theme-2) !important;
+  color: #fff !important;
+}
+.react-select__menu .react-select__option--is-selected {
+  background: var(--it-theme-2) !important;
+}
 @media (max-width: 767px) {
   .it-tour-package-main {
       position: relative;
