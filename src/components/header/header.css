@@ -35,8 +35,8 @@
   }
   .offcanvas {
     height: auto !important;
-    max-height: 30vh !important;
-    max-width: 20%;
+    max-width: 100%;
+    padding: 0 20px;
   }
   
   .nav-item {

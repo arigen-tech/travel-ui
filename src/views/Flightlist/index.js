@@ -7,6 +7,7 @@ import Loader from '../../assets/img/loader.gif';
 import Airindia from '../../assets/img/AI.png';
 import Routeplan from '../../assets/img/route-plan.png';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Slider, Box, TextField } from "@mui/material";
 
 const Flightlist = () => {
@@ -411,6 +412,14 @@ const Flightlist = () => {
               <section className="flight-listing-page mb-60">
                 <div className="container">
                   <div className="row">
+                    <div className="col-lg-3 col-md-3">
+                      <h5>468 Flights Found</h5>
+                    </div>
+                    <div className="col-lg-9 col-md-9">
+                      <h5>Delhi <ArrowRightAltIcon /> Mumbai <ArrowRightAltIcon /> Bengaluru | Mon 13-Jan-2025</h5>
+                    </div>
+                  </div>
+                  <div className="row">
                     <div className="col-xl-3 col-lg-3 mb-xl-0 mb-3">
                       <div className="sidebar bg-white rounded-3 light-shadow p-3">
                         <div className="sidebar-title">
@@ -638,7 +647,7 @@ const Flightlist = () => {
                           </div>
                           <div className="flight-detail">
                             <div className="flight-departure">
-                              <h5 className="color-black">12:00</h5>
+                              <h5 className="color-black text-end">12:00</h5>
                               <h5 className="dark-gray text-end">DLI</h5>
                             </div>
                             <div className="d-inline-flex align-items-center gap-8">
@@ -708,7 +717,185 @@ const Flightlist = () => {
                           </div>
                         </div>
                       </div> */}
-                       <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                        <div className="flight-area multi-flight">
+                          <div className="flight-left col-md-9">
+                           <h5 className="badge">Departure</h5>
+                            <div className="flightrow">
+                              <div className="airline-name">
+                                <img src={Airindia} alt="" />
+                                <div>
+                                  <h5 className="lightest-black mb-8"> Air India</h5>
+                                  <h6 className="dark-gray">AI 777-90</h6>
+                                </div>
+                              </div>
+                              <div className="flight-detail">
+                                <div className="flight-departure">
+                                  <h5 className="color-black text-end">11:00</h5>
+                                  <h5 className="dark-gray text-end">DLI</h5>
+                                  <h6 className="color-black text-end">Monday 14 Jan 2025</h6>
+                                </div>
+                                <div className="d-inline-flex align-items-center gap-8">
+                                  <span className="">From</span>
+                                  <div className="from-to text-center">
+                                    <h5 className="dark-gray">0h 50m</h5>
+                                    <img src={Routeplan} alt="" />
+                                    <h6 className="color-black">2 Stop</h6>
+                                  </div>
+                                  <span className="">To</span>
+                                </div>
+                                <div className="flight-departure">
+                                  <h5 className="color-black">12:00</h5>
+                                  <h5 className="dark-gray">BOM</h5>
+                                  <h6 className="color-black">Monday 14 Jan 2025</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <hr className="bg-light-gray mt-24 mb-24" />
+                            <h5 className="badge">Departure</h5>
+                            <div className="flightrow">
+                              <div className="airline-name">
+                                <img src={Airindia} alt="" />
+                                <div>
+                                  <h5 className="lightest-black mb-8"> Air India</h5>
+                                  <h6 className="dark-gray">AI 777-90</h6>
+                                </div>
+                              </div>
+                              <div className="flight-detail">
+                                <div className="flight-departure">
+                                  <h5 className="color-black text-end">12:30</h5>
+                                  <h5 className="dark-gray text-end">BOM</h5>
+                                  <h6 className="color-black text-end">Monday 14 Jan 2025</h6>
+                                </div>
+                                <div className="d-inline-flex align-items-center gap-8">
+                                  <span className="">From</span>
+                                  <div className="from-to text-center">
+                                    <h5 className="dark-gray">0h 50m</h5>
+                                    <img src={Routeplan} alt="" />
+                                    <h6 className="color-black">2 Stop</h6>
+                                  </div>
+                                  <span className="">To</span>
+                                </div>
+                                <div className="flight-departure">
+                                  <h5 className="color-black">01:30</h5>
+                                  <h5 className="dark-gray">BLR</h5>
+                                  <h6 className="color-black">Monday 14 Jan 2025</h6>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flight-button col-md-3">
+                            <div className="amount">
+                              <h5 className="color-black">₹2240</h5>
+                              <h6 className="dark-gray text-end">Price</h6>
+                            </div>
+                            <button className="btn btn-primary">
+                              Book Now
+                            </button>
+                          </div>
+                        </div>
+
+                        <hr className="bg-light-gray mt-24 mb-24" />
+                        <div className="d-flex justify-content-between align-items-center">
+                          <h5 className="color-black">Monday 14 August</h5>
+                          <div>
+                            <a href="#" className="accordion-button color-primary h5 collapsed">
+                              <i className="fal fa-chevron-down color-primary " />
+                              &nbsp;Flight Detail
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                        <div className="flight-area multi-flight">
+                          <div className="flight-left col-md-9">
+                           <h5 className="badge">Departure</h5>
+                            <div className="flightrow">
+                              <div className="airline-name">
+                                <img src={Airindia} alt="" />
+                                <div>
+                                  <h5 className="lightest-black mb-8"> Air India</h5>
+                                  <h6 className="dark-gray">AI 777-90</h6>
+                                </div>
+                              </div>
+                              <div className="flight-detail">
+                                <div className="flight-departure">
+                                  <h5 className="color-black text-end">12:00</h5>
+                                  <h5 className="dark-gray text-end">DLI</h5>
+                                  <h6 className="color-black text-end">Monday 14 Jan 2025</h6>
+                                </div>
+                                <div className="d-inline-flex align-items-center gap-8">
+                                  <span className="">From</span>
+                                  <div className="from-to text-center">
+                                    <h5 className="dark-gray">0h 50m</h5>
+                                    <img src={Routeplan} alt="" />
+                                    <h6 className="color-black">1 Stop</h6>
+                                  </div>
+                                  <span className="">To</span>
+                                </div>
+                                <div className="flight-departure">
+                                  <h5 className="color-black">12:50</h5>
+                                  <h5 className="dark-gray">BOM</h5>
+                                  <h6 className="color-black">Monday 14 Jan 2025</h6>
+                                </div>
+                              </div>
+                            </div>
+                            <hr className="bg-light-gray mt-24 mb-24" />
+                            <h5 className="badge">Return</h5>
+                            <div className="flightrow">
+                              <div className="airline-name">
+                                <img src={Airindia} alt="" />
+                                <div>
+                                  <h5 className="lightest-black mb-8"> Air India</h5>
+                                  <h6 className="dark-gray">AI 777-90</h6>
+                                </div>
+                              </div>
+                              <div className="flight-detail">
+                                <div className="flight-departure">
+                                  <h5 className="color-black text-end">12:00</h5>
+                                  <h5 className="dark-gray text-end">BOM</h5>
+                                  <h6 className="color-black text-end">Tuesday 15 Jan 2025</h6>
+                                </div>
+                                <div className="d-inline-flex align-items-center gap-8">
+                                  <span className="">From</span>
+                                  <div className="from-to text-center">
+                                    <h5 className="dark-gray">0h 50m</h5>
+                                    <img src={Routeplan} alt="" />
+                                    <h6 className="color-black">1 Stop</h6>
+                                  </div>
+                                  <span className="">To</span>
+                                </div>
+                                <div className="flight-departure">
+                                  <h5 className="color-black">12:50</h5>
+                                  <h5 className="dark-gray">DLI</h5>
+                                  <h6 className="color-black">Tuesday 15 Jan 2025</h6>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flight-button col-md-3">
+                            <div className="amount">
+                              <h5 className="color-black">₹2240</h5>
+                              <h6 className="dark-gray text-end">Price</h6>
+                            </div>
+                            <button className="btn btn-primary">
+                              Book Now
+                            </button>
+                          </div>
+                        </div>
+
+                        <hr className="bg-light-gray mt-24 mb-24" />
+                        <div className="d-flex justify-content-between align-items-center">
+                          <h5 className="color-black">Monday 14 August</h5>
+                          <div>
+                            <a href="#" className="accordion-button color-primary h5 collapsed">
+                              <i className="fal fa-chevron-down color-primary " />
+                              &nbsp;Flight Detail
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
                         <div className="flight-area">
                           <div className="airline-name">
                             <img src={Airindia} alt="" />
@@ -719,7 +906,7 @@ const Flightlist = () => {
                           </div>
                           <div className="flight-detail">
                             <div className="flight-departure">
-                              <h5 className="color-black">12:00</h5>
+                              <h5 className="color-black text-end">12:00</h5>
                               <h5 className="dark-gray text-end">DLI</h5>
                             </div>
                             <div className="d-inline-flex align-items-center gap-8">
@@ -768,56 +955,7 @@ const Flightlist = () => {
                           </div>
                           <div className="flight-detail">
                             <div className="flight-departure">
-                              <h5 className="color-black">12:00</h5>
-                              <h5 className="dark-gray text-end">DLI</h5>
-                            </div>
-                            <div className="d-inline-flex align-items-center gap-8">
-                              <span className="">From</span>
-                              <div className="from-to text-center">
-                                <h5 className="dark-gray">0h 50m</h5>
-                                <img src={Routeplan} alt="" />
-                                <h6 className="color-black">1 Stop</h6>
-                              </div>
-                              <span className="">To</span>
-                            </div>
-                            <div className="flight-departure">
-                              <h5 className="color-black">12:50</h5>
-                              <h5 className="dark-gray">BOM</h5>
-                            </div>
-                          </div>
-                          <div className="flight-button">
-                            <div className="amount">
-                              <h5 className="color-black">₹2240</h5>
-                              <h6 className="dark-gray text-end">Price</h6>
-                            </div>
-                            <button className="btn btn-primary">
-                              Book Now
-                            </button>
-                          </div>
-                        </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 14 August</h5>
-                          <div>
-                            <a href="#" className="accordion-button color-primary h5 collapsed">
-                              <i className="fal fa-chevron-down color-primary " />
-                              &nbsp;Flight Detail
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
-                        <div className="flight-area">
-                          <div className="airline-name">
-                            <img src={Airindia} alt="" />
-                            <div>
-                              <h5 className="lightest-black mb-8"> Air India</h5>
-                              <h6 className="dark-gray">AI 777-90</h6>
-                            </div>
-                          </div>
-                          <div className="flight-detail">
-                            <div className="flight-departure">
-                              <h5 className="color-black">12:00</h5>
+                              <h5 className="color-black text-end">12:00</h5>
                               <h5 className="dark-gray text-end">DLI</h5>
                             </div>
                             <div className="d-inline-flex align-items-center gap-8">

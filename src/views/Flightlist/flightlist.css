@@ -159,6 +159,20 @@ h6, .h6 {
 .disabled{
     background: #E4EBF1;
 }
+
+.multi-flight .flight-left .flightrow{
+    display: flex;
+    justify-content: space-between;
+}
+.multi-flight .flight-left .badge{
+    background: var(--it-theme-1);
+}
+.multi-flight .flight-button{
+    justify-content: end;
+}
+hr{
+    margin: 10px 0 !important;
+}
 @media (max-width: 1699px) {
     .flight-listing-page .flight-block .flight-area .flight-detail {
         gap: 8px;
@@ -280,6 +294,12 @@ h6, .h6 {
 @media (max-width: 767px) {
     .detail-block {
         padding: 32px 24px;
+    }
+    .flight-listing-page .flight-block .flight-area .airline-name{
+        justify-content: center;
+    }
+    .multi-flight .flight-left .flightrow{
+        display: block;
     }
 }
 

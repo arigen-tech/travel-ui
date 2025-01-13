@@ -48,67 +48,6 @@ const Header = () => {
 
   return (
     <>
-      <div className="it-offcanvas-area">
-        <div className="itoffcanvas">
-          <div className="itoffcanvas__close-btn">
-            <button className="close-btn">
-              <i className="fal fa-times"></i>
-            </button>
-          </div>
-          <div className="itoffcanvas__logo">
-            <a href="index.html">
-              <img src="../../assets/img/logo/logo.png" alt="" />
-            </a>
-          </div>
-          <div className="itoffcanvas__text">
-            <p>
-              Suspendisse interdum consectetur libero id. Fermentum leo vel orci
-              porta non. Euismod viverra nibh cras pulvinar suspen.
-            </p>
-          </div>
-          <div className="it-menu-mobile"></div>
-          <div className="itoffcanvas__info">
-            <h3 className="offcanva-title">Get In Touch</h3>
-            <div className="it-info-wrapper mb-20 d-flex align-items-center">
-              <div className="itoffcanvas__info-icon">
-                <a href="#">
-                  <i className="fal fa-envelope"></i>
-                </a>
-              </div>
-              <div className="itoffcanvas__info-address">
-                <span>Email</span>
-                <a href="maito:hello@yourmail.com">hello@yourmail.com</a>
-              </div>
-            </div>
-            <div className="it-info-wrapper mb-20 d-flex align-items-center">
-              <div className="itoffcanvas__info-icon">
-                <a href="#">
-                  <i className="fal fa-phone-alt"></i>
-                </a>
-              </div>
-              <div className="itoffcanvas__info-address">
-                <span>Phone</span>
-                <a href="tel:(00)45611227890">(00) 456 1122 7890</a>
-              </div>
-            </div>
-            <div className="it-info-wrapper mb-20 d-flex align-items-center">
-              <div className="itoffcanvas__info-icon">
-                <a href="#">
-                  <i className="fas fa-map-marker-alt"></i>
-                </a>
-              </div>
-              <div className="itoffcanvas__info-address">
-                <span>Location</span>
-                <a
-                  href="htits://www.google.com/maps/@37.4801311,22.8928877,3z"
-                  target="blank">
-                  1031, ithum, Sector 62, Noida
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="body-overlay"></div>
       <header>
         <div className="it-header-top-area black-bg">
@@ -126,7 +65,7 @@ const Header = () => {
                             viewBox="0 0 22 22"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#clip0_349_725)">
+                            <g clipPath="url(#clip0_349_725)">
                               <path
                                 d="M17.3866 13.6291C16.9362 13.1602 16.3929 12.9094 15.8171 12.9094C15.246 12.9094 14.6981 13.1555 14.2291 13.6245L12.7619 15.0871C12.6412 15.0221 12.5204 14.9617 12.4043 14.9014C12.2372 14.8178 12.0793 14.7389 11.9447 14.6553C10.5703 13.7824 9.32123 12.6448 8.12327 11.1728C7.54287 10.4392 7.15283 9.82166 6.8696 9.19482C7.25034 8.84658 7.60323 8.48441 7.94683 8.13616C8.07684 8.00615 8.20685 7.8715 8.33686 7.74149C9.31194 6.7664 9.31194 5.50344 8.33686 4.52836L7.06925 3.26075C6.92531 3.11681 6.77673 2.96822 6.63743 2.81964C6.35884 2.53176 6.06631 2.23459 5.7645 1.956C5.31411 1.51024 4.77549 1.27344 4.20901 1.27344C3.64254 1.27344 3.09463 1.51024 2.63031 1.956C2.62566 1.96064 2.62566 1.96064 2.62102 1.96528L1.04232 3.55792C0.44798 4.15225 0.109023 4.8766 0.0347313 5.71703C-0.0767067 7.07286 0.322613 8.33582 0.629067 9.16232C1.38127 11.1914 2.50494 13.0719 4.18115 15.0871C6.2149 17.5155 8.66189 19.4332 11.4571 20.7844C12.5251 21.2905 13.9506 21.8895 15.5432 21.9916C15.6407 21.9963 15.7428 22.0009 15.8357 22.0009C16.9083 22.0009 17.8091 21.6155 18.5149 20.8494C18.5195 20.8401 18.5288 20.8355 18.5334 20.8262C18.7749 20.5336 19.0535 20.269 19.346 19.9857C19.5457 19.7954 19.75 19.5957 19.9496 19.3868C20.4093 18.9085 20.6508 18.3513 20.6508 17.7802C20.6508 17.2044 20.4047 16.6519 19.9357 16.1876L17.3866 13.6291ZM19.0488 18.5185C19.0442 18.5185 19.0442 18.5231 19.0488 18.5185C18.8678 18.7135 18.682 18.8899 18.4824 19.0849C18.1806 19.3728 17.8741 19.6746 17.5862 20.0136C17.1172 20.5151 16.5647 20.7519 15.8404 20.7519C15.7707 20.7519 15.6964 20.7519 15.6268 20.7472C14.2477 20.659 12.9662 20.1204 12.005 19.6607C9.37695 18.3885 7.06925 16.5822 5.15159 14.2931C3.56824 12.3847 2.50958 10.6203 1.80845 8.72585C1.37663 7.56969 1.21876 6.66889 1.28841 5.81918C1.33484 5.27592 1.54379 4.82552 1.92918 4.44013L3.51253 2.85679C3.74004 2.6432 3.98149 2.52712 4.2183 2.52712C4.51082 2.52712 4.74763 2.70356 4.89621 2.85214C4.90086 2.85679 4.9055 2.86143 4.91014 2.86607C5.19338 3.13074 5.46269 3.40469 5.74593 3.69721C5.88987 3.8458 6.03845 3.99438 6.18704 4.14761L7.45464 5.41522C7.94683 5.9074 7.94683 6.36244 7.45464 6.85462C7.31999 6.98928 7.18998 7.12393 7.05533 7.25394C6.66529 7.65326 6.29383 8.02472 5.88987 8.3869C5.88058 8.39618 5.8713 8.40083 5.86665 8.41011C5.46733 8.80943 5.54163 9.19947 5.6252 9.46413C5.62985 9.47806 5.63449 9.49199 5.63913 9.50592C5.9688 10.3046 6.43313 11.0568 7.1389 11.9529L7.14355 11.9576C8.42508 13.5363 9.77627 14.7667 11.2668 15.7093C11.4571 15.83 11.6521 15.9275 11.8379 16.0204C12.005 16.104 12.1629 16.1829 12.2976 16.2665C12.3161 16.2758 12.3347 16.2897 12.3533 16.299C12.5111 16.3779 12.6597 16.4151 12.813 16.4151C13.1983 16.4151 13.4398 16.1736 13.5187 16.0947L15.1067 14.5067C15.2646 14.3488 15.5153 14.1585 15.8079 14.1585C16.0957 14.1585 16.3325 14.3395 16.4765 14.4974C16.4811 14.5021 16.4811 14.5021 16.4858 14.5067L19.0442 17.0651C19.5225 17.5387 19.5225 18.0263 19.0488 18.5185Z"
                                 fill="currentColor"
@@ -161,7 +100,7 @@ const Header = () => {
                             viewBox="0 0 25 25"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#clip0_349_698)">
+                            <g clipPath="url(#clip0_349_698)">
                               <path
                                 d="M18.9853 8.26352C18.7954 8.07212 18.4862 8.07085 18.2948 8.26074C18.1034 8.45068 18.1021 8.75986 18.292 8.95132L18.295 8.95434C18.39 9.05019 18.5146 9.09795 18.6394 9.09795C18.7638 9.09795 18.8884 9.05039 18.984 8.95556C19.1755 8.76562 19.1752 8.45498 18.9853 8.26352Z"
                                 fill="currentColor"
@@ -445,8 +384,8 @@ const Header = () => {
                 </div>
                 <div className="col-xl-3 col-lg-6 col-md-6 col-6">
                   <div className="it-header-bottom-right d-flex align-items-center justify-content-end">
-                    <div className="it-header-bottom-right-shop d-none d-md-block ">
-                      <a href="shop.html">
+                    {/* <div className="it-header-bottom-right-shop d-none d-md-block me-2">
+                      <Link to="shop.html">
                         <span>
                           <svg
                             width="24"
@@ -457,41 +396,41 @@ const Header = () => {
                             <path
                               d="M7.5 7.66952V6.69952C7.5 4.44952 9.31 2.23952 11.56 2.02952C14.24 1.76952 16.5 3.87952 16.5 6.50952V7.88952"
                               stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-miterlimit="10"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeWidth="1.5"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             />
                             <path
                               d="M9.0008 22H15.0008C19.0208 22 19.7408 20.39 19.9508 18.43L20.7008 12.43C20.9708 9.99 20.2708 8 16.0008 8H8.0008C3.7308 8 3.0308 9.99 3.3008 12.43L4.0508 18.43C4.2608 20.39 4.9808 22 9.0008 22Z"
                               stroke="currentColor"
-                              stroke-width="1.5"
-                              stroke-miterlimit="10"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeWidth="1.5"
+                              strokeMiterlimit="10"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             />
                             <path
                               d="M15.4945 12H15.5035"
                               stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             />
                             <path
                               d="M8.49451 12H8.50349"
                               stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             />
                           </svg>
                         </span>
-                      </a>
-                    </div>
+                      </Link>
+                    </div> */}
                     <div className="it-header-bottom-right-button ml-0">
-                      <a href="contact.html" className="it-btn-primary">
-                        Contact Us
-                      </a>
+                      <Link to="" className="it-btn-primary">
+                        Login or Signup
+                      </Link>
                     </div>
                     <div className="it-header-bar-wrap d-xl-none">
                       <button
@@ -506,11 +445,6 @@ const Header = () => {
                           id="offcanvasExample"
                           aria-labelledby="offcanvasExampleLabel">
                           <div className="offcanvas-header">
-                            <h5
-                              className="offcanvas-title"
-                              id="offcanvasExampleLabel">
-                              more offers
-                            </h5>
                             <button
                               type="button"
                               className="btn-close"
@@ -518,129 +452,139 @@ const Header = () => {
                               aria-label="Close"
                               onClick={() => setIsMenuOpen(false)}></button>
                           </div>
+                          <ul className="navbar-nav">
+                            <li className={`nav-item me-3 ${isActive('') ? 'active' : ''}`}>
+                            <Link className="nav-link" to="/">
+                              <AirplaneTicketOutlinedIcon />
+                              <span >Flights</span>
+                            </Link>
+                              
+                            </li>
 
-                          <div className="dropdown-item d-flex align-items-end">
-                            <AirplaneTicketOutlinedIcon className="me-2" />
-                            <div>
-                              <span>Flights</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <BusinessOutlinedIcon className="me-2" />
-                            <div>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/hotels">
+                              <BusinessOutlinedIcon />
                               <span>Hotels</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <FlightTakeoffOutlinedIcon className="me-2" />
-                            <div>
+                            </Link>
+                            </li>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/flightAndHotels">
+                              <FlightTakeoffOutlinedIcon />
                               <span>Flight+Hotel</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <TrainOutlinedIcon className="me-2" />
-                            <div>
+                              </Link>
+                            </li>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/train">
+                              <TrainOutlinedIcon />
                               <span>Trains</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <DirectionsBusFilledOutlinedIcon className="me-2" />
-                            <div>
+                              </Link>
+                            </li>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/bus">
+                              <DirectionsBusFilledOutlinedIcon />
                               <span>Bus</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <BeachAccessOutlinedIcon className="me-2" />
-                            <div>
+                              </Link>
+                            </li>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/holidays">
+                              <BeachAccessOutlinedIcon />
                               <span>Holidays</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <DirectionsCarOutlinedIcon className="me-2" />
-                            <div>
+                              </Link>
+                            </li>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/cabs">
+                              <DirectionsCarOutlinedIcon />
                               <span>Cabs</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <KitesurfingOutlinedIcon className="me-2" />
-                            <div>
-                              <span>Activities</span>
-                            </div>
-                          </div>
-
-                          <div className="dropdown-item d-flex align-items-end">
-                            <CreditCardOutlinedIcon className="me-2" />
-                            <div>
+                              </Link>
+                            </li>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/activities">
+                              <KitesurfingOutlinedIcon className="icon" />
+                              <span className="item-text">Activities</span>
+                              </Link>
+                            </li>
+                            <li className="nav-item me-3">
+                            <Link className="nav-link" to="/visa">
+                              <CreditCardOutlinedIcon />
                               <span>Visa</span>
-                            </div>
-                          </div>
+                              </Link>
+                            </li>
+                            <li className="nav-item dropdown">
+                              <a
+                                className="nav-link dropdown-toggle"
+                                href="#"
+                                id="navbarDropdown"
+                                role="button"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded={isMoreClicked ? "true" : "false"}
+                                onClick={handleMoreClick}>
+                                <MoreHorizOutlinedIcon className="icon" />
+                                <span className="item-text">More</span>
+                              </a>
+                              {isMoreClicked && (
+                                <div
+                                  className="dropdown-menu show"
+                                  aria-labelledby="navbarDropdown">
+                                  <div className="dropdown-item d-flex align-items-end">
+                                    <CreditScoreOutlinedIcon className="me-2" />
+                                    <div>
+                                      <span>EaseMyTrips Cards</span>
+                                      <small className="d-block">
+                                        Apply now to get reward
+                                      </small>
+                                    </div>
+                                  </div>
+                                  <div className="dropdown-item d-flex align-items-end">
+                                    <RunCircleOutlinedIcon className="me-2" />
+                                    <div>
+                                      <span>EasyEloped</span>
+                                      <small className="d-block">
+                                        For romantic getaways
+                                      </small>
+                                    </div>
+                                  </div>
+                                  <div className="dropdown-item d-flex align-items-start">
+                                    <TempleHinduOutlinedIcon className="me-2" />
+                                    <div>
+                                      <span>EasyDarshan</span>
+                                      <small className="d-block">
+                                        Spiritual Tour of India
+                                      </small>
+                                    </div>
+                                  </div>
 
-                          <div className="">
-                            <button
-                              className="btn btn-secondary dropdown-toggle"
-                              type="button"
-                              data-toggle="dropdown"
-                              aria-expanded="false">
-                              Dropdown button
-                            </button>
-
-                            <div className="dropdown-item d-flex align-items-end">
-                              <RunCircleOutlinedIcon className="me-2" />
-                              <div>
-                                <span>EasyEloped</span>
-                                <small className="d-block">
-                                  For romantic getaways
-                                </small>
-                              </div>
-                            </div>
-
-                            <div className="dropdown-item d-flex align-items-start">
-                              <TempleHinduOutlinedIcon className="me-2" />
-                              <div>
-                                <span>EasyDarshan</span>
-                                <small className="d-block">
-                                  Spiritual Tour of India
-                                </small>
-                              </div>
-                            </div>
-
-                            <div className="dropdown-item d-flex align-items-start">
-                              <LockOutlinedIcon className="me-2" />
-                              <div>
-                                <span>Airport Service</span>
-                                <small className="d-block">
-                                  Enjoy Airport Service
-                                </small>
-                              </div>
-                            </div>
-
-                            <div className="dropdown-item d-flex align-items-start">
-                              <CreditCardOutlinedIcon className="me-2" />
-                              <div>
-                                <span>Gift Card</span>
-                                <small className="d-block">
-                                  Buy Gift Cards Here
-                                </small>
-                              </div>
-                            </div>
-
-                            <div className="dropdown-item d-flex align-items-start">
-                              <PaidOutlinedIcon className="me-2" />
-                              <div>
-                                <span>Offers</span>
-                                <small className="d-block">
-                                  Check Best Latest Offer
-                                </small>
-                              </div>
-                            </div>
-                          </div>
+                                  <div className="dropdown-item d-flex align-items-start">
+                                    <LockOutlinedIcon className="me-2" />
+                                    <div>
+                                      <span>Airport Service</span>
+                                      <small className="d-block">
+                                        Enjoy Airport Service
+                                      </small>
+                                    </div>
+                                  </div>
+                                  <div className="dropdown-item d-flex align-items-start">
+                                    <CreditCardOutlinedIcon className="me-2" />
+                                    <div>
+                                      <span>Gift Card</span>
+                                      <small className="d-block">
+                                        Buy Gift Cards Here
+                                      </small>
+                                    </div>
+                                  </div>
+                                  <div className="dropdown-item d-flex align-items-start">
+                                    <PaidOutlinedIcon className="me-2" />
+                                    <div>
+                                      <span>Offers</span>
+                                      <small className="d-block">
+                                        Check Best Latest Offer
+                                      </small>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </li>
+                          </ul>
                         </div>
                       )}
                     </div>
