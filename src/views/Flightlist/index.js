@@ -12,7 +12,7 @@ import { Slider, Box, TextField } from "@mui/material";
 import Select from "react-select";
 
 const Flightlist = () => {
-  // const [searchResponse,setSearchResponse]=useState(JSON.parse(localStorage.getItem('flightSearchResponse')));
+  const [searchResponse,setSearchResponse]=useState(JSON.parse(localStorage.getItem('flightSearchResponse')).response);
   const [loading, setLoading] = useState(true); // Preloader visible initially
   const [value, setValue] = useState([130, 250]); // Initial range values
   const [tripType, setTripType] = useState("oneway"); // Default trip type
@@ -27,6 +27,22 @@ const Flightlist = () => {
   const [selectedFromDate, setSelectedFromDate] = useState(new Date()); 
   const [selectedReturnDate, setSelectedReturnDate] = useState(new Date()); // State for return date
 
+  const itemsPerPage = 5; // Number of flights to show per page
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalFlights = searchResponse.results.outboundFlights.length;
+  const totalPages = Math.ceil(totalFlights / itemsPerPage);
+
+  // Get flights for the current page
+  const currentFlights = searchResponse.results.outboundFlights.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+  );
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const locationOptions = [
     {value: "Delhi"},
@@ -35,8 +51,30 @@ const Flightlist = () => {
     {value: "Chennai"},
   
   ];
+  const convertMinutesToDuration = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours}h ${remainingMinutes}m`;
+  };
+  const formatTime = (dateTime) => {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  };
+  const formatedDate = (timestamp) => {
+    debugger;
+    const date = new Date(timestamp);
+    const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+    return date.toLocaleDateString('en-GB', options);
+  };
+  const isRefundable = (flag) => {
+    if(flag){
+      return("REFUNDABLE");
+    }
+    else{
+      return ("NON REFUNDABLE");
+    }
 
-
+  };
    // Format date to "10 Jan'2025"
    const formatDate = (date) => {
     if (!date) return "";
@@ -664,158 +702,54 @@ const Flightlist = () => {
                         </div>
                       </div>
                     </div>
+                    {/*Flight List Start*/}
                     <div className="col-xl-9 col-lg-9">
-                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
-                        <div className="flight-area">
-                          <div className="airline-name">
-                            <img src={Airindia} alt="" />
-                            <div>
-                              <h5 className="lightest-black mb-8"> Air India</h5>
-                              <h6 className="dark-gray">AI 777-90</h6>
-                            </div>
-                          </div>
-                          <div className="flight-detail">
-                            <div className="flight-departure">
-                              <h5 className="color-black text-end">12:00</h5>
-                              <h5 className="dark-gray text-end">DLI</h5>
-                            </div>
-                            <div className="d-inline-flex align-items-center gap-8">
-                              <span className="">From</span>
-                              <div className="from-to text-center">
-                                <h5 className="dark-gray">0h 50m</h5>
-                                <img src={Routeplan} alt="" />
-                                <h6 className="color-black">1 Stop</h6>
-                              </div>
-                              <span className="">To</span>
-                            </div>
-                            <div className="flight-departure">
-                              <h5 className="color-black">12:50</h5>
-                              <h5 className="dark-gray">BOM</h5>
-                            </div>
-                          </div>
-                          <div className="flight-button">
-                            <div className="amount">
-                              <h5 className="color-black">₹2240</h5>
-                              <h6 className="dark-gray text-end">Price</h6>
-                            </div>
-                            <button className="btn btn-primary">
-                              Book Now
-                            </button>
-                          </div>
-                        </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 14 August</h5>
-                          <div>
-                            <a href="#" className="accordion-button color-primary h5 collapsed">
-                              <i className="fal fa-chevron-down color-primary " />
-                              &nbsp;Flight Detail
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      {/* <div id="flightDetail"
-                        className="accordion-collapse collapse mb-32"
-                        data-bs-parent="#accordionExample"
-                      >
-                        <div className="row bg-white br-10 light-shadow p-24 m-0 align-items-center">
-                          <div className="col-lg-3 col-sm-4">
-                            <div className="time-detail">
-                              <h6 className="flight-date mb-32"> 14 August, 2023</h6>
-                              <h6 className="color-black mb-8">Monday, Aug 14 - 12:00</h6>
-                              <h6 className="dark-gray mb-16">0h 50m</h6>
-                              <h6 className="dark-gray">Monday, Aug 14 - 12:50</h6>
-                            </div>
-                          </div>
-                          <div className="col-lg-9 col-sm-8">
-                            <div className="detail-block">
-                              <div className="d-sm-flex d-block align-items-center gap-24">
-                                <img src={Routeplan} alt="" />
-                                <div className="content">
-                                  <h6 className="dark-gray">Tpm Line</h6>
-                                  <h6 className="dark-gray">
-                                    Operated by Feel Dubai Airlines
-                                  </h6>
-                                  <h6 className="dark-gray">
-                                    Economy | Flight FK234 | Aircraft BOEING 777-90
-                                  </h6>
-                                  <h6 className="dark-gray">Adult(s): 25KG luggage free</h6>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> */}
-                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                      {/*{searchResponse.results.outboundFlights.map((flight, index) => (*/}
+                          {currentFlights.map((flight, index) => (
+                      <div key={index} className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
                         <div className="flight-area multi-flight">
                           <div className="flight-left col-md-9">
+                            {flight.sg.map((flightSegment, ser) => (
+                          <div>
                            <h5 className="badge">Departure</h5>
                             <div className="flightrow">
                               <div className="airline-name">
                                 <img src={Airindia} alt="" />
                                 <div>
-                                  <h5 className="lightest-black mb-8"> Air India</h5>
-                                  <h6 className="dark-gray">AI 777-90</h6>
+                                  <h5 className="lightest-black mb-8"> {flightSegment.al.alN}</h5>
+                                  <h6 className="dark-gray">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
                                 </div>
                               </div>
                               <div className="flight-detail">
                                 <div className="flight-departure">
-                                  <h5 className="color-black text-end">11:00</h5>
-                                  <h5 className="dark-gray text-end">DLI</h5>
-                                  <h6 className="color-black text-end">Monday 14 Jan 2025</h6>
+                                  <h5 className="color-black text-end">{formatTime(flightSegment.or.dT)}</h5>
+                                  <h5 className="dark-gray text-end">{flightSegment.or.aC}</h5>
+                                  <h6 className="color-black text-end">{formatedDate(flightSegment.or.dT)}</h6>
                                 </div>
                                 <div className="d-inline-flex align-items-center gap-8">
                                   <span className="">From</span>
                                   <div className="from-to text-center">
-                                    <h5 className="dark-gray">0h 50m</h5>
+                                    <h5 className="dark-gray">{convertMinutesToDuration(flightSegment.dr)}</h5>
                                     <img src={Routeplan} alt="" />
-                                    <h6 className="color-black">2 Stop</h6>
+
                                   </div>
                                   <span className="">To</span>
                                 </div>
                                 <div className="flight-departure">
-                                  <h5 className="color-black">12:00</h5>
-                                  <h5 className="dark-gray">BOM</h5>
-                                  <h6 className="color-black">Monday 14 Jan 2025</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <hr className="bg-light-gray mt-24 mb-24" />
-                            <h5 className="badge">Departure</h5>
-                            <div className="flightrow">
-                              <div className="airline-name">
-                                <img src={Airindia} alt="" />
-                                <div>
-                                  <h5 className="lightest-black mb-8"> Air India</h5>
-                                  <h6 className="dark-gray">AI 777-90</h6>
-                                </div>
-                              </div>
-                              <div className="flight-detail">
-                                <div className="flight-departure">
-                                  <h5 className="color-black text-end">12:30</h5>
-                                  <h5 className="dark-gray text-end">BOM</h5>
-                                  <h6 className="color-black text-end">Monday 14 Jan 2025</h6>
-                                </div>
-                                <div className="d-inline-flex align-items-center gap-8">
-                                  <span className="">From</span>
-                                  <div className="from-to text-center">
-                                    <h5 className="dark-gray">0h 50m</h5>
-                                    <img src={Routeplan} alt="" />
-                                    <h6 className="color-black">2 Stop</h6>
-                                  </div>
-                                  <span className="">To</span>
-                                </div>
-                                <div className="flight-departure">
-                                  <h5 className="color-black">01:30</h5>
-                                  <h5 className="dark-gray">BLR</h5>
-                                  <h6 className="color-black">Monday 14 Jan 2025</h6>
+                                  <h5 className="color-black">{formatTime(flightSegment.ds.aT)}</h5>
+                                  <h5 className="dark-gray">{flightSegment.ds.aC}</h5>
+                                  <h6 className="color-black">{formatedDate(flightSegment.ds.aT)}</h6>
                                 </div>
                               </div>
                             </div>
                           </div>
+                            ))}
+
+
+                          </div>
                           <div className="flight-button col-md-3">
                             <div className="amount">
-                              <h5 className="color-black">₹2240</h5>
+                              <h5 className="color-black"> {flight.cr} {flight.pF} </h5>
                               <h6 className="dark-gray text-end">Price</h6>
                             </div>
                             <button className="btn btn-primary">
@@ -826,16 +760,30 @@ const Flightlist = () => {
 
                         <hr className="bg-light-gray mt-24 mb-24" />
                         <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 14 August</h5>
+                          {/*<h5 className="color-black">Monday 19 August</h5>*/}
+                          <h5 className="color-black">{isRefundable(flight.iR)}</h5>
+                          <h6 className="color-black">{flight.sg.length - 1} Stop</h6>
                           <div>
                             <a href="#" className="accordion-button color-primary h5 collapsed">
-                              <i className="fal fa-chevron-down color-primary " />
+                              <i className="fal fa-chevron-down color-primary "/>
                               &nbsp;Flight Detail
                             </a>
                           </div>
                         </div>
+                      </div>))}
+                      {/* Pagination Controls */}
+                      <div className="pagination d-flex justify-content-center mt-3">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                            <button
+                                key={page}
+                                className={`btn ${currentPage === page ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
+                                onClick={() => handlePageChange(page)}
+                            >
+                              {page}
+                            </button>
+                        ))}
                       </div>
-                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                   {/*   <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
                         <div className="flight-area multi-flight">
                           <div className="flight-left col-md-9">
                            <h5 className="badge">Departure</h5>
@@ -851,7 +799,7 @@ const Flightlist = () => {
                                 <div className="flight-departure">
                                   <h5 className="color-black text-end">12:00</h5>
                                   <h5 className="dark-gray text-end">DLI</h5>
-                                  <h6 className="color-black text-end">Monday 14 Jan 2025</h6>
+                                  <h6 className="color-black text-end">Monday 20 Jan 2025</h6>
                                 </div>
                                 <div className="d-inline-flex align-items-center gap-8">
                                   <span className="">From</span>
@@ -865,7 +813,7 @@ const Flightlist = () => {
                                 <div className="flight-departure">
                                   <h5 className="color-black">12:50</h5>
                                   <h5 className="dark-gray">BOM</h5>
-                                  <h6 className="color-black">Monday 14 Jan 2025</h6>
+                                  <h6 className="color-black">Monday 21 Jan 2025</h6>
                                 </div>
                               </div>
                             </div>
@@ -915,7 +863,7 @@ const Flightlist = () => {
 
                         <hr className="bg-light-gray mt-24 mb-24" />
                         <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 14 August</h5>
+                          <h5 className="color-black">Monday 22 August</h5>
                           <div>
                             <a href="#" className="accordion-button color-primary h5 collapsed">
                               <i className="fal fa-chevron-down color-primary " />
@@ -964,7 +912,7 @@ const Flightlist = () => {
                         </div>
                         <hr className="bg-light-gray mt-24 mb-24" />
                         <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 14 August</h5>
+                          <h5 className="color-black">Monday 23 August</h5>
                           <div>
                             <a href="#" className="accordion-button color-primary h5 collapsed">
                               <i className="fal fa-chevron-down color-primary " />
@@ -1013,7 +961,7 @@ const Flightlist = () => {
                         </div>
                         <hr className="bg-light-gray mt-24 mb-24" />
                         <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 14 August</h5>
+                          <h5 className="color-black">Monday 24 August</h5>
                           <div>
                             <a href="#" className="accordion-button color-primary h5 collapsed">
                               <i className="fal fa-chevron-down color-primary " />
@@ -1021,7 +969,7 @@ const Flightlist = () => {
                             </a>
                           </div>
                         </div>
-                      </div>
+                      </div>*/}
                     </div>
                   </div>
                 </div>
