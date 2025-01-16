@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from "../../assets/img/logo/logo.png";
 import AirplaneTicketOutlinedIcon from "@mui/icons-material/AirplaneTicketOutlined";
@@ -37,6 +37,14 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginClicked, setIsLoginClicked] = useState(false);
   const [isModalOpen, setisModalOpen] = useState(false);
+  const [showOTP, setShowOTP] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [mobile, setMobile] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState(Array(6).fill(""));
+  const inputRefs = useRef([]);
+  const [countryCode, setCountryCode] = useState("+91"); // Default to India
+
   const handleMenuToggle = () => {
     setIsMenuOpen((prevState) => !prevState);
   };
@@ -53,6 +61,70 @@ const Header = () => {
     setisModalOpen((prev) => !prev);
     console.log("isModalOpen==", isModalOpen)
   };
+
+  const handleContinue = (e) => {
+    e.preventDefault();
+    if (mobile) {
+      setShowOTP(true); // Show OTP fields
+    } else {
+      alert("Please enter your mobile number.");
+    }
+  };
+
+  const handleOTPChange = (e, index) => {
+    const { value } = e.target;
+  
+    // Only allow numeric values and a single digit
+    if (/^\d$/.test(value)) {
+      const newOtp = [...otp];
+      newOtp[index] = value; // Update the current OTP digit
+      setOtp(newOtp);
+  
+      // Move to the next input field automatically
+      if (index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    } else if (value === "") {
+      // Allow clearing the input
+      const newOtp = [...otp];
+      newOtp[index] = "";
+      setOtp(newOtp);
+    }
+  };
+  
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+      if (otp[index] === "" && index > 0) {
+        // Move to the previous input field if current is empty
+        inputRefs.current[index - 1]?.focus();
+      } else {
+        const newOtp = [...otp];
+        newOtp[index] = ""; // Clear the current field
+        setOtp(newOtp);
+      }
+    }
+  };
+  
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").slice(0, 6).split("");
+  
+    // Fill OTP fields with pasted data
+    const newOtp = otp.map((_, i) => pastedData[i] || "");
+    setOtp(newOtp);
+  
+    // Focus on the last filled input
+    const lastFilledIndex = Math.min(pastedData.length, 6) - 1;
+    inputRefs.current[lastFilledIndex]?.focus();
+  }; 
+  const handleSignIn = () => {
+    if (!password) {
+      alert("Please enter your password.");
+      return;
+    }
+    // Add authentication logic here
+    console.log("Password entered:", password);
+  };       
   return (
     <>
       <div className="body-overlay"></div>
@@ -631,99 +703,221 @@ const Header = () => {
       </header>
 
       {isModalOpen && (
-        <div className={ isModalOpen? "show modal" : "modal"} id="loginmodal" >
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content">
-            <div className="modal-body py-4">
-            <div className="it-sign-up-area">
-              <div className="container">
-                  <div className="it-sign-up-wrap">
-                  <div className="row align-items-center">
-                      <div className="col-xl-6 col-lg-6">
-                      <div className="it-sign-up-left">
-                          <h4 className="it-sign-up-title mb-25">sign in</h4>
-                          <form>
-                          <div className="row gx-30">
+        <div className={isModalOpen ? "show modal" : "modal"} id="loginmodal">
+  <div className="modal-dialog modal-xl">
+    <div className="modal-content">
+      <div className="modal-body py-4">
+        <div className="it-sign-up-area">
+          <div className="container">
+            <div className="it-sign-up-wrap">
+              <div className="row align-items-center">
+                <div className="col-xl-6 col-lg-6">
+                  <div className="it-sign-up-left">
+                    <h4 className="it-sign-up-title mb-25">Sign In</h4>
+                    <form>
+                      <div className="row gx-30">
+                        {!showOTP ? (
+                          !showPassword ? (
+                            <>
+                              {/* Mobile Input View */}
                               <div className="col-md-12 mb-20">
-                              <div className="it-contact-input-box p-relative">
-                                  <input placeholder="Mobile Number" type="text" name="mobile" />
-                                  <div style={{ color: "red" }} />
-                              </div>
-                              </div>
-                              <div className="col-md-12 mb-20">
-                              <div className="it-contact-input-box p-relative">
+                                <div className="it-contact-input-box p-relative d-flex align-items-center">
+                                  <select
+                                    className="form-select"
+                                    value={countryCode}
+                                    onChange={(e) =>
+                                      setCountryCode(e.target.value)
+                                    }
+                                    style={{
+                                      maxWidth: "100px",
+                                      marginRight: "10px",
+                                    }}
+                                  >
+                                    <option value="+91">🇮🇳 +91</option>
+                                    <option value="+1">🇺🇸 +1</option>
+                                    <option value="+44">🇬🇧 +44</option>
+                                    <option value="+61">🇦🇺 +61</option>
+                                    <option value="+81">🇯🇵 +81</option>
+                                  </select>
                                   <input
-                                  placeholder="Password*"
-                                  type="Password"
-                                  name="password"
+                                    placeholder="Mobile Number"
+                                    type="text"
+                                    name="mobile"
+                                    value={mobile}
+                                    onChange={(e) =>
+                                      setMobile(e.target.value)
+                                    }
                                   />
-                                  <div style={{ color: "red" }} />
+                                </div>
                               </div>
+                              <div className="col-md-12 mb-20">
+                                <button
+                                  className="it-btn-primary w-100"
+                                  type="submit"
+                                  onClick={handleContinue}
+                                >
+                                  <span>Continue</span>
+                                </button>
                               </div>
-                          </div>
-                          <div className="it-sign-up-forget-box d-flex align-items-center justify-content-between mb-30">
-                              <div className="it-sign-up-forget">
-                              <a href="#">Forgot Password?</a>
+                            </>
+                          ) : (
+                            <>
+                              {/* Password Input View */}
+                              <div className="col-md-12 mb-20">
+                                <div className="it-contact-input-box p-relative">
+                                  <input
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) =>
+                                      setPassword(e.target.value)
+                                    }
+                                    style={{
+                                      width: "100%",
+                                      padding: "10px",
+                                      border: "2px solid #ddd",
+                                      borderRadius: "8px",
+                                      fontSize: "16px",
+                                      outline: "none",
+                                    }}
+                                  />
+                                </div>
                               </div>
-                              <div className="it-sign-up-remember">
-                              <input id="remember" type="checkbox" />
-                              <label htmlFor="remember">
-                                  <span>Remember me</span>
-                              </label>
+                              <div className="col-md-12 mb-20">
+                                <button
+                                  className="it-btn-primary w-100"
+                                  type="submit"
+                                  onClick={handleSignIn}
+                                >
+                                  <span>Sign In</span>
+                                </button>
                               </div>
-                          </div>
-                          <div className="it-sign-up-button-box d-sm-flex align-items-center justify-content-between mb-35">
-                              <button className="it-btn-primary" type="submit">
-                              <span>Sign In</span>
+                            </>
+                          )
+                        ) : (
+                          <>
+                            {/* OTP Input View */}
+                            <div className="col-md-12 mb-20">
+                              {/* Back Button */}
+                              <button
+                                className="btn btn-link"
+                                onClick={() => setShowOTP(false)}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  textDecoration: "none",
+                                  marginBottom: "10px",
+                                  color: "#007bff",
+                                }}
+                              >
+                                <span style={{ marginRight: "5px" }}>←</span>
+                                Back
                               </button>
-                              <div className="it-sign-up-social">
-                              <span>or sign in with</span>
-                              <a href="#">
-                                  <img
-                                  alt="Social Img"
-                                  width={35}
-                                  height={35}
-                                  src={GoogleIcon}
+
+                              <p>Enter the 6-digit OTP sent to {mobile}</p>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: "10px",
+                                  marginTop: "20px",
+                                }}
+                              >
+                                {otp.map((digit, index) => (
+                                  <input
+                                    key={index}
+                                    type="text"
+                                    maxLength="1"
+                                    value={digit}
+                                    onChange={(e) =>
+                                      handleOTPChange(e, index)
+                                    }
+                                    onKeyDown={(e) =>
+                                      handleKeyDown(e, index)
+                                    }
+                                    onPaste={handlePaste}
+                                    ref={(el) =>
+                                      (inputRefs.current[index] = el)
+                                    }
+                                    style={{
+                                      width: "75px",
+                                      height: "50px",
+                                      textAlign: "center",
+                                      fontSize: "20px",
+                                      border: "2px solid #ddd",
+                                      borderRadius: "8px",
+                                      outline: "none",
+                                      boxShadow:
+                                        "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                      transition: "border-color 0.3s",
+                                      padding: 0,
+                                    }}
                                   />
-                              </a>
-                              
+                                ))}
                               </div>
-                          </div>
-                          <div className="it-sign-up-bottom">
-                              <span>
-                              Don't have an account? <a href="/sign-up">Sign Up</a>
-                              </span>
-                          </div>
-                          </form>
+                            </div>
+                            <div className="col-md-12 mb-20">
+                              <button
+                                className="it-btn-primary w-100"
+                                type="submit"
+                              >
+                                <span>Verify OTP</span>
+                              </button>
+                            </div>
+                          </>
+                        )}
                       </div>
+                      <div className="it-sign-up-bottom mt-3">
+                        {!showPassword ? (
+                          <span>
+                            <button
+                              type="button"
+                              className="btn btn-link"
+                              onClick={() => setShowPassword(true)}
+                              style={{
+                                textDecoration: "none",
+                                color: "#007bff",
+                                padding: 0,
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Login with password
+                            </button>
+                          </span>
+                        ) : null}
                       </div>
-                      <div className="col-xl-6 col-lg-6 px-3">
-                      <div className="it-sign-up-thumb">
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                        onClick={handleModalOpenClick}
-                      />
-                          <img
-                          alt="Sign In Img"
-                          loading="lazy"
-                          width={570}
-                          height={500}
-                          src="https://travello-nextjs.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsign-up.ed5c9eb0.jpg&w=640&q=75"
-                          />
-                                        
-                      </div>
-                      </div>
+                    </form>
                   </div>
+                </div>
+                <div className="col-xl-6 col-lg-6 px-3">
+                  <div className="it-sign-up-thumb">
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                      onClick={handleModalOpenClick}
+                    />
+                    <img
+                      alt="Sign In Img"
+                      loading="lazy"
+                      width={570}
+                      height={500}
+                      src="https://travello-nextjs.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsign-up.ed5c9eb0.jpg&w=640&q=75"
+                    />
                   </div>
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
       
       )}
 
