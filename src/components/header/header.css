@@ -86,6 +86,7 @@
   }
   .dropdown-item {
     padding: 4px 0; /* Padding for each dropdown item */
+    cursor: pointer;
   }
   
   .dropdown-item span {
@@ -104,6 +105,15 @@
   }
   .it-main-menu nav ul li a{
     padding: 0px 8px !important;
+  }
+  .it-sign-up-left{
+    padding: 30px 20px !important;
+    padding-right: 0 !important;
+  }
+  .btn-close{
+    position: absolute;
+    right: 4px;
+    top: 4px;
   }
   /* Media Query for smaller screens */
   @media (max-width: 768px) {
