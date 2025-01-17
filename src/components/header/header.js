@@ -18,7 +18,7 @@ import TrainOutlinedIcon from "@mui/icons-material/TrainOutlined";
 import DirectionsBusFilledOutlinedIcon from "@mui/icons-material/DirectionsBusFilledOutlined";
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
-import GoogleIcon from '../../assets/img/logo/soacial-2.webp'
+import Loginimage from '../../assets/img/sign-up.webp'
 import "./header.css";
 // import HomePage from "../../views/Home";
 const Header = () => {
@@ -117,6 +117,17 @@ const Header = () => {
     const lastFilledIndex = Math.min(pastedData.length, 6) - 1;
     inputRefs.current[lastFilledIndex]?.focus();
   }; 
+
+  const handleBackButtonClick = () =>{
+    setShowPassword(false);
+    setShowOTP(false)
+  }
+  const handleLoginWithPassword = () =>{
+    setShowPassword(true);
+    setShowOTP(false)
+    console.log("showPassword====",showPassword)
+  }
+  
   const handleSignIn = () => {
     if (!password) {
       alert("Please enter your password.");
@@ -463,49 +474,7 @@ const Header = () => {
                 </div>
                 <div className="col-xl-3 col-lg-6 col-md-6 col-6">
                   <div className="it-header-bottom-right d-flex align-items-center justify-content-end">
-                    {/* <div className="it-header-bottom-right-shop d-none d-md-block me-2">
-                      <Link to="shop.html">
-                        <span>
-                          <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                              d="M7.5 7.66952V6.69952C7.5 4.44952 9.31 2.23952 11.56 2.02952C14.24 1.76952 16.5 3.87952 16.5 6.50952V7.88952"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeMiterlimit="10"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M9.0008 22H15.0008C19.0208 22 19.7408 20.39 19.9508 18.43L20.7008 12.43C20.9708 9.99 20.2708 8 16.0008 8H8.0008C3.7308 8 3.0308 9.99 3.3008 12.43L4.0508 18.43C4.2608 20.39 4.9808 22 9.0008 22Z"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeMiterlimit="10"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M15.4945 12H15.5035"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M8.49451 12H8.50349"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </Link>
-                    </div> */}
+
                     <div className="it-header-bottom-right-button position-relative ml-0">
                       <Link to="" className="it-btn-primary" data-toggle="dropdown"
                                 aria-haspopup="true"
@@ -691,8 +660,40 @@ const Header = () => {
                               )}
                             </li>
                           </ul>
-                        </div>
-                      )}
+                            <div className="it-header-bottom-right-button position-relative ml-0 d-block">
+                              <Link to="" className="it-btn-primary" data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded={isLoginClicked ? "true" : "false"}
+                                        onClick={handleLoginClick}>
+                                Login or Signup
+                              </Link>
+                              {isLoginClicked && (
+                                <div
+                                className="dropdown-menu show"
+                                aria-labelledby="navbarDropdown">
+                                <div className="dropdown-item d-flex align-items-center border-bottom" onClick={handleModalOpenClick}>
+                                  <AssignmentIndOutlinedIcon className="me-2" />
+                                  <div>
+                                    <span>Customer Login</span>
+                                    <small className="d-block">
+                                      Login & check bookings
+                                    </small>
+                                  </div>
+                                </div>
+                                <div className="dropdown-item d-flex align-items-center border-bottom" onClick={handleModalOpenClick}>
+                                  <SupportAgentOutlinedIcon className="me-2" />
+                                  <div>
+                                    <span>Agent Login</span>
+                                    <small className="d-block">
+                                    Login your agent account
+                                    </small>
+                                  </div>
+                                </div>
+                                </div>
+                              )}
+                            </div>
+                            </div>
+                           )}
                     </div>
                   </div>
                 </div>
@@ -717,7 +718,55 @@ const Header = () => {
                     <form>
                       <div className="row gx-30">
                         {!showOTP ? (
-                          !showPassword ? (
+                          showPassword ? (
+                            <>
+
+                               {/* Password Input View */}
+                               <div className="col-md-12 mb-20">
+                                {/* Back Button */}
+                              <button
+                                className="btn btn-link"
+                                onClick={handleBackButtonClick}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  textDecoration: "none",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <span style={{ marginRight: "5px" }}>←</span>
+                                Back
+                              </button>
+                                <div className="it-contact-input-box p-relative">
+                                  <input
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) =>
+                                      setPassword(e.target.value)
+                                    }
+                                    style={{
+                                      width: "100%",
+                                      padding: "10px",
+                                      border: "2px solid #ddd",
+                                      borderRadius: "8px",
+                                      fontSize: "16px",
+                                      outline: "none",
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="col-md-12 mb-20">
+                                <button
+                                  className="it-btn-primary w-100"
+                                  type="submit"
+                                  onClick={handleSignIn}
+                                >
+                                  <span>Sign In</span>
+                                </button>
+                              </div>
+                            </>
+                          ) :  ( 
                             <>
                               {/* Mobile Input View */}
                               <div className="col-md-12 mb-20">
@@ -759,55 +808,23 @@ const Header = () => {
                                   <span>Continue</span>
                                 </button>
                               </div>
-                            </>
-                          ) : (
-                            <>
-                              {/* Password Input View */}
-                              <div className="col-md-12 mb-20">
-                                <div className="it-contact-input-box p-relative">
-                                  <input
-                                    type="password"
-                                    placeholder="Enter your password"
-                                    value={password}
-                                    onChange={(e) =>
-                                      setPassword(e.target.value)
-                                    }
-                                    style={{
-                                      width: "100%",
-                                      padding: "10px",
-                                      border: "2px solid #ddd",
-                                      borderRadius: "8px",
-                                      fontSize: "16px",
-                                      outline: "none",
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                              <div className="col-md-12 mb-20">
-                                <button
-                                  className="it-btn-primary w-100"
-                                  type="submit"
-                                  onClick={handleSignIn}
-                                >
-                                  <span>Sign In</span>
-                                </button>
-                              </div>
+
                             </>
                           )
-                        ) : (
+                        
+                        ) :  (
                           <>
                             {/* OTP Input View */}
                             <div className="col-md-12 mb-20">
                               {/* Back Button */}
                               <button
                                 className="btn btn-link"
-                                onClick={() => setShowOTP(false)}
+                                onClick={handleBackButtonClick}
                                 style={{
                                   display: "flex",
                                   alignItems: "center",
                                   textDecoration: "none",
                                   marginBottom: "10px",
-                                  color: "#007bff",
                                 }}
                               >
                                 <span style={{ marginRight: "5px" }}>←</span>
@@ -839,19 +856,7 @@ const Header = () => {
                                     ref={(el) =>
                                       (inputRefs.current[index] = el)
                                     }
-                                    style={{
-                                      width: "75px",
-                                      height: "50px",
-                                      textAlign: "center",
-                                      fontSize: "20px",
-                                      border: "2px solid #ddd",
-                                      borderRadius: "8px",
-                                      outline: "none",
-                                      boxShadow:
-                                        "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                      transition: "border-color 0.3s",
-                                      padding: 0,
-                                    }}
+                                   className='otpboxes'
                                   />
                                 ))}
                               </div>
@@ -867,13 +872,13 @@ const Header = () => {
                           </>
                         )}
                       </div>
-                      <div className="it-sign-up-bottom mt-3">
-                        {!showPassword ? (
+                      <div className="it-sign-up-bottom">
+                        {showOTP ? (
                           <span>
                             <button
                               type="button"
                               className="btn btn-link"
-                              onClick={() => setShowPassword(true)}
+                              onClick={handleLoginWithPassword}
                               style={{
                                 textDecoration: "none",
                                 color: "#007bff",
@@ -891,7 +896,7 @@ const Header = () => {
                     </form>
                   </div>
                 </div>
-                <div className="col-xl-6 col-lg-6 px-3">
+                <div className="col-xl-6 col-lg-6 ps-3 pe-md-4">
                   <div className="it-sign-up-thumb">
                     <button
                       type="button"
@@ -904,8 +909,8 @@ const Header = () => {
                       alt="Sign In Img"
                       loading="lazy"
                       width={570}
-                      height={500}
-                      src="https://travello-nextjs.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fsign-up.ed5c9eb0.jpg&w=640&q=75"
+                      height={300}
+                      src={Loginimage}
                     />
                   </div>
                 </div>

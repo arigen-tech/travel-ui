@@ -194,6 +194,9 @@ button#travellersDropdown{
 .react-select__menu .react-select__option--is-selected {
   background: var(--it-theme-2) !important;
 }
+.btn-link{
+ color: var(--it-theme-2) !important;
+}
 @media (max-width: 767px) {
   .it-tour-package-main {
       position: relative;
@@ -218,4 +221,5 @@ button#travellersDropdown{
   .travellersDropdowncontent{
     width: 100% !important;
   }
+
 }
