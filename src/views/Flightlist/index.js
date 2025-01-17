@@ -494,66 +494,57 @@ const Flightlist = () => {
                         </div>
                         <hr className="bg-light-gray mt-24 mb-24" />
                         <div className="filtersection">
-                        <h5 className="lightest-black">Airlines</h5>
-                        <ul class="list-group">
-                          <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            AkasaAir
-                          </li>
-                          <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            Air India Express
-                          </li>
-                          <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            SpiceJet
-                          </li>
-                          <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            Indigo
-                          </li>
-                          <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            Air India
-                          </li>
-                        </ul>
-                        </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="filtersection">
-                        <h5 className="lightest-black">Price Range</h5>
-                        <div data-role="main" className="ui-content">
-                        <Box className="price-range-slider" sx={{ width: 300, padding: 2 }}>
-                          {/* Range value display */}
-                          <Box className="range-value" sx={{ marginBottom: 2, border:0 }}>
-                            <TextField
-                              id="amount"
-                              value={`₹${value[0]} - ₹${value[1]}`}
-                              InputProps={{
-                                readOnly: true,
-                              }}
-                              fullWidth
+                        <h5 className="lightest-black">Airlines (Outbound)</h5>
+                          <ul class="list-group">
+                            {searchResponse.facets.airlines.outbound.map((airline, index) => (
+                                <li key={index} className="list-group-item">
+                                  <input
+                                      className="form-check-input me-2"
+                                      type="checkbox"
+                                      value={airline.code}
+                                      aria-label={`Select ${airline.name}`}
+                                  />
+                                  {airline.name} <span className="text-muted">({airline.count})</span>
+                                </li>
+                                ))}
+                              </ul>
+                              </div>
+                              <hr className="bg-light-gray mt-24 mb-24" />
+                              <div className="filtersection">
+                              <h5 className="lightest-black">Price Range</h5>
+                              <div data-role="main" className="ui-content">
+                              <Box className="price-range-slider" sx={{width: 300, padding: 2}}>
+                            {/* Range value display */}
+                            <Box className="range-value" sx={{marginBottom: 2, border: 0}}>
+                              <TextField
+                                  id="amount"
+                                  value={`₹${value[0]} - ₹${value[1]}`}
+                                  InputProps={{
+                                    readOnly: true,
+                                  }}
+                                  fullWidth
+                              />
+                            </Box>
+
+                            {/* Range slider */}
+                            <Slider
+                                id="slider-range"
+                                className="range-bar"
+                                value={value}
+                                onChange={handleChange}
+                                min={100}
+                                max={100000}
+                                valueLabelDisplay="auto"
                             />
                           </Box>
-
-                          {/* Range slider */}
-                          <Slider
-                            id="slider-range"
-                            className="range-bar"
-                            value={value}
-                            onChange={handleChange}
-                            min={100}
-                            max={100000}
-                            valueLabelDisplay="auto"
-                          />
-                        </Box>
                         </div>
 
-                        </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="filtersection">
+                      </div>
+                      <hr className="bg-light-gray mt-24 mb-24"/>
+                      <div className="filtersection">
                         <h5 className="lightest-black">Stops</h5>
                         <ul class="list-group">
-                          <li class="list-group-item">
+                        <li class="list-group-item">
                             <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
                             Non-Stop
                           </li>
