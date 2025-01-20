@@ -14,7 +14,7 @@ import Select from "react-select";
 const Flightlist = () => {
   const [searchResponse,setSearchResponse]=useState(JSON.parse(localStorage.getItem('flightSearchResponse')).response);
   const [loading, setLoading] = useState(true); // Preloader visible initially
-  const [value, setValue] = useState([130, 250]); // Initial range values
+  // const [value, setValue] = useState([130, 250]); // Initial range values
   const [tripType, setTripType] = useState("oneway"); // Default trip type
   const [rows, setRows] = useState([{ from: "", to: "", departure: "" }]); // Rows for Multi Trip
   const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown toggle
@@ -31,13 +31,17 @@ const Flightlist = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalFlights = searchResponse.results.outboundFlights.length;
-  const totalPages = Math.ceil(totalFlights / itemsPerPage);
+  // const totalPages = Math.ceil(totalFlights / itemsPerPage);
+  const [selectedAirlines, setSelectedAirlines] = useState([]);
+
+
+  const [value, setValue] = React.useState([100, 100000]); // Price range
+  const [departureTime, setDepartureTime] = React.useState(""); // Selected departure time range
+  const [arrivalTime, setArrivalTime] = React.useState("");
+  const [selectedStops, setSelectedStops] = React.useState([]);
 
   // Get flights for the current page
-  const currentFlights = searchResponse.results.outboundFlights.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-  );
+
 
   // Handle page change
   const handlePageChange = (page) => {
@@ -61,10 +65,30 @@ const Flightlist = () => {
     return date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
   };
   const formatedDate = (timestamp) => {
-    debugger;
     const date = new Date(timestamp);
     const options = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
     return date.toLocaleDateString('en-GB', options);
+  };
+  const handlePriceChange = (event, newValue) => {
+    setValue(newValue); // Update price range
+  };
+
+  const handleDepartureTimeChange = (event) => {
+    setDepartureTime(event.target.value); // Update departure time preference
+  };
+
+  const handleArrivalTimeChange = (event) => {
+    setArrivalTime(event.target.value); // Update arrival time preference
+  };
+  const isTimeInRange = (time, range) => {
+    const hours = new Date(time).getHours();
+    switch (range) {
+      case "e-morning": return hours < 6;
+      case "morning": return hours >= 6 && hours < 12;
+      case "afternoon": return hours >= 12 && hours < 18;
+      case "evening": return hours >= 18;
+      default: return true; // No filter applied
+    }
   };
   const isRefundable = (flag) => {
     if(flag){
@@ -149,8 +173,60 @@ const Flightlist = () => {
   const handlesubmit = (e) => {
     e.preventDefault();
   }
-    
 
+  const handleCheckboxChangeAirline = (code) => {
+    setSelectedAirlines((prevSelected) =>
+        prevSelected.includes(code)
+            ? prevSelected.filter((item) => item !== code) // Remove if already selected
+            : [...prevSelected, code] // Add if not selected
+    );
+
+  };
+
+  // Filter outbound flights based on selected airlines
+  // const currentFlights = selectedAirlines.length
+  //     ? searchResponse.results.outboundFlights.filter((flight) =>
+  //         flight.sg.some((segment) => selectedAirlines.includes(segment.al.alC))
+  //     ).slice(
+  //         (currentPage - 1) * itemsPerPage,
+  //         currentPage * itemsPerPage
+  //     )
+  //     : searchResponse.results.outboundFlights.slice(
+  //     (currentPage - 1) * itemsPerPage,
+  //     currentPage * itemsPerPage
+  // );
+  const currentFlights = searchResponse.results.outboundFlights.filter((flight) => {
+    const isAirlineMatched = selectedAirlines.length
+        ? flight.sg.some((segment) => selectedAirlines.includes(segment.al.alC))
+        : true;
+
+    const isPriceInRange = flight.pF >= value[0] && flight.pF <= value[1];
+
+    const isDepartureTimeMatched = departureTime
+        ? flight.sg.some((segment) => isTimeInRange(segment.or.dT, departureTime))
+        : true;
+
+    const isArrivalTimeMatched = arrivalTime
+        ? flight.sg.some((segment) => isTimeInRange(segment.ds.aT, arrivalTime))
+        : true;
+    const stops = flight.sg.length - 1;
+
+    return (
+        (selectedStops.length === 0 || selectedStops.includes(stops)) && isAirlineMatched && isPriceInRange && isDepartureTimeMatched && isArrivalTimeMatched);
+  });
+  const paginatedFlights = currentFlights.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+  );
+  const totalPages = Math.ceil(currentFlights.length / itemsPerPage);
+
+  const handleStopsChange = (stopCount) => {
+    setSelectedStops((prev) =>
+        prev.includes(stopCount)
+            ? prev.filter((stop) => stop !== stopCount) // Remove stopCount if already selected
+            : [...prev, stopCount] // Add stopCount if not selected
+    );
+  };
 
   return (
     
@@ -490,11 +566,11 @@ const Flightlist = () => {
                     <div className="col-xl-3 col-lg-3 mb-xl-0 mb-3">
                       <div className="sidebar bg-white rounded-3 light-shadow p-3">
                         <div className="sidebar-title">
-                          <h5 className="lightest-black"><FilterAltIcon /> Filter Search</h5>
+                          <h5 className="lightest-black"><FilterAltIcon/> Filter Search</h5>
                         </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
+                        <hr className="bg-light-gray mt-24 mb-24"/>
                         <div className="filtersection">
-                        <h5 className="lightest-black">Airlines (Outbound)</h5>
+                          <h5 className="lightest-black">Airlines (Outbound)</h5>
                           <ul class="list-group">
                             {searchResponse.facets.airlines.outbound.map((airline, index) => (
                                 <li key={index} className="list-group-item">
@@ -503,210 +579,276 @@ const Flightlist = () => {
                                       type="checkbox"
                                       value={airline.code}
                                       aria-label={`Select ${airline.name}`}
+                                      onChange={() => handleCheckboxChangeAirline(airline.code)}
+                                      checked={selectedAirlines.includes(airline.code)}
                                   />
-                                  {airline.name} <span className="text-muted">({airline.count})</span>
+                                  {airline.name}
+                                  {/*<span className="text-muted">({airline.count})</span>*/}
                                 </li>
-                                ))}
-                              </ul>
-                              </div>
-                              <hr className="bg-light-gray mt-24 mb-24" />
-                              <div className="filtersection">
-                              <h5 className="lightest-black">Price Range</h5>
-                              <div data-role="main" className="ui-content">
-                              <Box className="price-range-slider" sx={{width: 300, padding: 2}}>
-                            {/* Range value display */}
-                            <Box className="range-value" sx={{marginBottom: 2, border: 0}}>
-                              <TextField
-                                  id="amount"
-                                  value={`₹${value[0]} - ₹${value[1]}`}
-                                  InputProps={{
-                                    readOnly: true,
-                                  }}
-                                  fullWidth
-                              />
-                            </Box>
+                            ))}
+                          </ul>
+                        </div>
+                        <hr className="bg-light-gray mt-24 mb-24"/>
+                        {/*        <div className="filtersection">*/}
+                        {/*        <h5 className="lightest-black">Price Range</h5>*/}
+                        {/*        <div data-role="main" className="ui-content">*/}
+                        {/*        <Box className="price-range-slider" sx={{width: 300, padding: 2}}>*/}
+                        {/*      /!* Range value display *!/*/}
+                        {/*      <Box className="range-value" sx={{marginBottom: 2, border: 0}}>*/}
+                        {/*        <TextField*/}
+                        {/*            id="amount"*/}
+                        {/*            value={`₹${value[0]} - ₹${value[1]}`}*/}
+                        {/*            InputProps={{*/}
+                        {/*              readOnly: true,*/}
+                        {/*            }}*/}
+                        {/*            fullWidth*/}
+                        {/*        />*/}
+                        {/*      </Box>*/}
 
-                            {/* Range slider */}
+                        {/*      /!* Range slider *!/*/}
+                        {/*      <Slider*/}
+                        {/*          id="slider-range"*/}
+                        {/*          className="range-bar"*/}
+                        {/*          value={value}*/}
+                        {/*          onChange={handleChange}*/}
+                        {/*          min={100}*/}
+                        {/*          max={100000}*/}
+                        {/*          valueLabelDisplay="auto"*/}
+                        {/*      />*/}
+                        {/*    </Box>*/}
+                        {/*  </div>*/}
+
+                        {/*</div>*/}
+
+                        <div className="filtersection">
+                          <h5 className="lightest-black">Price Range</h5>
+                          <Box className="price-range-slider" sx={{width: 300, padding: 2}}>
+                            <TextField
+                                id="amount"
+                                value={`₹${value[0]} - ₹${value[1]}`}
+                                InputProps={{readOnly: true}}
+                                fullWidth
+                            />
                             <Slider
-                                id="slider-range"
-                                className="range-bar"
                                 value={value}
-                                onChange={handleChange}
+                                onChange={handlePriceChange}
                                 min={100}
                                 max={100000}
                                 valueLabelDisplay="auto"
                             />
                           </Box>
                         </div>
-
-                      </div>
-                      <hr className="bg-light-gray mt-24 mb-24"/>
-                      <div className="filtersection">
-                        <h5 className="lightest-black">Stops</h5>
-                        <ul class="list-group">
-                        <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            Non-Stop
-                          </li>
-                          <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            1 Stop
-                          </li>
-                          <li class="list-group-item">
-                            <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                            2+ Stop
-                          </li>
-                        </ul>
-                        </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
+                        <hr className="bg-light-gray mt-24 mb-24"/>
                         <div className="filtersection">
-                        <h5 className="lightest-black">Departure</h5>
-                        <div className="content-block">
-                          <div className="radio-tile-group sidebar pb-24">
-                            <div className="input-container">
+                          <h5 className="lightest-black">Stops</h5>
+                          <ul className="list-group">
+                            <li className="list-group-item">
                               <input
-                                id="e-morning"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="e-morning"
+                                  className="form-check-input me-2"
+                                  type="checkbox"
+                                  value="0"
+                                  checked={selectedStops.includes(0)}
+                                  onChange={() => handleStopsChange(0)}
                               />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="sunrise" />
-                                <label htmlFor="e-morning" className="radio-tile-label departure-radio">
-                                  Before 6 AM
-                                </label>
+                              Non-Stop
+                            </li>
+                            <li className="list-group-item">
+                              <input
+                                  className="form-check-input me-2"
+                                  type="checkbox"
+                                  value="1"
+                                  checked={selectedStops.includes(1)}
+                                  onChange={() => handleStopsChange(1)}
+                              />
+                              1 Stop
+                            </li>
+                            <li className="list-group-item">
+                              <input
+                                  className="form-check-input me-2"
+                                  type="checkbox"
+                                  value="2"
+                                  checked={selectedStops.includes(2)}
+                                  onChange={() => handleStopsChange(2)}
+                              />
+                              2+ Stops
+                            </li>
+                          </ul>
+                        </div>
+
+                        <hr className="bg-light-gray mt-24 mb-24"/>
+                        <div className="filtersection">
+                          <h5 className="lightest-black">Departure</h5>
+                          <div className="content-block">
+                            <div className="radio-tile-group sidebar pb-24">
+                              <div className="input-container">
+                                {/*<input
+                                    id="e-morning"
+                                    className="radio-button"
+                                    type="radio"
+                                    name="clock-time"
+                                    defaultValue="e-morning"
+                                />*/}
+                                <input
+                                    id="e-morning"
+                                    className="radio-button"
+                                    type="radio"
+                                    name="departure-time"
+                                    value="e-morning"
+                                    onChange={handleDepartureTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="sunrise"/>
+                                  <label htmlFor="e-morning" className="radio-tile-label departure-radio">
+                                    Before 6 AM
+                                  </label>
+                                </div>
                               </div>
-                            </div>
-                            <div className="input-container">
-                              <input
-                                id="morning"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="morning"
-                              />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="morning" />
-                                <label htmlFor="morning" className="radio-tile-label departure-radio">
-                                6 AM - 12 PM
-                                </label>
+                              <div className="input-container">
+                                <input
+                                    id="morning"
+                                    className="radio-button"
+                                    type="radio"
+                                    defaultValue="morning"
+                                    name="departure-time"
+                                    value="morning"
+                                    onChange={handleDepartureTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="morning"/>
+                                  <label htmlFor="morning" className="radio-tile-label departure-radio">
+                                    6 AM - 12 PM
+                                  </label>
+                                </div>
                               </div>
-                            </div>
-                            <div className="input-container">
-                              <input
-                                id="afternoon"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="after-noon"
-                              />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="afternoon" />
-                                <label htmlFor="afternoon" className="radio-tile-label departure-radio">
-                                12 PM - 6 PM
-                                </label>
+                              <div className="input-container">
+                                <input
+                                    id="afternoon"
+                                    className="radio-button"
+                                    type="radio"
+                                    name="clock-time"
+                                    defaultValue="afternoon"
+                                    name="departure-time"
+                                    value="afternoon"
+                                    onChange={handleDepartureTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="afternoon"/>
+                                  <label htmlFor="afternoon" className="radio-tile-label departure-radio">
+                                    12 PM - 6 PM
+                                  </label>
+                                </div>
                               </div>
-                            </div>
-                            <div className="input-container">
-                              <input
-                                id="evening"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="evening"
-                              />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="evening" />
-                                <label htmlFor="evening" className="radio-tile-label departure-radio">
-                                  After 6 PM
-                                </label>
+                              <div className="input-container">
+                                <input
+                                    id="evening"
+                                    className="radio-button"
+                                    type="radio"
+                                    // name="clock-time"
+                                    defaultValue="evening"
+                                    name="departure-time"
+                                    value="evening"
+                                    onChange={handleDepartureTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="evening"/>
+                                  <label htmlFor="evening" className="radio-tile-label departure-radio">
+                                    After 6 PM
+                                  </label>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <h5 className="lightest-black mt-3">Arrival</h5>
-                        <div className="content-block">
-                          <div className="radio-tile-group sidebar pb-24">
-                            <div className="input-container">
-                              <input
-                                id="e-morning"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="e-morning"
-                              />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="sunrise" />
-                                <label htmlFor="e-morning" className="radio-tile-label departure-radio">
-                                  Before 6 AM
-                                </label>
+                          <h5 className="lightest-black mt-3">Arrival</h5>
+                          <div className="content-block">
+                            <div className="radio-tile-group sidebar pb-24">
+                              <div className="input-container">
+                                <input
+                                    id="e-morning"
+                                    className="radio-button"
+                                    type="radio"
+                                    // name="clock-time"
+                                    defaultValue="e-morning"
+                                    name="arrival-time"
+                                    value="e-morning"
+                                    onChange={handleArrivalTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="sunrise"/>
+                                  <label htmlFor="e-morning" className="radio-tile-label departure-radio">
+                                    Before 6 AM
+                                  </label>
+                                </div>
                               </div>
-                            </div>
-                            <div className="input-container">
-                              <input
-                                id="morning"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="morning"
-                              />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="morning" />
-                                <label htmlFor="morning" className="radio-tile-label departure-radio">
-                                6 AM - 12 PM
-                                </label>
+                              <div className="input-container">
+                                <input
+                                    id="morning"
+                                    className="radio-button"
+                                    type="radio"
+                                    defaultValue="morning"
+                                    name="arrival-time"
+                                    value="morning"
+                                    onChange={handleArrivalTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="morning"/>
+                                  <label htmlFor="morning" className="radio-tile-label departure-radio">
+                                    6 AM - 12 PM
+                                  </label>
+                                </div>
                               </div>
-                            </div>
-                            <div className="input-container">
-                              <input
-                                id="afternoon"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="after-noon"
-                              />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="afternoon" />
-                                <label htmlFor="afternoon" className="radio-tile-label departure-radio">
-                                12 PM - 6 PM
-                                </label>
+                              <div className="input-container">
+                                <input
+                                    id="afternoon"
+                                    className="radio-button"
+                                    type="radio"
+                                    defaultValue="afternoon"
+                                    name="arrival-time"
+                                    value="afternoon"
+                                    onChange={handleArrivalTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="afternoon"/>
+                                  <label htmlFor="afternoon" className="radio-tile-label departure-radio">
+                                    12 PM - 6 PM
+                                  </label>
+                                </div>
                               </div>
-                            </div>
-                            <div className="input-container">
-                              <input
-                                id="evening"
-                                className="radio-button"
-                                type="radio"
-                                name="clock-time"
-                                defaultValue="evening"
-                              />
-                              <div className="radio-tile sidebar-departure-radio">
-                                <i className="evening" />
-                                <label htmlFor="evening" className="radio-tile-label departure-radio">
-                                  After 6 PM
-                                </label>
+                              <div className="input-container">
+                                <input
+                                    id="evening"
+                                    className="radio-button"
+                                    type="radio"
+                                    defaultValue="evening"
+                                    name="arrival-time"
+                                    value="evening"
+                                    onChange={handleArrivalTimeChange}
+                                />
+                                <div className="radio-tile sidebar-departure-radio">
+                                  <i className="evening"/>
+                                  <label htmlFor="evening" className="radio-tile-label departure-radio">
+                                    After 6 PM
+                                  </label>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
                         </div>
                       </div>
                     </div>
                     {/*Flight List Start*/}
                     <div className="col-xl-9 col-lg-9">
                       {/*{searchResponse.results.outboundFlights.map((flight, index) => (*/}
-                          {currentFlights.map((flight, index) => (
-                      <div key={index} className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
-                        <div className="flight-area multi-flight">
-                          <div className="flight-left col-md-9">
-                            {flight.sg.map((flightSegment, ser) => (
-                          <div>
-                           <h5 className="badge">Departure</h5>
-                            <div className="flightrow">
-                              <div className="airline-name">
-                                <img src={Airindia} alt="" />
-                                <div>
+                      {paginatedFlights.map((flight, index) => (
+                          <div key={index} className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                            <div className="flight-area multi-flight">
+                              <div className="flight-left col-md-9">
+                                {flight.sg.map((flightSegment, ser) => (
+                                    <div>
+                                      <h5 className="badge">Departure</h5>
+                                      <div className="flightrow">
+                                        <div className="airline-name">
+                                          <img src={Airindia} alt=""/>
+                                          <div>
                                   <h5 className="lightest-black mb-8"> {flightSegment.al.alN}</h5>
                                   <h6 className="dark-gray">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
                                 </div>
