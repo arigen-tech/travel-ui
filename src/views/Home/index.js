@@ -40,15 +40,14 @@ const HomePage = () => {
     const [fromAirport, setFromAirport] = useState([]);
     const [toAirport, setToAirport] = useState([]);
     const [multiAirport, setMultiAirport] = useState([]);
+    const constants = {
+        fromDate: selectedFromDate,
+        returnDate:selectedReturnDate,
+        from: fromAirport,
+        to: toAirport,
+        travellerCounts:travellerCounts
 
-    // const [options,setOptions]=useState([]);
-    const locationOptions = [
-        {value: "Delhi"},
-        {value: "Mumbai"},
-        {value: "Bangalore"},
-        {value: "Chennai"},
-
-    ];
+    };
 
 
     // Format date to "10 Jan'2025"
@@ -59,38 +58,7 @@ const HomePage = () => {
         return formattedDate.replace(" ", " ").replace(" ", "'");
     };
 
-    function setDefaultAirport() {
-        // const option = airport.map((airport) => ({
-        //   value: airport.id,
-        //   label: airport.city,
-        // }));
-        // setOptions(option);
-    }
 
-    async function fetchFrequentAirport() {
-        try {
-            const data = await getRequest(GET_DEFAULT_AIRPORT);
-            if (data.status === 200 && Array.isArray(data.response)) {
-                setFromAirports(data.response);
-                setToAirports(data.response);
-                setDefaultAirports(data.response);
-                setFromAirport(data.response[0]);
-                setToAirport(data.response[1]);
-                // setMultiAirport([{fromAirport:data.response[0],toAirport:data.response[1]}]);
-            } else {
-                setFromAirports([]);
-                setToAirports([]);
-                setFromAirport(undefined);
-                setToAirport(undefined);
-                console.error("Unexpected API response format:", data);
-            }
-        } catch (error) {
-            console.error("Error fetching amenities data:", error);
-        } finally {
-            setLoading(false);
-        }
-
-    }
     useEffect(() => {
         localStorage.removeItem('flightSearchResponse');
         fetchFrequentAirport();
@@ -103,6 +71,21 @@ const HomePage = () => {
     }, []);
 
 
+
+    const deleteRow = () => {
+        if (rows.length > 1) {
+            const updatedRows = [...rows];
+            updatedRows.pop(); // Remove the last row
+            setRows(updatedRows);
+        } else {
+            alert("No more rows to delete.");
+        }
+    };
+    const handleRowChange = (index, field, value) => {
+        const updatedRows = [...rows];
+        updatedRows[index][field] = value;
+        setRows(updatedRows);
+    };
     const handleTripTypeChange = (e) => {
         setTripType(e.target.value);
         if (e.target.value === "oneway" || e.target.value === "multiway") {
@@ -125,21 +108,6 @@ const HomePage = () => {
             { fromAirport: defaultAirports[0], toAirport: defaultAirports[1] },
         ]);
     };
-    const deleteRow = () => {
-        if (rows.length > 1) {
-            const updatedRows = [...rows];
-            updatedRows.pop(); // Remove the last row
-            setRows(updatedRows);
-        } else {
-            alert("No more rows to delete.");
-        }
-    };
-    const handleRowChange = (index, field, value) => {
-        const updatedRows = [...rows];
-        updatedRows[index][field] = value;
-        setRows(updatedRows);
-    };
-
 
     const updateTravellerCount = (type, delta) => {
         setTravellerCounts((prevCounts) => {
@@ -157,12 +125,30 @@ const HomePage = () => {
 
 
 
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue); // Update range values
+    };
+
+
+    const backgroundImageStyle = {
+        backgroundImage: "url(assets/img/home-1/about/about-bg.png)",
+    };
+    const backgroundImageStyle2 = {
+        backgroundImage: "url(assets/img/home-1/video/img/video-bg.jpg)",
+    };
+    const backgroundImageStyle3 = {
+        backgroundImage: "url(assets/img/home-1/offer/img/offer-bg.jpg)",
+    };
+    const backgroundImageStyle4 = {
+        backgroundImage: "url(assets/img/home-1/shop/shop-bg.png)",
+    };
     async function searchFlights(json) {
         setLoading(true);
         const data = await postRequest(GET_FLIGHT, json);
         setLoading(false);
         localStorage.setItem('flightSearchResponse',JSON.stringify(data));
-        navigate('/flightList');
+        navigate('/flightList',{ state: constants });
         // setFlightSearchResponse(data.response);
     }
 
@@ -187,25 +173,30 @@ const HomePage = () => {
         e.preventDefault();
 
     };
-    const handleChange = (event, newValue) => {
-        setValue(newValue); // Update range values
-    };
+    async function fetchFrequentAirport() {
+        try {
+            const data = await getRequest(GET_DEFAULT_AIRPORT);
+            if (data.status === 200 && Array.isArray(data.response)) {
+                setFromAirports(data.response);
+                setToAirports(data.response);
+                setDefaultAirports(data.response);
+                setFromAirport(data.response[0]);
+                setToAirport(data.response[1]);
+                // setMultiAirport([{fromAirport:data.response[0],toAirport:data.response[1]}]);
+            } else {
+                setFromAirports([]);
+                setToAirports([]);
+                setFromAirport(undefined);
+                setToAirport(undefined);
+                console.error("Unexpected API response format:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching amenities data:", error);
+        } finally {
+            setLoading(false);
+        }
 
-
-    const backgroundImageStyle = {
-        backgroundImage: "url(assets/img/home-1/about/about-bg.png)",
-    };
-    const backgroundImageStyle2 = {
-        backgroundImage: "url(assets/img/home-1/video/img/video-bg.jpg)",
-    };
-    const backgroundImageStyle3 = {
-        backgroundImage: "url(assets/img/home-1/offer/img/offer-bg.jpg)",
-    };
-    const backgroundImageStyle4 = {
-        backgroundImage: "url(assets/img/home-1/shop/shop-bg.png)",
-    };
-
-
+    }
     const updateAirportData = async (num, inputValue) => {
         try {
         if (inputValue.trim().length<3 && num === 1) {

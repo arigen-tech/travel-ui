@@ -10,35 +10,42 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Slider, Box, TextField } from "@mui/material";
 import Select from "react-select";
+import { useLocation } from 'react-router-dom';
+import {getRequest, postRequest} from "../../service/apiService";
+import {GET_DEFAULT_AIRPORT, GET_FLIGHT, GET_SEARCH_AIRPORT} from "../../config/apiConfig";
 
 const Flightlist = () => {
-  const [searchResponse,setSearchResponse]=useState(JSON.parse(localStorage.getItem('flightSearchResponse')).response);
+  const location = useLocation();
+  const constants = location.state || {};
+  console.log(constants);
+  const [searchResponse,setSearchResponse]=useState(localStorage.getItem('flightSearchResponse')!=null?JSON.parse(localStorage.getItem('flightSearchResponse')).response:{results:{outboundFlights:[]},facets:{airlines:{outbound:[]} }});
   const [loading, setLoading] = useState(true); // Preloader visible initially
-  // const [value, setValue] = useState([130, 250]); // Initial range values
   const [tripType, setTripType] = useState("oneway"); // Default trip type
   const [rows, setRows] = useState([{ from: "", to: "", departure: "" }]); // Rows for Multi Trip
   const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown toggle
-  const [travellerCounts, setTravellerCounts] = useState({
+  const [travellerCounts, setTravellerCounts] = useState(constants.travellerCounts?constants.travellerCounts:{
     adults: 1,
     children: 0,
     infants: 0,
   }); // Traveller counts
   const [cabinClass, setCabinClass] = useState("Economy"); // Default cabin class
-  const [selectedFromDate, setSelectedFromDate] = useState(new Date()); 
-  const [selectedReturnDate, setSelectedReturnDate] = useState(new Date()); // State for return date
-
+  const [selectedFromDate, setSelectedFromDate] = useState(constants.fromDate?constants.fromDate:new Date());
+  const [selectedReturnDate, setSelectedReturnDate] = useState(constants.returnDate?constants.returnDate:new Date()); // State for return date
   const itemsPerPage = 5; // Number of flights to show per page
   const [currentPage, setCurrentPage] = useState(1);
-
   const totalFlights = searchResponse.results.outboundFlights.length;
-  // const totalPages = Math.ceil(totalFlights / itemsPerPage);
   const [selectedAirlines, setSelectedAirlines] = useState([]);
-
-
   const [value, setValue] = React.useState([100, 100000]); // Price range
   const [departureTime, setDepartureTime] = React.useState(""); // Selected departure time range
   const [arrivalTime, setArrivalTime] = React.useState("");
   const [selectedStops, setSelectedStops] = React.useState([]);
+  const [searchSubstring, setSearchSubstring] = useState("");
+  const [fromAirports, setFromAirports] = useState([]);
+  const [toAirports, setToAirports] = useState([]);
+  const [defaultAirports, setDefaultAirports] = useState([]);
+  const [fromAirport, setFromAirport] = useState(constants.from);
+  const [toAirport, setToAirport] = useState(constants.to);
+  const [multiAirport, setMultiAirport] = useState([]);
 
   // Get flights for the current page
 
@@ -145,21 +152,22 @@ const Flightlist = () => {
   const handleCabinClassChange = (event) => {
     setCabinClass(event.target.value);
   };
-  const handleSubmitTravellercount = (e) => {
-    e.preventDefault();
-    console.log("Form submitted", {
-      tripType,
-      rows,
-      travellerCounts,
-      cabinClass,
-    });
-  };
+  // const handleSubmitTravellercount = (e) => {
+  //   e.preventDefault();
+  //   console.log("Form submitted", {
+  //     tripType,
+  //     rows,
+  //     travellerCounts,
+  //     cabinClass,
+  //   });
+  // };
   const handleChange = (event, newValue) => {
 
     setValue(newValue); // Update range values
   };
 
   useEffect(() => {
+    fetchFrequentAirport();
     // console.log(searchResponse.response);
 
     // Simulate content loading (replace with real loading logic)
@@ -173,6 +181,124 @@ const Flightlist = () => {
   const handlesubmit = (e) => {
     e.preventDefault();
   }
+  // flight search form
+
+  async function searchFlights(json) {
+    setLoading(true);
+    const data = await postRequest(GET_FLIGHT, json);
+    setLoading(false);
+    localStorage.setItem('flightSearchResponse',JSON.stringify(data));
+    setSearchResponse(data.response);
+    // navigate('/flightList',{ state: constants });
+    // setFlightSearchResponse(data.response);
+  }
+
+  const handleSubmitTravellercount = (e) => {
+    let json= {
+      directFlight: "false",
+      adultCount: travellerCounts.adults,
+      childCount: travellerCounts.children,
+      infantCount: travellerCounts.infants,
+      flightCabinClass: "1",
+      journeyType: tripType==="oneway"?1:2,
+      preferredDepartureTime: selectedFromDate.toISOString().split('.')[0],
+      origin: fromAirport.iataCode,
+      destination: toAirport.iataCode,
+      preferredReturnDepartureTime: selectedReturnDate?selectedReturnDate.toISOString().split('.')[0]:null
+    }
+    searchFlights(json);
+
+    console.log(json);
+
+    debugger;
+    e.preventDefault();
+
+  };
+  async function fetchFrequentAirport() {
+    try {
+      const data = await getRequest(GET_DEFAULT_AIRPORT);
+      if (data.status === 200 && Array.isArray(data.response)) {
+        setFromAirports(data.response);
+        setToAirports(data.response);
+        setDefaultAirports(data.response);
+        // setFromAirport(data.response[0]);
+        // setToAirport(data.response[1]);
+        // setMultiAirport([{fromAirport:data.response[0],toAirport:data.response[1]}]);
+      } else {
+        setFromAirports([]);
+        setToAirports([]);
+        // setFromAirport(undefined);
+        // setToAirport(undefined);
+        console.error("Unexpected API response format:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching amenities data:", error);
+    } finally {
+      setLoading(false);
+    }
+
+  }
+  const updateAirportData = async (num, inputValue) => {
+    try {
+      if (inputValue.trim().length<3 && num === 1) {
+        setFromAirports(defaultAirports);
+
+      } else if (inputValue.trim() === "" && num === 2) {
+        setToAirports(defaultAirports);
+
+      } else {
+
+        debugger;
+        let url = GET_SEARCH_AIRPORT + inputValue;
+        console.log(url);
+        const data = await getRequest(url);
+        if (data?.status === 200 && Array.isArray(data.response)) {
+          if (num === 1){
+            debugger;
+            setFromAirports(data.response);
+          }
+
+          else{
+            setToAirports(data.response);
+          }
+
+        } else {
+          console.error("Unexpected response format:", data);
+        }
+      }
+    }catch (error) {
+      console.error("Error fetching searched airports:", error);
+    } finally {
+
+    }
+  };
+  const handleFromAirportInputChange = (num, inputValue, {action}) => {
+    if (action !== "input-change") return; // Only process user typing events
+    updateAirportData(num, inputValue);
+
+  };
+  const handleMultiChange = (key, selectedOption,index) => {
+    debugger;
+    setMultiAirport((prevAirports) => {
+      // Create a copy of the previous state
+      let updatedAirports = [...prevAirports];
+
+      // Update the specific key (fromAirport or toAirport) at the given index
+      if (key === 1) {
+        updatedAirports[index] = {
+          ...updatedAirports[index],
+          fromAirport: selectedOption,
+        };
+      } else if (key === 2) {
+        updatedAirports[index] = {
+          ...updatedAirports[index],
+          toAirport: selectedOption,
+        };
+      }
+      // Return the updated array
+      return updatedAirports;
+    });
+  };
 
   const handleCheckboxChangeAirline = (code) => {
     setSelectedAirlines((prevSelected) =>
@@ -183,24 +309,12 @@ const Flightlist = () => {
 
   };
 
-  // Filter outbound flights based on selected airlines
-  // const currentFlights = selectedAirlines.length
-  //     ? searchResponse.results.outboundFlights.filter((flight) =>
-  //         flight.sg.some((segment) => selectedAirlines.includes(segment.al.alC))
-  //     ).slice(
-  //         (currentPage - 1) * itemsPerPage,
-  //         currentPage * itemsPerPage
-  //     )
-  //     : searchResponse.results.outboundFlights.slice(
-  //     (currentPage - 1) * itemsPerPage,
-  //     currentPage * itemsPerPage
-  // );
   const currentFlights = searchResponse.results.outboundFlights.filter((flight) => {
     const isAirlineMatched = selectedAirlines.length
         ? flight.sg.some((segment) => selectedAirlines.includes(segment.al.alC))
         : true;
 
-    const isPriceInRange = flight.pF >= value[0] && flight.pF <= value[1];
+    const isPriceInRange = flight.fF >= value[0] && flight.fF <= value[1];
 
     const isDepartureTimeMatched = departureTime
         ? flight.sg.some((segment) => isTimeInRange(segment.or.dT, departureTime))
@@ -247,307 +361,687 @@ const Flightlist = () => {
                       <div className="container">
                           <div className="it-tour-package-wrap it-slider-tour-style it-tour-package-box z-index">
                           <div className="it-tour-package-location__wrapper">
-                                  <div className="row">
-                                    {/* Flight Search Form */}
-                                   {/* Flight Search Form */}
-                                   <form>
-                                      <div className="form-header">
-                                        <div className="d-flex align-items-center justify-content-between flex-wrap">
-                                          <div className="d-flex align-items-center">
-                                            <div className="form-check d-flex align-items-center me-3 mb-2">
-                                              <input
-                                                className="form-check-input mt-0"
-                                                type="radio"
-                                                name="tripType"
-                                                id="oneway"
-                                                value="oneway"
-                                                checked={tripType === "oneway"}
-                                                onChange={handleTripTypeChange}
-                                              />
-                                              <label className="form-check-label fs-14 ms-2" htmlFor="oneway">
-                                                Oneway
-                                              </label>
-                                            </div>
-                                            <div className="form-check d-flex align-items-center me-3 mb-2">
-                                              <input
-                                                className="form-check-input mt-0"
-                                                type="radio"
-                                                name="tripType"
-                                                id="roundtrip"
-                                                value="roundtrip"
-                                                checked={tripType === "roundtrip"}
-                                                onChange={handleTripTypeChange}
-                                              />
-                                              <label
-                                                className="form-check-label fs-14 ms-2"
-                                                htmlFor="roundtrip"
-                                              >
-                                                Round Trip
-                                              </label>
-                                            </div>
-                                            <div className="form-check d-flex align-items-center me-3 mb-2">
-                                              <input
-                                                className="form-check-input mt-0"
-                                                type="radio"
-                                                name="tripType"
-                                                id="multiway"
-                                                value="multiway"
-                                                checked={tripType === "multiway"}
-                                                onChange={handleTripTypeChange}
-                                              />
-                                              <label className="form-check-label fs-14 ms-2" htmlFor="multiway">
-                                                Multi Trip
-                                              </label>
-                                            </div>
-                                          </div>
-                                          <h6 className="fw-medium fs-16 mb-2">
-                                            Millions of cheap flights. One simple search
-                                          </h6>
-                                        </div>
+                            <div className="row">
+                              {/* Flight Search Form */}
+                              {/* Flight Search Form */}
+                              {/*<form>*/}
+                              {/*   <div className="form-header">*/}
+                              {/*     <div className="d-flex align-items-center justify-content-between flex-wrap">*/}
+                              {/*       <div className="d-flex align-items-center">*/}
+                              {/*         <div className="form-check d-flex align-items-center me-3 mb-2">*/}
+                              {/*           <input*/}
+                              {/*             className="form-check-input mt-0"*/}
+                              {/*             type="radio"*/}
+                              {/*             name="tripType"*/}
+                              {/*             id="oneway"*/}
+                              {/*             value="oneway"*/}
+                              {/*             checked={tripType === "oneway"}*/}
+                              {/*             onChange={handleTripTypeChange}*/}
+                              {/*           />*/}
+                              {/*           <label className="form-check-label fs-14 ms-2" htmlFor="oneway">*/}
+                              {/*             Oneway*/}
+                              {/*           </label>*/}
+                              {/*         </div>*/}
+                              {/*         <div className="form-check d-flex align-items-center me-3 mb-2">*/}
+                              {/*           <input*/}
+                              {/*             className="form-check-input mt-0"*/}
+                              {/*             type="radio"*/}
+                              {/*             name="tripType"*/}
+                              {/*             id="roundtrip"*/}
+                              {/*             value="roundtrip"*/}
+                              {/*             checked={tripType === "roundtrip"}*/}
+                              {/*             onChange={handleTripTypeChange}*/}
+                              {/*           />*/}
+                              {/*           <label*/}
+                              {/*             className="form-check-label fs-14 ms-2"*/}
+                              {/*             htmlFor="roundtrip"*/}
+                              {/*           >*/}
+                              {/*             Round Trip*/}
+                              {/*           </label>*/}
+                              {/*         </div>*/}
+                              {/*         <div className="form-check d-flex align-items-center me-3 mb-2">*/}
+                              {/*           <input*/}
+                              {/*             className="form-check-input mt-0"*/}
+                              {/*             type="radio"*/}
+                              {/*             name="tripType"*/}
+                              {/*             id="multiway"*/}
+                              {/*             value="multiway"*/}
+                              {/*             checked={tripType === "multiway"}*/}
+                              {/*             onChange={handleTripTypeChange}*/}
+                              {/*           />*/}
+                              {/*           <label className="form-check-label fs-14 ms-2" htmlFor="multiway">*/}
+                              {/*             Multi Trip*/}
+                              {/*           </label>*/}
+                              {/*         </div>*/}
+                              {/*       </div>*/}
+                              {/*       <h6 className="fw-medium fs-16 mb-2">*/}
+                              {/*         Millions of cheap flights. One simple search*/}
+                              {/*       </h6>*/}
+                              {/*     </div>*/}
+                              {/*   </div>*/}
+                              {/*   <div className="row">*/}
+                              {/*     <div className="col-md-2 form-group firstinput">*/}
+                              {/*       <label htmlFor="from">From</label>*/}
+                              {/*       <Select*/}
+                              {/*         id="from"*/}
+                              {/*         options={locationOptions}*/}
+                              {/*         defaultValue={locationOptions[0]} // Default to Delhi*/}
+                              {/*         getOptionLabel={(e) => e.value} // Display only the value*/}
+                              {/*         getOptionValue={(e) => e.value}*/}
+                              {/*         classNamePrefix="react-select"*/}
+                              {/*       />*/}
+                              {/*       <small className="text-muted">Indiragandhi International Airport</small>*/}
+                              {/*     </div>*/}
+                              {/*     <div className="col-md-2 form-group">*/}
+                              {/*       <label htmlFor="to">To</label>*/}
+                              {/*       <Select*/}
+                              {/*         id="to"*/}
+                              {/*         options={locationOptions}*/}
+                              {/*         defaultValue={locationOptions[1]} // Default to Mumbai*/}
+                              {/*         getOptionLabel={(e) => e.value} // Display only the value*/}
+                              {/*         getOptionValue={(e) => e.value}*/}
+                              {/*         classNamePrefix="react-select"*/}
+                              {/*       />                                        */}
+                              {/*       <small className="text-muted">CSM International Airport</small>*/}
+                              {/*     </div>*/}
+                              {/*     <div className="col-md-2 form-group">*/}
+                              {/*       <label htmlFor="departure">Departure</label>*/}
+                              {/*       <DatePicker*/}
+                              {/*           selected={selectedFromDate || new Date()} // Default to current date if no date is selected*/}
+                              {/*           onChange={(date) => {*/}
+                              {/*             setSelectedFromDate(date);*/}
+                              {/*             setSelectedReturnDate(null); // Reset return date if departure changes*/}
+                              {/*           }}*/}
+                              {/*           dateFormat="dd MMM yyyy"*/}
+                              {/*           minDate={new Date()} // Prevent past dates*/}
+                              {/*           customInput={*/}
+                              {/*             <input*/}
+                              {/*               type="text"*/}
+                              {/*               className="form-control"*/}
+                              {/*               value={formatDate(selectedFromDate)} // Display custom format*/}
+                              {/*               readOnly*/}
+                              {/*             />*/}
+                              {/*           }*/}
+                              {/*         />*/}
+
+                              {/*       <small className="text-muted">Monday</small>*/}
+                              {/*     </div>*/}
+                              {/*     <div className={`col-md-2 form-group ${tripType === 'oneway' || tripType === 'multiway' ? 'disabled' : ''}`}>*/}
+                              {/*       <label htmlFor="return">Return</label>*/}
+                              {/*       <DatePicker*/}
+                              {/*         selected={selectedReturnDate ? selectedReturnDate : selectedFromDate} // Return date*/}
+                              {/*         onChange={(date) => setSelectedReturnDate(date)} // Set return date*/}
+                              {/*         dateFormat="dd MMM yyyy"*/}
+                              {/*         minDate={selectedFromDate || new Date()} // Prevent return before departure*/}
+                              {/*         disabled={tripType === "oneway" || tripType === "multiway"} // Disable for one-way or multi-trip*/}
+                              {/*         customInput={*/}
+                              {/*           <input*/}
+                              {/*             type="text"*/}
+                              {/*             className="form-control"*/}
+                              {/*             value={formatDate(selectedReturnDate ? selectedReturnDate : selectedFromDate)} // Display custom format*/}
+                              {/*             readOnly*/}
+                              {/*           />*/}
+                              {/*         }*/}
+                              {/*       />*/}
+
+                              {/*       <small className="text-muted">Wednesday</small>*/}
+                              {/*     </div>*/}
+                              {/*     <div className="col-md-3 form-group">*/}
+                              {/*       <label htmlFor="travellersDropdown">Travellers and cabin class</label>*/}
+                              {/*       <div className="dropdown mt-2">*/}
+                              {/*         <button*/}
+                              {/*           className="btn btn-light w-100 dropdown-toggle"*/}
+                              {/*           type="button"*/}
+                              {/*           id="travellersDropdown"*/}
+                              {/*           data-bs-toggle="dropdown"*/}
+                              {/*           aria-expanded={dropdownOpen}*/}
+                              {/*           onClick={() => setDropdownOpen(!dropdownOpen)}*/}
+                              {/*         >*/}
+                              {/*           {`${travellerCounts.adults} Adults, ${travellerCounts.children} Children, ${travellerCounts.infants} Infants, ${cabinClass}`}*/}
+                              {/*         </button>*/}
+                              {/*         <ul*/}
+                              {/*           className={`dropdown-menu travellersDropdowncontent py-3 ${*/}
+                              {/*             dropdownOpen ? "show" : ""*/}
+                              {/*           }`}*/}
+                              {/*           aria-labelledby="travellersDropdown"*/}
+                              {/*         >*/}
+                              {/*           <li className="travellerscol p-2 mb-2 row">*/}
+                              {/*             <div className="travellers-dropdown-header">Travellers</div>*/}
+                              {/*             {["adults", "children", "infants"].map((type, index) => (*/}
+                              {/*               <div key={index} className="traveller-control col-md-4">*/}
+                              {/*                 <span>{`${type.charAt(0).toUpperCase() + type.slice(1)}${*/}
+                              {/*                   type === "adults" ? " (12+ Yrs)" : type === "children" ? " (2-12 Yrs)" : " (0-2 Yrs)"*/}
+                              {/*                 }`}</span>*/}
+                              {/*                 <div>*/}
+                              {/*                   <button*/}
+                              {/*                     type="button"*/}
+                              {/*                     className="btn btn-sm"*/}
+                              {/*                     onClick={() => updateTravellerCount(type, -1)}*/}
+                              {/*                   >*/}
+                              {/*                     -*/}
+                              {/*                   </button>*/}
+                              {/*                   <span className="traveller-count">{travellerCounts[type]}</span>*/}
+                              {/*                   <button*/}
+                              {/*                     type="button"*/}
+                              {/*                     className="btn btn-sm"*/}
+                              {/*                     onClick={() => updateTravellerCount(type, +1)}*/}
+                              {/*                   >*/}
+                              {/*                     +*/}
+                              {/*                   </button>*/}
+                              {/*                 </div>*/}
+                              {/*               </div>*/}
+                              {/*             ))}*/}
+                              {/*           </li>*/}
+                              {/*           <li className="travellerscol row p-2">*/}
+                              {/*             <div className="travellers-dropdown-header">Class</div>*/}
+                              {/*             {["Economy", "Premium Economy", "Business", "First Class"].map((type, index) => (*/}
+                              {/*               <div key={index} className="form-check traveller-control col-md-3">*/}
+                              {/*                 <input*/}
+                              {/*                   className="form-check-input"*/}
+                              {/*                   type="radio"*/}
+                              {/*                   name="cabinClass"*/}
+                              {/*                   id={type.replace(" ", "").toLowerCase()}*/}
+                              {/*                   value={type}*/}
+                              {/*                   checked={cabinClass === type}*/}
+                              {/*                   onChange={handleCabinClassChange}*/}
+                              {/*                 />*/}
+                              {/*                 <label*/}
+                              {/*                   className="form-check-label"*/}
+                              {/*                   htmlFor={type.replace(" ", "").toLowerCase()}*/}
+                              {/*                 >*/}
+                              {/*                   {type}*/}
+                              {/*                 </label>*/}
+                              {/*               </div>*/}
+                              {/*             ))}*/}
+                              {/*           </li>*/}
+                              {/*           <li>*/}
+                              {/*             <div className="dropdown-footer">*/}
+                              {/*               <button*/}
+                              {/*                 className="btn btn-secondary btn-sm"*/}
+                              {/*                 type="button"*/}
+                              {/*                 onClick={() => {*/}
+                              {/*                   setTravellerCounts({ adults: 1, children: 0, infants: 0 }); // Reset to default values*/}
+                              {/*                   setCabinClass("Economy"); // Reset cabin class if needed*/}
+                              {/*                   setDropdownOpen(false); // Close the dropdown*/}
+                              {/*                 }}*/}
+                              {/*               >*/}
+                              {/*                 Cancel*/}
+                              {/*               </button>*/}
+                              {/*               <button*/}
+                              {/*                 className="btn btn-primary btn-sm"*/}
+                              {/*                 type="button"*/}
+                              {/*                 onClick={() => setDropdownOpen(false)}*/}
+                              {/*               >*/}
+                              {/*                 Apply*/}
+                              {/*               </button>*/}
+                              {/*             </div>*/}
+                              {/*           </li>*/}
+                              {/*         </ul>*/}
+                              {/*       </div>*/}
+                              {/*     </div>*/}
+                              {/*     <div className="col-md-1 form-group d-flex align-items-center py-0 pe-0 searchcol">*/}
+                              {/*     <div className="it-tour-package-item d-flex justify-content-end">*/}
+                              {/*     <div className="it-tour-package-search">*/}
+                              {/*         <button type="submit" onClick={handleSubmitTravellercount}>*/}
+                              {/*           Search <i className="fa-solid fa-magnifying-glass"></i>*/}
+                              {/*         </button>*/}
+                              {/*     </div>*/}
+                              {/*     </div>*/}
+                              {/*   </div>*/}
+                              {/*   </div>*/}
+                              {/*   {tripType === "multiway" &&*/}
+                              {/*     rows.map((row, index) => (*/}
+                              {/*       <div className="row mt-2" key={index}>*/}
+                              {/*         <div className="col-md-4 form-group firstinput">*/}
+                              {/*           <label htmlFor={`from-${index}`}>From</label>*/}
+                              {/*           <input*/}
+                              {/*             type="text"*/}
+                              {/*             id={`from-${index}`}*/}
+                              {/*             className="form-control"*/}
+                              {/*             value={row.from?row.from:"Delhi"}*/}
+                              {/*             onChange={(e) => handleRowChange(index, "from", e.target.value)}*/}
+                              {/*           />*/}
+                              {/*           <small className="text-muted">Indiragandhi International Airport</small>*/}
+                              {/*         </div>*/}
+                              {/*         <div className="col-md-4 form-group">*/}
+                              {/*           <label htmlFor={`to-${index}`}>To</label>*/}
+                              {/*           <input*/}
+                              {/*             type="text"*/}
+                              {/*             id={`to-${index}`}*/}
+                              {/*             className="form-control"*/}
+                              {/*             value={row.to?row.to:"Mumbai"}*/}
+                              {/*             onChange={(e) => handleRowChange(index, "to", e.target.value)}*/}
+                              {/*           />*/}
+                              {/*           <small className="text-muted">CSM International Airport</small>*/}
+                              {/*         </div>*/}
+                              {/*         <div className="col-md-4 form-group">*/}
+                              {/*           <label htmlFor={`departure-${index}`}>Departure</label>*/}
+                              {/*           */}
+                              {/*           <DatePicker*/}
+                              {/*             selected={row.departure ? new Date(row.departure) : selectedFromDate} // Default to initial departure*/}
+                              {/*             onChange={(date) => handleRowChange(index, "departure", date.toISOString().split("T")[0])}*/}
+                              {/*             dateFormat="dd MMM yyyy"*/}
+                              {/*             minDate={selectedFromDate} // Restrict to selected departure date or later*/}
+                              {/*             customInput={*/}
+                              {/*               <input*/}
+                              {/*                 type="text"*/}
+                              {/*                 id={`departure-${index}`}*/}
+                              {/*                 className="form-control"*/}
+                              {/*                 value={formatDate(row.departure ? new Date(row.departure) : selectedFromDate)}*/}
+                              {/*                 readOnly*/}
+                              {/*               />*/}
+                              {/*             }*/}
+                              {/*           />*/}
+                              {/*           <small className="text-muted">Monday</small>*/}
+                              {/*         </div>*/}
+
+                              {/*       </div>*/}
+                              {/*     ))}*/}
+                              {/*   {tripType === "multiway" && (*/}
+                              {/*     <div className="row mt-2">*/}
+                              {/*       <div className="col-md-12 px-0">*/}
+                              {/*         <button*/}
+                              {/*           type="button"*/}
+                              {/*           className="btn btn-success me-2"*/}
+                              {/*           onClick={addRow}*/}
+                              {/*         >*/}
+                              {/*           <i className="fa-solid fa-plus"></i> Add Row*/}
+                              {/*         </button>*/}
+                              {/*         <button*/}
+                              {/*           type="button"*/}
+                              {/*           className="btn btn-danger"*/}
+                              {/*           onClick={deleteRow}*/}
+                              {/*         >*/}
+                              {/*           <i className="fa-solid fa-trash-alt"></i> Delete Row*/}
+                              {/*         </button>*/}
+                              {/*         </div>*/}
+                              {/*     </div>*/}
+                              {/*   )}*/}
+                              {/* </form>*/}
+                              <form>
+                                <div className="form-header">
+                                  <div
+                                      className="d-flex align-items-center justify-content-between flex-wrap">
+                                    <div className="d-flex align-items-center">
+                                      <div
+                                          className="form-check d-flex align-items-center me-3 mb-2">
+                                        <input
+                                            className="form-check-input mt-0"
+                                            type="radio"
+                                            name="tripType"
+                                            id="oneway"
+                                            value="oneway"
+                                            checked={tripType === "oneway"}
+                                            onChange={handleTripTypeChange}
+                                        />
+                                        <label
+                                            className="form-check-label fs-14 ms-2"
+                                            htmlFor="oneway">
+                                          Oneway
+                                        </label>
                                       </div>
-                                      <div className="row">
-                                        <div className="col-md-2 form-group firstinput">
-                                          <label htmlFor="from">From</label>
-                                          <Select
-                                            id="from"
-                                            options={locationOptions}
-                                            defaultValue={locationOptions[0]} // Default to Delhi
-                                            getOptionLabel={(e) => e.value} // Display only the value
-                                            getOptionValue={(e) => e.value}
-                                            classNamePrefix="react-select"
+                                      <div
+                                          className="form-check d-flex align-items-center me-3 mb-2">
+                                        <input
+                                            className="form-check-input mt-0"
+                                            type="radio"
+                                            name="tripType"
+                                            id="roundtrip"
+                                            value="roundtrip"
+                                            checked={tripType === "roundtrip"}
+                                            onChange={handleTripTypeChange}
+                                        />
+                                        <label
+                                            className="form-check-label fs-14 ms-2"
+                                            htmlFor="roundtrip"
+                                        >
+                                          Round Trip
+                                        </label>
+                                      </div>
+                                      <div
+                                          className="form-check d-flex align-items-center me-3 mb-2">
+                                        <input
+                                            className="form-check-input mt-0"
+                                            type="radio"
+                                            name="tripType"
+                                            id="multiway"
+                                            value="multiway"
+                                            checked={tripType === "multiway"}
+                                            onChange={handleTripTypeChange}
+                                        />
+                                        <label
+                                            className="form-check-label fs-14 ms-2"
+                                            htmlFor="multiway">
+                                          Multi Trip
+                                        </label>
+                                      </div>
+                                    </div>
+                                    <h6 className="fw-medium fs-16 mb-2">
+                                      Millions of cheap flights. One simple search
+                                    </h6>
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-md-2 form-group firstinput">
+                                    <label htmlFor="fromA">From</label>
+                                    <Select
+                                        id="fromA"
+                                        options={fromAirports}
+                                        onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(1, inputValue, actionMeta)}
+                                        onChange={(selectedOption) => setFromAirport(selectedOption)}
+                                        value={fromAirport}
+                                        getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                        formatOptionLabel={(option) => (
+                                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                              <span style={{
+                                                fontSize: '0.8em',
+                                                color: '#888'
+                                              }}>{option.airportName || "Unknown Airport"}</span>
+                                            </div>
+                                        )}
+                                        getOptionValue={(e) => e || ""}
+                                        classNamePrefix="react-select"
+                                        placeholder="Select an airport"
+                                    />
+                                    {/*<small className="text-muted">{fromAirport !== undefined ? fromAirport.airportName : ("")}</small>*/}
+                                  </div>
+                                  <div className="col-md-2 form-group">
+                                    <label htmlFor="to">To</label>
+                                    <Select
+                                        id="toA"
+                                        options={toAirports}
+                                        value={toAirport}
+                                        onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(2, inputValue, actionMeta)}
+                                        onChange={(selectedOption) => setToAirport(selectedOption)}
+                                        getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                        formatOptionLabel={(option) => (
+                                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                              <span style={{
+                                                fontSize: '0.8em',
+                                                color: '#888'
+                                              }}>{option.airportName || "Unknown Airport"}</span>
+                                            </div>
+                                        )}
+                                        getOptionValue={(e) => e || ""}
+                                        classNamePrefix="react-select"
+                                    />
+                                    {/*<small className="text-muted">{toAirport !== undefined ? toAirport.airportName : ("")}</small>*/}
+                                  </div>
+                                  <div className="col-md-2 form-group">
+                                    <label htmlFor="departure">Departure</label>
+                                    <DatePicker
+                                        selected={selectedFromDate || new Date()} // Default to current date if no date is selected
+                                        onChange={(date) => {
+                                          setSelectedFromDate(date);
+                                          setSelectedReturnDate(null); // Reset return date if departure changes
+                                        }}
+                                        dateFormat="dd MMM yyyy"
+                                        minDate={new Date()} // Prevent past dates
+                                        customInput={
+                                          <input
+                                              type="text"
+                                              className="form-control"
+                                              value={formatDate(selectedFromDate)} // Display custom format
+                                              readOnly
                                           />
-                                          <small className="text-muted">Indiragandhi International Airport</small>
-                                        </div>
-                                        <div className="col-md-2 form-group">
-                                          <label htmlFor="to">To</label>
-                                          <Select
-                                            id="to"
-                                            options={locationOptions}
-                                            defaultValue={locationOptions[1]} // Default to Mumbai
-                                            getOptionLabel={(e) => e.value} // Display only the value
-                                            getOptionValue={(e) => e.value}
-                                            classNamePrefix="react-select"
-                                          />                                        
-                                          <small className="text-muted">CSM International Airport</small>
-                                        </div>
-                                        <div className="col-md-2 form-group">
-                                          <label htmlFor="departure">Departure</label>
-                                          <DatePicker
-                                              selected={selectedFromDate || new Date()} // Default to current date if no date is selected
-                                              onChange={(date) => {
-                                                setSelectedFromDate(date);
-                                                setSelectedReturnDate(null); // Reset return date if departure changes
-                                              }}
-                                              dateFormat="dd MMM yyyy"
-                                              minDate={new Date()} // Prevent past dates
-                                              customInput={
-                                                <input
-                                                  type="text"
-                                                  className="form-control"
-                                                  value={formatDate(selectedFromDate)} // Display custom format
-                                                  readOnly
-                                                />
-                                              }
-                                            />
+                                        }
+                                    />
 
-                                          <small className="text-muted">Monday</small>
-                                        </div>
-                                        <div className={`col-md-2 form-group ${tripType === 'oneway' || tripType === 'multiway' ? 'disabled' : ''}`}>
-                                          <label htmlFor="return">Return</label>
-                                          <DatePicker
-                                            selected={selectedReturnDate ? selectedReturnDate : selectedFromDate} // Return date
-                                            onChange={(date) => setSelectedReturnDate(date)} // Set return date
-                                            dateFormat="dd MMM yyyy"
-                                            minDate={selectedFromDate || new Date()} // Prevent return before departure
-                                            disabled={tripType === "oneway" || tripType === "multiway"} // Disable for one-way or multi-trip
-                                            customInput={
-                                              <input
-                                                type="text"
-                                                className="form-control"
-                                                value={formatDate(selectedReturnDate ? selectedReturnDate : selectedFromDate)} // Display custom format
-                                                readOnly
-                                              />
-                                            }
+                                    <small className="text-muted">Monday</small>
+                                  </div>
+                                  <div
+                                      className={`col-md-2 form-group ${tripType === 'oneway' || tripType === 'multiway' ? 'disabled' : ''}`}>
+                                    <label htmlFor="return">Return</label>
+                                    <DatePicker
+                                        selected={selectedReturnDate ? selectedReturnDate : selectedFromDate} // Return date
+                                        onChange={(date) => setSelectedReturnDate(date)} // Set return date
+                                        dateFormat="dd MMM yyyy"
+                                        minDate={selectedFromDate || new Date()} // Prevent return before departure
+                                        disabled={tripType === "oneway" || tripType === "multiway"} // Disable for one-way or multi-trip
+                                        customInput={
+                                          <input
+                                              type="text"
+                                              className="form-control"
+                                              value={formatDate(selectedReturnDate ? selectedReturnDate : selectedFromDate)} // Display custom format
+                                              readOnly
                                           />
+                                        }
+                                    />
 
-                                          <small className="text-muted">Wednesday</small>
-                                        </div>
-                                        <div className="col-md-3 form-group">
-                                          <label htmlFor="travellersDropdown">Travellers and cabin class</label>
-                                          <div className="dropdown mt-2">
-                                            <button
-                                              className="btn btn-light w-100 dropdown-toggle"
-                                              type="button"
-                                              id="travellersDropdown"
-                                              data-bs-toggle="dropdown"
-                                              aria-expanded={dropdownOpen}
-                                              onClick={() => setDropdownOpen(!dropdownOpen)}
-                                            >
-                                              {`${travellerCounts.adults} Adults, ${travellerCounts.children} Children, ${travellerCounts.infants} Infants, ${cabinClass}`}
-                                            </button>
-                                            <ul
-                                              className={`dropdown-menu travellersDropdowncontent py-3 ${
-                                                dropdownOpen ? "show" : ""
-                                              }`}
-                                              aria-labelledby="travellersDropdown"
-                                            >
-                                              <li className="travellerscol p-2 mb-2 row">
-                                                <div className="travellers-dropdown-header">Travellers</div>
-                                                {["adults", "children", "infants"].map((type, index) => (
-                                                  <div key={index} className="traveller-control col-md-4">
+                                    <small className="text-muted">Wednesday</small>
+                                  </div>
+                                  <div className="col-md-3 form-group">
+                                    <label htmlFor="travellersDropdown">Travellers and
+                                      cabin class</label>
+                                    <div className="dropdown mt-2">
+                                      <button
+                                          className="btn btn-light w-100 dropdown-toggle"
+                                          type="button"
+                                          id="travellersDropdown"
+                                          data-bs-toggle="dropdown"
+                                          aria-expanded={dropdownOpen}
+                                          onClick={() => setDropdownOpen(!dropdownOpen)}
+                                      >
+                                        {`${travellerCounts.adults} Adults, ${travellerCounts.children} Children, ${travellerCounts.infants} Infants, ${cabinClass}`}
+                                      </button>
+                                      <ul
+                                          className={`dropdown-menu travellersDropdowncontent py-3 ${
+                                              dropdownOpen ? "show" : ""
+                                          }`}
+                                          aria-labelledby="travellersDropdown"
+                                      >
+                                        <li className="travellerscol p-2 mb-2 row">
+                                          <div
+                                              className="travellers-dropdown-header">Travellers
+                                          </div>
+                                          {["adults", "children", "infants"].map((type, index) => (
+                                              <div key={index}
+                                                   className="traveller-control col-md-4">
                                                     <span>{`${type.charAt(0).toUpperCase() + type.slice(1)}${
-                                                      type === "adults" ? " (12+ Yrs)" : type === "children" ? " (2-12 Yrs)" : " (0-2 Yrs)"
+                                                        type === "adults" ? " (12+ Yrs)" : type === "children" ? " (2-12 Yrs)" : " (0-2 Yrs)"
                                                     }`}</span>
-                                                    <div>
-                                                      <button
-                                                        type="button"
-                                                        className="btn btn-sm"
-                                                        onClick={() => updateTravellerCount(type, -1)}
-                                                      >
-                                                        -
-                                                      </button>
-                                                      <span className="traveller-count">{travellerCounts[type]}</span>
-                                                      <button
-                                                        type="button"
-                                                        className="btn btn-sm"
-                                                        onClick={() => updateTravellerCount(type, +1)}
-                                                      >
-                                                        +
-                                                      </button>
-                                                    </div>
-                                                  </div>
-                                                ))}
-                                              </li>
-                                              <li className="travellerscol row p-2">
-                                                <div className="travellers-dropdown-header">Class</div>
-                                                {["Economy", "Premium Economy", "Business", "First Class"].map((type, index) => (
-                                                  <div key={index} className="form-check traveller-control col-md-3">
-                                                    <input
-                                                      className="form-check-input"
-                                                      type="radio"
-                                                      name="cabinClass"
-                                                      id={type.replace(" ", "").toLowerCase()}
-                                                      value={type}
-                                                      checked={cabinClass === type}
-                                                      onChange={handleCabinClassChange}
-                                                    />
-                                                    <label
-                                                      className="form-check-label"
-                                                      htmlFor={type.replace(" ", "").toLowerCase()}
-                                                    >
-                                                      {type}
-                                                    </label>
-                                                  </div>
-                                                ))}
-                                              </li>
-                                              <li>
-                                                <div className="dropdown-footer">
+                                                <div>
                                                   <button
-                                                    className="btn btn-secondary btn-sm"
-                                                    type="button"
-                                                    onClick={() => {
-                                                      setTravellerCounts({ adults: 1, children: 0, infants: 0 }); // Reset to default values
-                                                      setCabinClass("Economy"); // Reset cabin class if needed
-                                                      setDropdownOpen(false); // Close the dropdown
-                                                    }}
+                                                      type="button"
+                                                      className="btn btn-sm"
+                                                      onClick={() => updateTravellerCount(type, -1)}
                                                   >
-                                                    Cancel
+                                                    -
                                                   </button>
+                                                  <span
+                                                      className="traveller-count">{travellerCounts[type]}</span>
                                                   <button
-                                                    className="btn btn-primary btn-sm"
-                                                    type="button"
-                                                    onClick={() => setDropdownOpen(false)}
+                                                      type="button"
+                                                      className="btn btn-sm"
+                                                      onClick={() => updateTravellerCount(type, +1)}
                                                   >
-                                                    Apply
+                                                    +
                                                   </button>
                                                 </div>
-                                              </li>
-                                            </ul>
+                                              </div>
+                                          ))}
+                                        </li>
+                                        <li className="travellerscol row p-2">
+                                          <div
+                                              className="travellers-dropdown-header">Class
                                           </div>
-                                        </div>
-                                        <div className="col-md-1 form-group d-flex align-items-center py-0 pe-0 searchcol">
-                                        <div className="it-tour-package-item d-flex justify-content-end">
-                                        <div className="it-tour-package-search">
-                                            <button type="submit" onClick={handleSubmitTravellercount}>
-                                              Search <i className="fa-solid fa-magnifying-glass"></i>
+                                          {["Economy", "Premium Economy", "Business", "First Class"].map((type, index) => (
+                                              <div key={index}
+                                                   className="form-check traveller-control col-md-3">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    name="cabinClass"
+                                                    id={type.replace(" ", "").toLowerCase()}
+                                                    value={type}
+                                                    checked={cabinClass === type}
+                                                    onChange={handleCabinClassChange}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    htmlFor={type.replace(" ", "").toLowerCase()}
+                                                >
+                                                  {type}
+                                                </label>
+                                              </div>
+                                          ))}
+                                        </li>
+                                        <li>
+                                          <div className="dropdown-footer">
+                                            <button
+                                                className="btn btn-secondary btn-sm"
+                                                type="button"
+                                                onClick={() => {
+                                                  setTravellerCounts({
+                                                    adults: 1,
+                                                    children: 0,
+                                                    infants: 0
+                                                  }); // Reset to default values
+                                                  setCabinClass("Economy"); // Reset cabin class if needed
+                                                  setDropdownOpen(false); // Close the dropdown
+                                                }}
+                                            >
+                                              Cancel
                                             </button>
-                                        </div>
-                                        </div>
+                                            <button
+                                                className="btn btn-primary btn-sm"
+                                                type="button"
+                                                onClick={() => setDropdownOpen(false)}
+                                            >
+                                              Apply
+                                            </button>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                  <div
+                                      className="col-md-1 form-group d-flex align-items-center py-0 pe-0 searchcol">
+                                    <div
+                                        className="it-tour-package-item d-flex justify-content-end">
+                                      <div className="it-tour-package-search">
+                                        <button type="submit"
+                                                onClick={handleSubmitTravellercount}>
+                                          Search <i
+                                            className="fa-solid fa-magnifying-glass"></i>
+                                        </button>
                                       </div>
-                                      </div>
-                                      {tripType === "multiway" &&
-                                        rows.map((row, index) => (
-                                          <div className="row mt-2" key={index}>
-                                            <div className="col-md-4 form-group firstinput">
-                                              <label htmlFor={`from-${index}`}>From</label>
-                                              <input
-                                                type="text"
+                                    </div>
+                                  </div>
+                                </div>
+                                {tripType === "multiway" &&
+                                    rows.map((row, index) => (
+                                        <div className="row mt-2" key={index}>
+                                          <div className="col-md-4 form-group firstinput">
+                                            <label
+                                                htmlFor={`from-${index}`}>From</label>
+                                            <Select
                                                 id={`from-${index}`}
-                                                className="form-control"
-                                                value={row.from?row.from:"Delhi"}
-                                                onChange={(e) => handleRowChange(index, "from", e.target.value)}
-                                              />
-                                              <small className="text-muted">Indiragandhi International Airport</small>
-                                            </div>
-                                            <div className="col-md-4 form-group">
-                                              <label htmlFor={`to-${index}`}>To</label>
-                                              <input
-                                                type="text"
+                                                options={fromAirports}
+                                                value={multiAirport[index]?.fromAirport || null}
+                                                onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(1, inputValue, actionMeta)}
+                                                onChange={(selectedOption) => handleMultiChange(1, selectedOption, index)}
+                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                formatOptionLabel={(option) => (
+                                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                                      <span style={{
+                                                        fontSize: '0.8em',
+                                                        color: '#888'
+                                                      }}>{option.airportName || "Unknown Airport"}</span>
+                                                    </div>
+                                                )}
+                                                getOptionValue={(e) => e || ""}
+                                                classNamePrefix="react-select"
+                                            />
+                                            {/*<small className="text-muted">Indiragandhi*/}
+                                            {/*    International Airport</small>*/}
+                                          </div>
+                                          <div className="col-md-4 form-group">
+                                            <label htmlFor={`to-${index}`}>To</label>
+                                            {/*<label htmlFor={`to-${index}`}>To</label>*/}
+                                            <Select
                                                 id={`to-${index}`}
-                                                className="form-control"
-                                                value={row.to?row.to:"Mumbai"}
-                                                onChange={(e) => handleRowChange(index, "to", e.target.value)}
-                                              />
-                                              <small className="text-muted">CSM International Airport</small>
-                                            </div>
-                                            <div className="col-md-4 form-group">
-                                              <label htmlFor={`departure-${index}`}>Departure</label>
-                                              
-                                              <DatePicker
+                                                options={toAirports}
+                                                value={multiAirport[index]?.toAirport || null}
+                                                onInputChange={(inputValue, actionMeta) => handleFromAirportInputChange(2, inputValue, actionMeta)}
+                                                onChange={(selectedOption) => handleMultiChange(2, selectedOption, index)}
+                                                getOptionLabel={(e) => e.city + " - " + e.country + " (" + e.airportCode + ")" || "Unknown City"}
+                                                getOptionValue={(e) => e || ""}
+                                                formatOptionLabel={(option) => (
+                                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                                                        <span>
+                                                                                            {option.city} - {option.country} ({option.airportCode || "Unknown Code"})
+                                                                                        </span>
+                                                      <span style={{
+                                                        fontSize: '0.8em',
+                                                        color: '#888'
+                                                      }}>{option.airportName || "Unknown Airport"}</span>
+                                                    </div>
+                                                )}
+                                                classNamePrefix="react-select"
+
+                                            />
+                                            {/*<small className="text-muted">CSM*/}
+                                            {/*    International Airport</small>*/}
+                                          </div>
+                                          <div className="col-md-4 form-group">
+                                            <label
+                                                htmlFor={`departure-${index}`}>Departure</label>
+
+                                            <DatePicker
                                                 selected={row.departure ? new Date(row.departure) : selectedFromDate} // Default to initial departure
                                                 onChange={(date) => handleRowChange(index, "departure", date.toISOString().split("T")[0])}
                                                 dateFormat="dd MMM yyyy"
                                                 minDate={selectedFromDate} // Restrict to selected departure date or later
                                                 customInput={
                                                   <input
-                                                    type="text"
-                                                    id={`departure-${index}`}
-                                                    className="form-control"
-                                                    value={formatDate(row.departure ? new Date(row.departure) : selectedFromDate)}
-                                                    readOnly
+                                                      type="text"
+                                                      id={`departure-${index}`}
+                                                      className="form-control"
+                                                      value={formatDate(row.departure ? new Date(row.departure) : selectedFromDate)}
+                                                      readOnly
                                                   />
                                                 }
-                                              />
-                                              <small className="text-muted">Monday</small>
-                                            </div>
-
+                                            />
+                                            <small className="text-muted">Monday</small>
                                           </div>
-                                        ))}
-                                      {tripType === "multiway" && (
-                                        <div className="row mt-2">
-                                          <div className="col-md-12 px-0">
-                                            <button
-                                              type="button"
-                                              className="btn btn-success me-2"
-                                              onClick={addRow}
-                                            >
-                                              <i className="fa-solid fa-plus"></i> Add Row
-                                            </button>
-                                            <button
-                                              type="button"
-                                              className="btn btn-danger"
-                                              onClick={deleteRow}
-                                            >
-                                              <i className="fa-solid fa-trash-alt"></i> Delete Row
-                                            </button>
-                                            </div>
-                                        </div>
-                                      )}
-                                    </form>
 
-                                 
-                                  </div>
-                              </div>
+                                        </div>
+                                    ))}
+                                {tripType === "multiway" && (
+                                    <div className="row mt-2">
+                                      <div className="col-md-12 px-0">
+                                        <button
+                                            type="button"
+                                            className="btn btn-success me-2"
+                                            onClick={addRow}
+                                        >
+                                          <i className="fa-solid fa-plus"></i> Add Row
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-danger"
+                                            onClick={deleteRow}
+                                        >
+                                          <i className="fa-solid fa-trash-alt"></i> Delete
+                                          Row
+                                        </button>
+                                      </div>
+                                    </div>
+                                )}
+                              </form>
+
+                            </div>
+                          </div>
                           </div>
                       </div>
               </section>
@@ -556,10 +1050,12 @@ const Flightlist = () => {
                 <div className="container">
                   <div className="row">
                     <div className="col-lg-3 col-md-3">
-                      <h5>468 Flights Found</h5>
+                      <h5>{currentFlights.length} Flights Found</h5>
                     </div>
                     <div className="col-lg-9 col-md-9">
-                      <h5>Delhi <ArrowRightAltIcon /> Mumbai <ArrowRightAltIcon /> Bengaluru | Mon 13-Jan-2025</h5>
+                      <h5> {constants.from.city} <ArrowRightAltIcon/> {constants.to.city}
+                        {/*<ArrowRightAltIcon />Bengaluru */}
+                        | {formatedDate(constants.fromDate)}</h5>
                     </div>
                   </div>
                   <div className="row">
@@ -849,64 +1345,64 @@ const Flightlist = () => {
                                         <div className="airline-name">
                                           <img src={Airindia} alt=""/>
                                           <div>
-                                  <h5 className="lightest-black mb-8"> {flightSegment.al.alN}</h5>
-                                  <h6 className="dark-gray">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
-                                </div>
-                              </div>
-                              <div className="flight-detail">
-                                <div className="flight-departure">
-                                  <h5 className="color-black text-end">{formatTime(flightSegment.or.dT)}</h5>
-                                  <h5 className="dark-gray text-end">{flightSegment.or.aC}</h5>
-                                  <h6 className="color-black text-end">{formatedDate(flightSegment.or.dT)}</h6>
-                                </div>
-                                <div className="d-inline-flex align-items-center gap-8">
-                                  <span className="">From</span>
-                                  <div className="from-to text-center">
-                                    <h5 className="dark-gray">{convertMinutesToDuration(flightSegment.dr)}</h5>
-                                    <img src={Routeplan} alt="" />
+                                            <h5 className="lightest-black mb-8"> {flightSegment.al.alN}</h5>
+                                            <h6 className="dark-gray">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
+                                          </div>
+                                        </div>
+                                        <div className="flight-detail">
+                                          <div className="flight-departure">
+                                            <h5 className="color-black text-end">{formatTime(flightSegment.or.dT)}</h5>
+                                            <h5 className="dark-gray text-end">{flightSegment.or.aC}</h5>
+                                            <h6 className="color-black text-end">{formatedDate(flightSegment.or.dT)}</h6>
+                                          </div>
+                                          <div className="d-inline-flex align-items-center gap-8">
+                                            <span className="">From</span>
+                                            <div className="from-to text-center">
+                                              <h5 className="dark-gray">{convertMinutesToDuration(flightSegment.dr)}</h5>
+                                              <img src={Routeplan} alt=""/>
 
-                                  </div>
-                                  <span className="">To</span>
+                                            </div>
+                                            <span className="">To</span>
+                                          </div>
+                                          <div className="flight-departure">
+                                            <h5 className="color-black">{formatTime(flightSegment.ds.aT)}</h5>
+                                            <h5 className="dark-gray">{flightSegment.ds.aC}</h5>
+                                            <h6 className="color-black">{formatedDate(flightSegment.ds.aT)}</h6>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                ))}
+
+
+                              </div>
+                              <div className="flight-button col-md-3">
+                                <div className="amount">
+                                  <h5 className="color-black"> {flight.cr} {flight.fF} </h5>
+                                  <h6 className="dark-gray text-end">Price</h6>
                                 </div>
-                                <div className="flight-departure">
-                                  <h5 className="color-black">{formatTime(flightSegment.ds.aT)}</h5>
-                                  <h5 className="dark-gray">{flightSegment.ds.aC}</h5>
-                                  <h6 className="color-black">{formatedDate(flightSegment.ds.aT)}</h6>
-                                </div>
+                                <button className="btn btn-primary">
+                                  Book Now
+                                </button>
                               </div>
                             </div>
-                          </div>
-                            ))}
 
-
-                          </div>
-                          <div className="flight-button col-md-3">
-                            <div className="amount">
-                              <h5 className="color-black"> {flight.cr} {flight.pF} </h5>
-                              <h6 className="dark-gray text-end">Price</h6>
+                            <hr className="bg-light-gray mt-24 mb-24"/>
+                            <div className="d-flex justify-content-between align-items-center">
+                              {/*<h5 className="color-black">Monday 19 August</h5>*/}
+                              <h5 className="color-black">{isRefundable(flight.iR)}</h5>
+                              <h6 className="color-black">{flight.sg.length - 1} Stop</h6>
+                              <div>
+                                <a href="#" className="accordion-button color-primary h5 collapsed">
+                                  <i className="fal fa-chevron-down color-primary "/>
+                                  &nbsp;Flight Detail
+                                </a>
+                              </div>
                             </div>
-                            <button className="btn btn-primary">
-                              Book Now
-                            </button>
-                          </div>
-                        </div>
-
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="d-flex justify-content-between align-items-center">
-                          {/*<h5 className="color-black">Monday 19 August</h5>*/}
-                          <h5 className="color-black">{isRefundable(flight.iR)}</h5>
-                          <h6 className="color-black">{flight.sg.length - 1} Stop</h6>
-                          <div>
-                            <a href="#" className="accordion-button color-primary h5 collapsed">
-                              <i className="fal fa-chevron-down color-primary "/>
-                              &nbsp;Flight Detail
-                            </a>
-                          </div>
-                        </div>
-                      </div>))}
+                          </div>))}
                       {/* Pagination Controls */}
                       <div className="pagination d-flex justify-content-center mt-3">
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
                             <button
                                 key={page}
                                 className={`btn ${currentPage === page ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
@@ -916,7 +1412,7 @@ const Flightlist = () => {
                             </button>
                         ))}
                       </div>
-                   {/*   <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                      {/*   <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
                         <div className="flight-area multi-flight">
                           <div className="flight-left col-md-9">
                            <h5 className="badge">Departure</h5>
@@ -1109,12 +1605,11 @@ const Flightlist = () => {
               </section>
               {/* Flight Listing End */}
             </main>
-            </>
-            )}
-       </>
+              </>
+      )}
+      </>
   );
 };
-
 
 
 export default Flightlist;
