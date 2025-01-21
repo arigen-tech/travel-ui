@@ -153,6 +153,7 @@ const HomePage = () => {
     }
 
     const handleSubmitTravellercount = (e) => {
+
         let json= {
             directFlight: "false",
             adultCount: travellerCounts.adults,
@@ -572,7 +573,7 @@ const HomePage = () => {
                                                                                 <div
                                                                                     className="travellers-dropdown-header">Class
                                                                                 </div>
-                                                                                {["Economy", "Premium Economy", "Business", "First Class"].map((type, index) => (
+                                                                                {["All","Economy", "Premium Economy", "Business","Premium Business", "First Class"].map((type, index) => (
                                                                                     <div key={index}
                                                                                          className="form-check traveller-control col-md-3">
                                                                                         <input

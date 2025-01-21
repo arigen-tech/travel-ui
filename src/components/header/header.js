@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from "../../assets/img/logo/logo.png";
 import AirplaneTicketOutlinedIcon from "@mui/icons-material/AirplaneTicketOutlined";
@@ -19,6 +19,7 @@ import DirectionsBusFilledOutlinedIcon from "@mui/icons-material/DirectionsBusFi
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import SupportAgentOutlinedIcon from '@mui/icons-material/SupportAgentOutlined';
 import Loginimage from '../../assets/img/sign-up.webp'
+import {getRequest, postRequest} from "../../service/apiService";
 import "./header.css";
 // import HomePage from "../../views/Home";
 const Header = () => {
@@ -30,7 +31,7 @@ const Header = () => {
   useEffect(() => {
     setActiveItem(path[1] || '');
   }, [url]);
-
+  const [sessionId,setSessionId] = useState();
   // Helper function to determine active status
   const isActive = (itemPath) => activeItem === itemPath;
   const [isMoreClicked, setIsMoreClicked] = useState(false);
@@ -61,15 +62,30 @@ const Header = () => {
     setisModalOpen((prev) => !prev);
     console.log("isModalOpen==", isModalOpen)
   };
-
-  const handleContinue = (e) => {
+  const handleContinue = useCallback(async (e) => {
+  // const handleContinue = async (e) => {
     e.preventDefault();
     if (mobile) {
-      setShowOTP(true); // Show OTP fields
+      const response = await fetch(`https://2factor.in/API/V1/999a2629-21e1-11ec-a13b-0200cd936042/SMS/${mobile}/AUTOGEN/LOGIN-OTP`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const apiResponse = await response.json();
+      if (!response.ok) {
+        throw new Error(`GET request failed: ${response.status}`);
+      }
+      else if (apiResponse.Status === "Success"){
+        const sessionId = apiResponse.Details;
+        console.log(apiResponse.Details);
+        setSessionId(sessionId);
+        setShowOTP(true);// Show OTP fields
+      }
     } else {
       alert("Please enter your mobile number.");
     }
-  };
+  },[mobile]);
 
   const handleOTPChange = (e, index) => {
     const { value } = e.target;
@@ -136,6 +152,44 @@ const Header = () => {
     // Add authentication logic here
     console.log("Password entered:", password);
   };
+
+
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+      try {
+        const otpString = otp.join(""); // Convert OTP array to string
+        console.log("Verifying OTP:", otpString);
+        // const response = await postRequest(`/flight/verifyOtp`, {sessionId: sessionId, otp: otpString});
+        const response = await fetch(
+            `https://2factor.in/API/V1/999a2629-21e1-11ec-a13b-0200cd936042/SMS/VERIFY/${sessionId}/${otpString}`,
+            {
+              method: "GET",
+              headers: {}, // Add necessary headers if required
+              crossDomain: true,
+            }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Verify OTP request failed: ${response.status} ${response.statusText}`);
+        }
+
+        const apiResponse = await response.json(); // Parse JSON response
+        console.log(apiResponse);
+        if (apiResponse.Status === "Success") {
+          console.log("OTP Verified Successfully");
+          // Optional: perform further actions, such as navigating to another page
+          setSessionId(sessionId); // Example: Save sessionId back to state
+          setShowOTP(true); // Example: Show OTP fields or update UI
+        } else {
+          console.error("OTP Verification Failed:", apiResponse.Details);
+          // Handle failure case, e.g., show an error message to the user
+        }
+      } catch (error) {
+        console.error("Error verifying OTP:", error.message);
+        // Handle errors like network issues or unexpected failures
+      }
+  };
+
   return (
       <>
         <div className="body-overlay"></div>
@@ -882,7 +936,8 @@ const Header = () => {
                                           <div className="col-md-12 mb-20">
                                             <button
                                                 className="it-btn-primary w-100"
-                                                type="submit"
+                                                type="button"
+                                                onClick={handleVerifyOTP}
                                             >
                                               <span>Verify OTP</span>
                                             </button>
