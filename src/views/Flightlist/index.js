@@ -20,7 +20,7 @@ const Flightlist = () => {
   console.log(constants);
   const [searchResponse,setSearchResponse]=useState(localStorage.getItem('flightSearchResponse')!=null?JSON.parse(localStorage.getItem('flightSearchResponse')).response:{results:{outboundFlights:[]},facets:{airlines:{outbound:[]} }});
   const [loading, setLoading] = useState(true); // Preloader visible initially
-  const [tripType, setTripType] = useState("oneway"); // Default trip type
+  const [tripType, setTripType] = useState(constants.tripType ? constants.tripType: "oneway"); // Default trip type
   const [rows, setRows] = useState([{ from: "", to: "", departure: "" }]); // Rows for Multi Trip
   const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown toggle
   const [travellerCounts, setTravellerCounts] = useState(constants.travellerCounts?constants.travellerCounts:{
@@ -60,7 +60,7 @@ const Flightlist = () => {
     {value: "Mumbai"},
     {value: "Bangalore"},
     {value: "Chennai"},
-  
+
   ];
   const convertMinutesToDuration = (minutes) => {
     const hours = Math.floor(minutes / 60);
@@ -140,7 +140,7 @@ const Flightlist = () => {
     updatedRows[index][field] = value;
     setRows(updatedRows);
   };
-  
+
 
   const updateTravellerCount = (type, delta) => {
     setTravellerCounts((prevCounts) => {
@@ -309,7 +309,9 @@ const Flightlist = () => {
 
   };
 
+  const currentFlightsInbound = searchResponse.results.inboundFlights;
   const currentFlights = searchResponse.results.outboundFlights.filter((flight) => {
+
     const isAirlineMatched = selectedAirlines.length
         ? flight.sg.some((segment) => selectedAirlines.includes(segment.al.alC))
         : true;
@@ -343,7 +345,7 @@ const Flightlist = () => {
   };
 
   return (
-    
+
       <>
 
       {loading ? (
@@ -362,302 +364,6 @@ const Flightlist = () => {
                           <div className="it-tour-package-wrap it-slider-tour-style it-tour-package-box z-index">
                           <div className="it-tour-package-location__wrapper">
                             <div className="row">
-                              {/* Flight Search Form */}
-                              {/* Flight Search Form */}
-                              {/*<form>*/}
-                              {/*   <div className="form-header">*/}
-                              {/*     <div className="d-flex align-items-center justify-content-between flex-wrap">*/}
-                              {/*       <div className="d-flex align-items-center">*/}
-                              {/*         <div className="form-check d-flex align-items-center me-3 mb-2">*/}
-                              {/*           <input*/}
-                              {/*             className="form-check-input mt-0"*/}
-                              {/*             type="radio"*/}
-                              {/*             name="tripType"*/}
-                              {/*             id="oneway"*/}
-                              {/*             value="oneway"*/}
-                              {/*             checked={tripType === "oneway"}*/}
-                              {/*             onChange={handleTripTypeChange}*/}
-                              {/*           />*/}
-                              {/*           <label className="form-check-label fs-14 ms-2" htmlFor="oneway">*/}
-                              {/*             Oneway*/}
-                              {/*           </label>*/}
-                              {/*         </div>*/}
-                              {/*         <div className="form-check d-flex align-items-center me-3 mb-2">*/}
-                              {/*           <input*/}
-                              {/*             className="form-check-input mt-0"*/}
-                              {/*             type="radio"*/}
-                              {/*             name="tripType"*/}
-                              {/*             id="roundtrip"*/}
-                              {/*             value="roundtrip"*/}
-                              {/*             checked={tripType === "roundtrip"}*/}
-                              {/*             onChange={handleTripTypeChange}*/}
-                              {/*           />*/}
-                              {/*           <label*/}
-                              {/*             className="form-check-label fs-14 ms-2"*/}
-                              {/*             htmlFor="roundtrip"*/}
-                              {/*           >*/}
-                              {/*             Round Trip*/}
-                              {/*           </label>*/}
-                              {/*         </div>*/}
-                              {/*         <div className="form-check d-flex align-items-center me-3 mb-2">*/}
-                              {/*           <input*/}
-                              {/*             className="form-check-input mt-0"*/}
-                              {/*             type="radio"*/}
-                              {/*             name="tripType"*/}
-                              {/*             id="multiway"*/}
-                              {/*             value="multiway"*/}
-                              {/*             checked={tripType === "multiway"}*/}
-                              {/*             onChange={handleTripTypeChange}*/}
-                              {/*           />*/}
-                              {/*           <label className="form-check-label fs-14 ms-2" htmlFor="multiway">*/}
-                              {/*             Multi Trip*/}
-                              {/*           </label>*/}
-                              {/*         </div>*/}
-                              {/*       </div>*/}
-                              {/*       <h6 className="fw-medium fs-16 mb-2">*/}
-                              {/*         Millions of cheap flights. One simple search*/}
-                              {/*       </h6>*/}
-                              {/*     </div>*/}
-                              {/*   </div>*/}
-                              {/*   <div className="row">*/}
-                              {/*     <div className="col-md-2 form-group firstinput">*/}
-                              {/*       <label htmlFor="from">From</label>*/}
-                              {/*       <Select*/}
-                              {/*         id="from"*/}
-                              {/*         options={locationOptions}*/}
-                              {/*         defaultValue={locationOptions[0]} // Default to Delhi*/}
-                              {/*         getOptionLabel={(e) => e.value} // Display only the value*/}
-                              {/*         getOptionValue={(e) => e.value}*/}
-                              {/*         classNamePrefix="react-select"*/}
-                              {/*       />*/}
-                              {/*       <small className="text-muted">Indiragandhi International Airport</small>*/}
-                              {/*     </div>*/}
-                              {/*     <div className="col-md-2 form-group">*/}
-                              {/*       <label htmlFor="to">To</label>*/}
-                              {/*       <Select*/}
-                              {/*         id="to"*/}
-                              {/*         options={locationOptions}*/}
-                              {/*         defaultValue={locationOptions[1]} // Default to Mumbai*/}
-                              {/*         getOptionLabel={(e) => e.value} // Display only the value*/}
-                              {/*         getOptionValue={(e) => e.value}*/}
-                              {/*         classNamePrefix="react-select"*/}
-                              {/*       />                                        */}
-                              {/*       <small className="text-muted">CSM International Airport</small>*/}
-                              {/*     </div>*/}
-                              {/*     <div className="col-md-2 form-group">*/}
-                              {/*       <label htmlFor="departure">Departure</label>*/}
-                              {/*       <DatePicker*/}
-                              {/*           selected={selectedFromDate || new Date()} // Default to current date if no date is selected*/}
-                              {/*           onChange={(date) => {*/}
-                              {/*             setSelectedFromDate(date);*/}
-                              {/*             setSelectedReturnDate(null); // Reset return date if departure changes*/}
-                              {/*           }}*/}
-                              {/*           dateFormat="dd MMM yyyy"*/}
-                              {/*           minDate={new Date()} // Prevent past dates*/}
-                              {/*           customInput={*/}
-                              {/*             <input*/}
-                              {/*               type="text"*/}
-                              {/*               className="form-control"*/}
-                              {/*               value={formatDate(selectedFromDate)} // Display custom format*/}
-                              {/*               readOnly*/}
-                              {/*             />*/}
-                              {/*           }*/}
-                              {/*         />*/}
-
-                              {/*       <small className="text-muted">Monday</small>*/}
-                              {/*     </div>*/}
-                              {/*     <div className={`col-md-2 form-group ${tripType === 'oneway' || tripType === 'multiway' ? 'disabled' : ''}`}>*/}
-                              {/*       <label htmlFor="return">Return</label>*/}
-                              {/*       <DatePicker*/}
-                              {/*         selected={selectedReturnDate ? selectedReturnDate : selectedFromDate} // Return date*/}
-                              {/*         onChange={(date) => setSelectedReturnDate(date)} // Set return date*/}
-                              {/*         dateFormat="dd MMM yyyy"*/}
-                              {/*         minDate={selectedFromDate || new Date()} // Prevent return before departure*/}
-                              {/*         disabled={tripType === "oneway" || tripType === "multiway"} // Disable for one-way or multi-trip*/}
-                              {/*         customInput={*/}
-                              {/*           <input*/}
-                              {/*             type="text"*/}
-                              {/*             className="form-control"*/}
-                              {/*             value={formatDate(selectedReturnDate ? selectedReturnDate : selectedFromDate)} // Display custom format*/}
-                              {/*             readOnly*/}
-                              {/*           />*/}
-                              {/*         }*/}
-                              {/*       />*/}
-
-                              {/*       <small className="text-muted">Wednesday</small>*/}
-                              {/*     </div>*/}
-                              {/*     <div className="col-md-3 form-group">*/}
-                              {/*       <label htmlFor="travellersDropdown">Travellers and cabin class</label>*/}
-                              {/*       <div className="dropdown mt-2">*/}
-                              {/*         <button*/}
-                              {/*           className="btn btn-light w-100 dropdown-toggle"*/}
-                              {/*           type="button"*/}
-                              {/*           id="travellersDropdown"*/}
-                              {/*           data-bs-toggle="dropdown"*/}
-                              {/*           aria-expanded={dropdownOpen}*/}
-                              {/*           onClick={() => setDropdownOpen(!dropdownOpen)}*/}
-                              {/*         >*/}
-                              {/*           {`${travellerCounts.adults} Adults, ${travellerCounts.children} Children, ${travellerCounts.infants} Infants, ${cabinClass}`}*/}
-                              {/*         </button>*/}
-                              {/*         <ul*/}
-                              {/*           className={`dropdown-menu travellersDropdowncontent py-3 ${*/}
-                              {/*             dropdownOpen ? "show" : ""*/}
-                              {/*           }`}*/}
-                              {/*           aria-labelledby="travellersDropdown"*/}
-                              {/*         >*/}
-                              {/*           <li className="travellerscol p-2 mb-2 row">*/}
-                              {/*             <div className="travellers-dropdown-header">Travellers</div>*/}
-                              {/*             {["adults", "children", "infants"].map((type, index) => (*/}
-                              {/*               <div key={index} className="traveller-control col-md-4">*/}
-                              {/*                 <span>{`${type.charAt(0).toUpperCase() + type.slice(1)}${*/}
-                              {/*                   type === "adults" ? " (12+ Yrs)" : type === "children" ? " (2-12 Yrs)" : " (0-2 Yrs)"*/}
-                              {/*                 }`}</span>*/}
-                              {/*                 <div>*/}
-                              {/*                   <button*/}
-                              {/*                     type="button"*/}
-                              {/*                     className="btn btn-sm"*/}
-                              {/*                     onClick={() => updateTravellerCount(type, -1)}*/}
-                              {/*                   >*/}
-                              {/*                     -*/}
-                              {/*                   </button>*/}
-                              {/*                   <span className="traveller-count">{travellerCounts[type]}</span>*/}
-                              {/*                   <button*/}
-                              {/*                     type="button"*/}
-                              {/*                     className="btn btn-sm"*/}
-                              {/*                     onClick={() => updateTravellerCount(type, +1)}*/}
-                              {/*                   >*/}
-                              {/*                     +*/}
-                              {/*                   </button>*/}
-                              {/*                 </div>*/}
-                              {/*               </div>*/}
-                              {/*             ))}*/}
-                              {/*           </li>*/}
-                              {/*           <li className="travellerscol row p-2">*/}
-                              {/*             <div className="travellers-dropdown-header">Class</div>*/}
-                              {/*             {["Economy", "Premium Economy", "Business", "First Class"].map((type, index) => (*/}
-                              {/*               <div key={index} className="form-check traveller-control col-md-3">*/}
-                              {/*                 <input*/}
-                              {/*                   className="form-check-input"*/}
-                              {/*                   type="radio"*/}
-                              {/*                   name="cabinClass"*/}
-                              {/*                   id={type.replace(" ", "").toLowerCase()}*/}
-                              {/*                   value={type}*/}
-                              {/*                   checked={cabinClass === type}*/}
-                              {/*                   onChange={handleCabinClassChange}*/}
-                              {/*                 />*/}
-                              {/*                 <label*/}
-                              {/*                   className="form-check-label"*/}
-                              {/*                   htmlFor={type.replace(" ", "").toLowerCase()}*/}
-                              {/*                 >*/}
-                              {/*                   {type}*/}
-                              {/*                 </label>*/}
-                              {/*               </div>*/}
-                              {/*             ))}*/}
-                              {/*           </li>*/}
-                              {/*           <li>*/}
-                              {/*             <div className="dropdown-footer">*/}
-                              {/*               <button*/}
-                              {/*                 className="btn btn-secondary btn-sm"*/}
-                              {/*                 type="button"*/}
-                              {/*                 onClick={() => {*/}
-                              {/*                   setTravellerCounts({ adults: 1, children: 0, infants: 0 }); // Reset to default values*/}
-                              {/*                   setCabinClass("Economy"); // Reset cabin class if needed*/}
-                              {/*                   setDropdownOpen(false); // Close the dropdown*/}
-                              {/*                 }}*/}
-                              {/*               >*/}
-                              {/*                 Cancel*/}
-                              {/*               </button>*/}
-                              {/*               <button*/}
-                              {/*                 className="btn btn-primary btn-sm"*/}
-                              {/*                 type="button"*/}
-                              {/*                 onClick={() => setDropdownOpen(false)}*/}
-                              {/*               >*/}
-                              {/*                 Apply*/}
-                              {/*               </button>*/}
-                              {/*             </div>*/}
-                              {/*           </li>*/}
-                              {/*         </ul>*/}
-                              {/*       </div>*/}
-                              {/*     </div>*/}
-                              {/*     <div className="col-md-1 form-group d-flex align-items-center py-0 pe-0 searchcol">*/}
-                              {/*     <div className="it-tour-package-item d-flex justify-content-end">*/}
-                              {/*     <div className="it-tour-package-search">*/}
-                              {/*         <button type="submit" onClick={handleSubmitTravellercount}>*/}
-                              {/*           Search <i className="fa-solid fa-magnifying-glass"></i>*/}
-                              {/*         </button>*/}
-                              {/*     </div>*/}
-                              {/*     </div>*/}
-                              {/*   </div>*/}
-                              {/*   </div>*/}
-                              {/*   {tripType === "multiway" &&*/}
-                              {/*     rows.map((row, index) => (*/}
-                              {/*       <div className="row mt-2" key={index}>*/}
-                              {/*         <div className="col-md-4 form-group firstinput">*/}
-                              {/*           <label htmlFor={`from-${index}`}>From</label>*/}
-                              {/*           <input*/}
-                              {/*             type="text"*/}
-                              {/*             id={`from-${index}`}*/}
-                              {/*             className="form-control"*/}
-                              {/*             value={row.from?row.from:"Delhi"}*/}
-                              {/*             onChange={(e) => handleRowChange(index, "from", e.target.value)}*/}
-                              {/*           />*/}
-                              {/*           <small className="text-muted">Indiragandhi International Airport</small>*/}
-                              {/*         </div>*/}
-                              {/*         <div className="col-md-4 form-group">*/}
-                              {/*           <label htmlFor={`to-${index}`}>To</label>*/}
-                              {/*           <input*/}
-                              {/*             type="text"*/}
-                              {/*             id={`to-${index}`}*/}
-                              {/*             className="form-control"*/}
-                              {/*             value={row.to?row.to:"Mumbai"}*/}
-                              {/*             onChange={(e) => handleRowChange(index, "to", e.target.value)}*/}
-                              {/*           />*/}
-                              {/*           <small className="text-muted">CSM International Airport</small>*/}
-                              {/*         </div>*/}
-                              {/*         <div className="col-md-4 form-group">*/}
-                              {/*           <label htmlFor={`departure-${index}`}>Departure</label>*/}
-                              {/*           */}
-                              {/*           <DatePicker*/}
-                              {/*             selected={row.departure ? new Date(row.departure) : selectedFromDate} // Default to initial departure*/}
-                              {/*             onChange={(date) => handleRowChange(index, "departure", date.toISOString().split("T")[0])}*/}
-                              {/*             dateFormat="dd MMM yyyy"*/}
-                              {/*             minDate={selectedFromDate} // Restrict to selected departure date or later*/}
-                              {/*             customInput={*/}
-                              {/*               <input*/}
-                              {/*                 type="text"*/}
-                              {/*                 id={`departure-${index}`}*/}
-                              {/*                 className="form-control"*/}
-                              {/*                 value={formatDate(row.departure ? new Date(row.departure) : selectedFromDate)}*/}
-                              {/*                 readOnly*/}
-                              {/*               />*/}
-                              {/*             }*/}
-                              {/*           />*/}
-                              {/*           <small className="text-muted">Monday</small>*/}
-                              {/*         </div>*/}
-
-                              {/*       </div>*/}
-                              {/*     ))}*/}
-                              {/*   {tripType === "multiway" && (*/}
-                              {/*     <div className="row mt-2">*/}
-                              {/*       <div className="col-md-12 px-0">*/}
-                              {/*         <button*/}
-                              {/*           type="button"*/}
-                              {/*           className="btn btn-success me-2"*/}
-                              {/*           onClick={addRow}*/}
-                              {/*         >*/}
-                              {/*           <i className="fa-solid fa-plus"></i> Add Row*/}
-                              {/*         </button>*/}
-                              {/*         <button*/}
-                              {/*           type="button"*/}
-                              {/*           className="btn btn-danger"*/}
-                              {/*           onClick={deleteRow}*/}
-                              {/*         >*/}
-                              {/*           <i className="fa-solid fa-trash-alt"></i> Delete Row*/}
-                              {/*         </button>*/}
-                              {/*         </div>*/}
-                              {/*     </div>*/}
-                              {/*   )}*/}
-                              {/* </form>*/}
                               <form>
                                 <div className="form-header">
                                   <div
@@ -1045,7 +751,7 @@ const Flightlist = () => {
                           </div>
                       </div>
               </section>
-              {/* Flight Listing Start */}
+
               <section className="flight-listing-page mb-60">
                 <div className="container">
                   <div className="row">
@@ -1053,7 +759,7 @@ const Flightlist = () => {
                       <h5>{currentFlights.length} Flights Found</h5>
                     </div>
                     <div className="col-lg-9 col-md-9">
-                      <h5> {constants.from.city} <ArrowRightAltIcon/> {constants.to.city}
+                      <h5> {fromAirport.city} <ArrowRightAltIcon/> {toAirport.city}
                         {/*<ArrowRightAltIcon />Bengaluru */}
                         | {formatedDate(constants.fromDate)}</h5>
                     </div>
@@ -1085,36 +791,6 @@ const Flightlist = () => {
                           </ul>
                         </div>
                         <hr className="bg-light-gray mt-24 mb-24"/>
-                        {/*        <div className="filtersection">*/}
-                        {/*        <h5 className="lightest-black">Price Range</h5>*/}
-                        {/*        <div data-role="main" className="ui-content">*/}
-                        {/*        <Box className="price-range-slider" sx={{width: 300, padding: 2}}>*/}
-                        {/*      /!* Range value display *!/*/}
-                        {/*      <Box className="range-value" sx={{marginBottom: 2, border: 0}}>*/}
-                        {/*        <TextField*/}
-                        {/*            id="amount"*/}
-                        {/*            value={`₹${value[0]} - ₹${value[1]}`}*/}
-                        {/*            InputProps={{*/}
-                        {/*              readOnly: true,*/}
-                        {/*            }}*/}
-                        {/*            fullWidth*/}
-                        {/*        />*/}
-                        {/*      </Box>*/}
-
-                        {/*      /!* Range slider *!/*/}
-                        {/*      <Slider*/}
-                        {/*          id="slider-range"*/}
-                        {/*          className="range-bar"*/}
-                        {/*          value={value}*/}
-                        {/*          onChange={handleChange}*/}
-                        {/*          min={100}*/}
-                        {/*          max={100000}*/}
-                        {/*          valueLabelDisplay="auto"*/}
-                        {/*      />*/}
-                        {/*    </Box>*/}
-                        {/*  </div>*/}
-
-                        {/*</div>*/}
 
                         <div className="filtersection">
                           <h5 className="lightest-black">Price Range</h5>
@@ -1331,274 +1007,467 @@ const Flightlist = () => {
                         </div>
                       </div>
                     </div>
-                    {/*Flight List Start*/}
-                    <div className="col-xl-9 col-lg-9">
-                      {/*{searchResponse.results.outboundFlights.map((flight, index) => (*/}
-                      {paginatedFlights.map((flight, index) => (
-                          <div key={index} className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
-                            <div className="flight-area multi-flight">
-                              <div className="flight-left col-md-9">
-                                {flight.sg.map((flightSegment, ser) => (
-                                    <div>
-                                      <h5 className="badge">Departure</h5>
-                                      <div className="flightrow">
-                                        <div className="airline-name">
-                                          <img src={Airindia} alt=""/>
-                                          <div>
-                                            <h5 className="lightest-black mb-8"> {flightSegment.al.alN}</h5>
-                                            <h6 className="dark-gray">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
-                                          </div>
-                                        </div>
-                                        <div className="flight-detail">
-                                          <div className="flight-departure">
-                                            <h5 className="color-black text-end">{formatTime(flightSegment.or.dT)}</h5>
-                                            <h5 className="dark-gray text-end">{flightSegment.or.aC}</h5>
-                                            <h6 className="color-black text-end">{formatedDate(flightSegment.or.dT)}</h6>
-                                          </div>
-                                          <div className="d-inline-flex align-items-center gap-8">
-                                            <span className="">From</span>
-                                            <div className="from-to text-center">
-                                              <h5 className="dark-gray">{convertMinutesToDuration(flightSegment.dr)}</h5>
-                                              <img src={Routeplan} alt=""/>
 
+                    <div className="col-xl-9 col-lg-9">
+                      <div className="row m-0 p-0 mb-2">
+                        <div className="fascolm col-md-4">
+                          <div className="sortby">Sort By:</div>
+                          <div
+                              className="chepestbt gr-bdr"
+                          >
+                            <span className="cheptxt">Cheapest</span>
+                          </div>
+                          <div className="fastestbt">
+                            <span className="cheptxt">Fastest</span>
+                          </div>
+                        </div>
+                        <div className="col-md-3 col-xs-12 fltr txt-fon1">
+                          <a className="txt-m1" href="#">
+                            Previous Day
+                          </a> |
+                          <a className="txt-m1" href="#"> Next Day
+                          </a>
+                        </div>
+                      </div>
+                      {/*Flight lists */}
+                      {currentFlightsInbound=== undefined? (<div>
+                        {paginatedFlights.map((flight, index) => (
+                            <div key={index} className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
+                              <div className="flight-area multi-flight">
+                                <div className="flight-left col-md-9">
+                                  {flight.sg.map((flightSegment, ser) => (
+                                      <div>
+                                        <h5 className="badge">Departure</h5>
+                                        <div className="flightrow">
+                                          <div className="airline-name">
+                                            <img src={Airindia} alt=""/>
+                                            <div>
+                                              <h5 className="lightest-black mb-8"> {flightSegment.al.alN}</h5>
+                                              <h6 className="dark-gray">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
                                             </div>
-                                            <span className="">To</span>
                                           </div>
-                                          <div className="flight-departure">
-                                            <h5 className="color-black">{formatTime(flightSegment.ds.aT)}</h5>
-                                            <h5 className="dark-gray">{flightSegment.ds.aC}</h5>
-                                            <h6 className="color-black">{formatedDate(flightSegment.ds.aT)}</h6>
+                                          <div className="flight-detail">
+                                            <div className="flight-departure">
+                                              <h5 className="color-black text-end">{formatTime(flightSegment.or.dT)}</h5>
+                                              <h5 className="dark-gray text-end">{flightSegment.or.aC}</h5>
+                                              <h6 className="color-black text-end">{formatedDate(flightSegment.or.dT)}</h6>
+                                            </div>
+                                            <div className="d-inline-flex align-items-center gap-8">
+                                              <span className="">From</span>
+                                              <div className="from-to text-center">
+                                                <h5 className="dark-gray">{convertMinutesToDuration(flightSegment.dr)}</h5>
+                                                <img src={Routeplan} alt=""/>
+
+                                              </div>
+                                              <span className="">To</span>
+                                            </div>
+                                            <div className="flight-departure">
+                                              <h5 className="color-black">{formatTime(flightSegment.ds.aT)}</h5>
+                                              <h5 className="dark-gray">{flightSegment.ds.aC}</h5>
+                                              <h6 className="color-black">{formatedDate(flightSegment.ds.aT)}</h6>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                ))}
+                                  ))}
 
 
-                              </div>
-                              <div className="flight-button col-md-3">
-                                <div className="amount">
-                                  <h5 className="color-black"> {flight.cr} {flight.fF} </h5>
-                                  <h6 className="dark-gray text-end">Price</h6>
                                 </div>
-                                <button className="btn btn-primary">
-                                  Book Now
+                                <div className="flight-button col-md-3">
+                                  <div className="amount">
+                                    <h5 className="color-black"> {flight.cr} {flight.fF} </h5>
+                                    <h6 className="dark-gray text-end">Price</h6>
+                                  </div>
+                                  <button className="btn btn-primary">
+                                    Book Now
+                                  </button>
+                                </div>
+                              </div>
+
+                              <hr className="bg-light-gray mt-24 mb-24"/>
+                              <div className="d-flex justify-content-between align-items-center">
+                                {/*<h5 className="color-black">Monday 19 August</h5>*/}
+                                <h5 className="color-black">{isRefundable(flight.iR)}</h5>
+                                <h6 className="color-black">{flight.sg.length - 1} Stop</h6>
+                                <div>
+                                  <a href="#" className="accordion-button color-primary h5 collapsed">
+                                    <i className="fal fa-chevron-down color-primary "/>
+                                    &nbsp;Flight Detail
+                                  </a>
+                                </div>
+                              </div>
+                            </div>))}
+                        {/* Pagination Controls */}
+                        <div className="pagination d-flex justify-content-center mt-3">
+                          {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+                              <button
+                                  key={page}
+                                  className={`btn ${currentPage === page ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
+                                  onClick={() => handlePageChange(page)}
+                              >
+                                {page}
+                              </button>
+                          ))}
+                        </div>
+                      </div>) :
+                          (<div>
+                        <div className="row rountrip-list">
+                          <div className="col-md-6">
+                            <div className="row n-w-ron-bg m-0 mb-1">
+                              <div className="col-md-4 col-sm-2 col-xs-12 p-0">
+                                <div className="travel-det">
+                                  <span>{fromAirport.city}</span> → <span>{toAirport.city}</span>
+                                </div>
+                              </div>
+                              <div className="col-md-4 col-sm-5 col-xs-12 m-0 p-0">
+                                <div className="day-date">{formatDate(selectedFromDate)}</div>
+                              </div>
+                              <div className="col-md-4 col-sm-5 col-xs-12 nxt-pre-col p-0 m-0">
+                                <button type="button" className="txt-m1 rgtbdr">
+                                  Previous Day
+                                </button>
+                                <button type="button" className="txt-m1 pdl8" id="depNext">
+                                  Next Day
                                 </button>
                               </div>
                             </div>
-
-                            <hr className="bg-light-gray mt-24 mb-24"/>
-                            <div className="d-flex justify-content-between align-items-center">
-                              {/*<h5 className="color-black">Monday 19 August</h5>*/}
-                              <h5 className="color-black">{isRefundable(flight.iR)}</h5>
-                              <h6 className="color-black">{flight.sg.length - 1} Stop</h6>
-                              <div>
-                                <a href="#" className="accordion-button color-primary h5 collapsed">
-                                  <i className="fal fa-chevron-down color-primary "/>
-                                  &nbsp;Flight Detail
+                            <div className="row m-0 p-0 grey-bck mb-2">
+                              <div className="col-md-2 col-sm-2 col-xs-4 mag p-0">
+                                <a
+                                    className=" arrhhr arr1"
+                                    href="#"
+                                >
+                                  Airlines <i className="fa arr2 pad-4"/>
                                 </a>
                               </div>
-                            </div>
-                          </div>))}
-                      {/* Pagination Controls */}
-                      <div className="pagination d-flex justify-content-center mt-3">
-                        {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
-                            <button
-                                key={page}
-                                className={`btn ${currentPage === page ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
-                                onClick={() => handlePageChange(page)}
-                            >
-                              {page}
-                            </button>
-                        ))}
-                      </div>
-                      {/*   <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
-                        <div className="flight-area multi-flight">
-                          <div className="flight-left col-md-9">
-                           <h5 className="badge">Departure</h5>
-                            <div className="flightrow">
-                              <div className="airline-name">
-                                <img src={Airindia} alt="" />
-                                <div>
-                                  <h5 className="lightest-black mb-8"> Air India</h5>
-                                  <h6 className="dark-gray">AI 777-90</h6>
-                                </div>
+                              <div className="col-md-2 col-sm-3 col-xs-4 mag">
+                                <a
+                                    className="air1 arrhhr"
+                                    href="#"
+                                >
+                                  DEPART <i className="fa air2 pad-4"/>
+                                </a>
                               </div>
-                              <div className="flight-detail">
-                                <div className="flight-departure">
-                                  <h5 className="color-black text-end">12:00</h5>
-                                  <h5 className="dark-gray text-end">DLI</h5>
-                                  <h6 className="color-black text-end">Monday 20 Jan 2025</h6>
-                                </div>
-                                <div className="d-inline-flex align-items-center gap-8">
-                                  <span className="">From</span>
-                                  <div className="from-to text-center">
-                                    <h5 className="dark-gray">0h 50m</h5>
-                                    <img src={Routeplan} alt="" />
-                                    <h6 className="color-black">1 Stop</h6>
+                              <div className="col-md-4 col-sm-2 hidden-sm hidden-xs">
+                                <a className="dur1 arrhhr" href="#">
+                                  DURATION <i className="fa dur2 pad-4"/>
+                                </a>
+                              </div>
+                              <div className="col-md-2 col-sm-3 col-xs-4 mag">
+                                <a
+                                    className="dep1 arrhhr"
+                                    href="#"
+                                >
+                                  ARRIVE <i className="fa dep2 pad-4"/>
+                                </a>
+                              </div>
+                              <div className="col-md-2 col-sm-3 hidden-xs">
+                                <a
+                                    className="pri1 arrhhr"
+                                    href="#"
+                                >
+                                  Price
+                                </a>
+
+                              </div>
+                            </div>
+                            {currentFlights.map((flight, index) => (
+                            <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">
+                              <div className="flight-area">
+
+                                {flight.sg.map((flightSegment, ser) => (<>
+                                <div className="airline-name">
+                                  <img src={Airindia} alt=""/>
+                                  <div className="mt-1">
+                                    <h5 className="lightest-black mb-1"> {flightSegment.al.alN}</h5>
+                                    <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
                                   </div>
-                                  <span className="">To</span>
                                 </div>
-                                <div className="flight-departure">
-                                  <h5 className="color-black">12:50</h5>
-                                  <h5 className="dark-gray">BOM</h5>
-                                  <h6 className="color-black">Monday 21 Jan 2025</h6>
-                                </div>
-                              </div>
-                            </div>
-                            <hr className="bg-light-gray mt-24 mb-24" />
-                            <h5 className="badge">Return</h5>
-                            <div className="flightrow">
-                              <div className="airline-name">
-                                <img src={Airindia} alt="" />
-                                <div>
-                                  <h5 className="lightest-black mb-8"> Air India</h5>
-                                  <h6 className="dark-gray">AI 777-90</h6>
-                                </div>
-                              </div>
-                              <div className="flight-detail">
-                                <div className="flight-departure">
-                                  <h5 className="color-black text-end">12:00</h5>
-                                  <h5 className="dark-gray text-end">BOM</h5>
-                                  <h6 className="color-black text-end">Tuesday 15 Jan 2025</h6>
-                                </div>
-                                <div className="d-inline-flex align-items-center gap-8">
-                                  <span className="">From</span>
-                                  <div className="from-to text-center">
-                                    <h5 className="dark-gray">0h 50m</h5>
-                                    <img src={Routeplan} alt="" />
-                                    <h6 className="color-black">1 Stop</h6>
+                                <div className="flight-detail">
+                                  <div className="flight-departure">
+                                    <h5 className="color-black text-end">{formatTime(flightSegment.or.dT)}</h5>
+                                    <h5 className="dark-gray text-end">{flightSegment.or.aC}</h5>
                                   </div>
-                                  <span className="">To</span>
+                                  <div className="d-inline-flex align-items-center gap-8">
+                                    <span className="">From</span>
+                                    <div className="from-to text-center">
+                                      <h5 className="dark-gray">{convertMinutesToDuration(flightSegment.dr)}</h5>
+                                      <img src={Routeplan} alt=""/>
+                                      <h6 className="color-black">1 Stop</h6>
+                                    </div>
+                                    <span className="">To</span>
+                                  </div>
+                                  <div className="flight-departure">
+                                    <h5 className="color-black">{formatTime(flightSegment.ds.aT)}</h5>
+                                    <h5 className="dark-gray">{flightSegment.ds.aC}</h5>
+                                  </div>
                                 </div>
-                                <div className="flight-departure">
-                                  <h5 className="color-black">12:50</h5>
-                                  <h5 className="dark-gray">DLI</h5>
-                                  <h6 className="color-black">Tuesday 15 Jan 2025</h6>
+                                <div className="flight-button ps-2">
+                                  <div className="amount">
+                                    <h5 className="color-black">₹{flight.cr} {flight.fF}</h5>
+                                    <h6 className="dark-gray text-end">Price</h6>
+                                  </div>
+                                  <div className="form-check">
+                                    <input
+                                        className="form-check-input mt-0"
+                                        type="radio"
+                                        name="onwardflight"
+                                        checked
+                                    />
+                                  </div>
+
+
+                                </div>
+                                </>))}
+
+
+                              </div>
+                              <hr className="bg-light-gray mt-24 mb-24"/>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <h5 className="color-black">{formatedDate(flight.sg[0].or.dT)}</h5>
+                                <div>
+                                  <a href="#" className="accordion-button color-primary h5 collapsed">
+                                    <i className="fal fa-chevron-down color-primary "/>
+                                    &nbsp;Flight Detail
+                                  </a>
                                 </div>
                               </div>
-                            </div>
+                            </div>))}
+                            {/*<div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">*/}
+                            {/*  <div className="flight-area">*/}
+                            {/*    <div className="airline-name">*/}
+                            {/*      <img src={Airindia} alt=""/>*/}
+                            {/*      <div className="mt-1">*/}
+                            {/*        <h5 className="lightest-black mb-1"> Air India</h5>*/}
+                            {/*        <h6 className="dark-gray mt-0 mb-md-0">AI 777-90</h6>*/}
+                            {/*      </div>*/}
+                            {/*    </div>*/}
+                            {/*    <div className="flight-detail">*/}
+                            {/*      <div className="flight-departure">*/}
+                            {/*        <h5 className="color-black text-end">12:00</h5>*/}
+                            {/*        <h5 className="dark-gray text-end">DLI</h5>*/}
+                            {/*      </div>*/}
+                            {/*      <div className="d-inline-flex align-items-center gap-8">*/}
+                            {/*        <span className="">From</span>*/}
+                            {/*        <div className="from-to text-center">*/}
+                            {/*          <h5 className="dark-gray">0h 50m</h5>*/}
+                            {/*          <img src={Routeplan} alt=""/>*/}
+                            {/*          <h6 className="color-black">1 Stop</h6>*/}
+                            {/*        </div>*/}
+                            {/*        <span className="">To</span>*/}
+                            {/*      </div>*/}
+                            {/*      <div className="flight-departure">*/}
+                            {/*        <h5 className="color-black">12:50</h5>*/}
+                            {/*        <h5 className="dark-gray">BOM</h5>*/}
+                            {/*      </div>*/}
+                            {/*    </div>*/}
+                            {/*    <div className="flight-button ps-2">*/}
+                            {/*      <div className="amount">*/}
+                            {/*        <h5 className="color-black">₹2240</h5>*/}
+                            {/*        <h6 className="dark-gray text-end">Price</h6>*/}
+                            {/*      </div>*/}
+                            {/*      <div className="form-check">*/}
+                            {/*        <input*/}
+                            {/*            className="form-check-input mt-0"*/}
+                            {/*            type="radio"*/}
+                            {/*            name="onwardflight"*/}
+                            {/*        />*/}
+                            {/*      </div>*/}
+
+
+                            {/*    </div>*/}
+                            {/*  </div>*/}
+                            {/*  <hr className="bg-light-gray mt-24 mb-24"/>*/}
+                            {/*  <div className="d-flex justify-content-between align-items-center">*/}
+                            {/*    <h5 className="color-black">Monday 24 August</h5>*/}
+                            {/*    <div>*/}
+                            {/*      <a href="#" className="accordion-button color-primary h5 collapsed">*/}
+                            {/*        <i className="fal fa-chevron-down color-primary "/>*/}
+                            {/*        &nbsp;Flight Detail*/}
+                            {/*      </a>*/}
+                            {/*    </div>*/}
+                            {/*  </div>*/}
+                            {/*</div>*/}
                           </div>
-                          <div className="flight-button col-md-3">
-                            <div className="amount">
-                              <h5 className="color-black">₹2240</h5>
-                              <h6 className="dark-gray text-end">Price</h6>
+                          <div className="col-md-6">
+                            <div className="row n-w-ron-bg m-0 mb-1">
+                              <div className="col-md-4 col-sm-2 col-xs-12 p-0">
+                                <div className="travel-det">
+                                  <span>{toAirport.city}</span> → <span>{fromAirport.city}</span>
+                                </div>
+                              </div>
+                              <div className="col-md-4 col-sm-5 col-xs-12 m-0 p-0">
+                                <div className="day-date">{formatDate(selectedReturnDate)}</div>
+                              </div>
+                              <div className="col-md-4 col-sm-5 col-xs-12 nxt-pre-col p-0 m-0">
+                                <button type="button" className="txt-m1 rgtbdr">
+                                  Previous Day
+                                </button>
+                                <button type="button" className="txt-m1 pdl8" id="depNext">
+                                  Next Day
+                                </button>
+                              </div>
                             </div>
-                            <button className="btn btn-primary">
-                              Book Now
-                            </button>
+                            <div className="row m-0 p-0 grey-bck mb-2">
+                              <div className="col-md-2 col-sm-2 col-xs-4 mag p-0">
+                                <a
+                                    className=" arrhhr arr1"
+                                    href="#"
+                                >
+                                  Airlines <i className="fa arr2 pad-4"/>
+                                </a>
+                              </div>
+                              <div className="col-md-2 col-sm-3 col-xs-4 mag">
+                                <a
+                                    className="air1 arrhhr"
+                                    href="#"
+                                >
+                                  DEPART <i className="fa air2 pad-4"/>
+                                </a>
+                              </div>
+                              <div className="col-md-4 col-sm-2 hidden-sm hidden-xs">
+                                <a className="dur1 arrhhr" href="#">
+                                  DURATION <i className="fa dur2 pad-4"/>
+                                </a>
+                              </div>
+                              <div className="col-md-2 col-sm-3 col-xs-4 mag">
+                                <a
+                                    className="dep1 arrhhr"
+                                    href="#"
+                                >
+                                  ARRIVE <i className="fa dep2 pad-4"/>
+                                </a>
+                              </div>
+                              <div className="col-md-2 col-sm-3 hidden-xs">
+                                <a
+                                    className="pri1 arrhhr"
+                                    href="#"
+                                >
+                                  Price
+                                </a>
+
+                              </div>
+                            </div>
+                            {currentFlightsInbound.map((flight, index) => (
+                            <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">
+                              <div className="flight-area">
+                                {flight.sg.map((flightSegment, ser) => (<>
+                                <div className="airline-name">
+                                  <img src={Airindia} alt=""/>
+                                  <div className="mt-1">
+                                    <h5 className="lightest-black mb-1"> {flightSegment.al.alN}</h5>
+                                    <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
+                                  </div>
+                                </div>
+                                <div className="flight-detail">
+                                  <div className="flight-departure">
+                                    <h5 className="color-black text-end">{formatTime(flightSegment.or.dT)}</h5>
+                                    <h5 className="dark-gray text-end">{flightSegment.or.aC}</h5>
+                                  </div>
+                                  <div className="d-inline-flex align-items-center gap-8">
+                                    <span className="">From</span>
+                                    <div className="from-to text-center">
+                                      <h5 className="dark-gray">{convertMinutesToDuration(flightSegment.dr)}</h5>
+                                      <img src={Routeplan} alt=""/>
+                                      <h6 className="color-black">1 Stop</h6>
+                                    </div>
+                                    <span className="">To</span>
+                                  </div>
+                                  <div className="flight-departure">
+                                    <h5 className="color-black">{formatTime(flightSegment.ds.aT)}</h5>
+                                    <h5 className="dark-gray">{flightSegment.ds.aC}</h5>
+                                  </div>
+                                </div>
+                                <div className="flight-button ps-2">
+                                  <div className="amount">
+                                    <h5 className="color-black">{flight.cr} {flight.fF}</h5>
+                                    <h6 className="dark-gray text-end">Price</h6>
+                                  </div>
+                                  <div className="form-check">
+                                    <input
+                                        className="form-check-input mt-0"
+                                        type="radio"
+                                        name="returnflight"
+                                        checked
+                                    />
+                                  </div>
+
+
+                                </div>
+                                </>))}
+                              </div>
+                              <hr className="bg-light-gray mt-24 mb-24"/>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <h5 className="color-black">{formatedDate(flight.sg[0].or.dT)}</h5>
+                                <div>
+                                  <a href="#" className="accordion-button color-primary h5 collapsed">
+                                    <i className="fal fa-chevron-down color-primary "/>
+                                    &nbsp;Flight Detail
+                                  </a>
+                                </div>
+                              </div>
+                            </div>))}
+                            {/*<div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">*/}
+                            {/*  <div className="flight-area">*/}
+                            {/*    <div className="airline-name">*/}
+                            {/*      <img src={Airindia} alt=""/>*/}
+                            {/*      <div className="mt-1">*/}
+                            {/*        <h5 className="lightest-black mb-1"> Air India</h5>*/}
+                            {/*        <h6 className="dark-gray mt-0 mb-md-0">AI 777-90</h6>*/}
+                            {/*      </div>*/}
+                            {/*    </div>*/}
+                            {/*    <div className="flight-detail">*/}
+                            {/*      <div className="flight-departure">*/}
+                            {/*        <h5 className="color-black text-end">12:00</h5>*/}
+                            {/*        <h5 className="dark-gray text-end">DLI</h5>*/}
+                            {/*      </div>*/}
+                            {/*      <div className="d-inline-flex align-items-center gap-8">*/}
+                            {/*        <span className="">From</span>*/}
+                            {/*        <div className="from-to text-center">*/}
+                            {/*          <h5 className="dark-gray">0h 50m</h5>*/}
+                            {/*          <img src={Routeplan} alt=""/>*/}
+                            {/*          <h6 className="color-black">1 Stop</h6>*/}
+                            {/*        </div>*/}
+                            {/*        <span className="">To</span>*/}
+                            {/*      </div>*/}
+                            {/*      <div className="flight-departure">*/}
+                            {/*        <h5 className="color-black">12:50</h5>*/}
+                            {/*        <h5 className="dark-gray">BOM</h5>*/}
+                            {/*      </div>*/}
+                            {/*    </div>*/}
+                            {/*    <div className="flight-button ps-2">*/}
+                            {/*      <div className="amount">*/}
+                            {/*        <h5 className="color-black">₹2240</h5>*/}
+                            {/*        <h6 className="dark-gray text-end">Price</h6>*/}
+                            {/*      </div>*/}
+                            {/*      <div className="form-check">*/}
+                            {/*        <input*/}
+                            {/*            className="form-check-input mt-0"*/}
+                            {/*            type="radio"*/}
+                            {/*            name="returnflight"*/}
+                            {/*        />*/}
+                            {/*      </div>*/}
+
+
+                            {/*    </div>*/}
+                            {/*  </div>*/}
+                            {/*  <hr className="bg-light-gray mt-24 mb-24"/>*/}
+                            {/*  <div className="d-flex justify-content-between align-items-center">*/}
+                            {/*    <h5 className="color-black">Monday 26 August</h5>*/}
+                            {/*    <div>*/}
+                            {/*      <a href="#" className="accordion-button color-primary h5 collapsed">*/}
+                            {/*        <i className="fal fa-chevron-down color-primary "/>*/}
+                            {/*        &nbsp;Flight Detail*/}
+                            {/*      </a>*/}
+                            {/*    </div>*/}
+                            {/*  </div>*/}
+                            {/*</div>*/}
                           </div>
                         </div>
 
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 22 August</h5>
-                          <div>
-                            <a href="#" className="accordion-button color-primary h5 collapsed">
-                              <i className="fal fa-chevron-down color-primary " />
-                              &nbsp;Flight Detail
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
-                        <div className="flight-area">
-                          <div className="airline-name">
-                            <img src={Airindia} alt="" />
-                            <div>
-                              <h5 className="lightest-black mb-8"> Air India</h5>
-                              <h6 className="dark-gray">AI 777-90</h6>
-                            </div>
-                          </div>
-                          <div className="flight-detail">
-                            <div className="flight-departure">
-                              <h5 className="color-black text-end">12:00</h5>
-                              <h5 className="dark-gray text-end">DLI</h5>
-                            </div>
-                            <div className="d-inline-flex align-items-center gap-8">
-                              <span className="">From</span>
-                              <div className="from-to text-center">
-                                <h5 className="dark-gray">0h 50m</h5>
-                                <img src={Routeplan} alt="" />
-                                <h6 className="color-black">1 Stop</h6>
-                              </div>
-                              <span className="">To</span>
-                            </div>
-                            <div className="flight-departure">
-                              <h5 className="color-black">12:50</h5>
-                              <h5 className="dark-gray">BOM</h5>
-                            </div>
-                          </div>
-                          <div className="flight-button">
-                            <div className="amount">
-                              <h5 className="color-black">₹2240</h5>
-                              <h6 className="dark-gray text-end">Price</h6>
-                            </div>
-                            <button className="btn btn-primary">
-                              Book Now
-                            </button>
-                          </div>
-                        </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 23 August</h5>
-                          <div>
-                            <a href="#" className="accordion-button color-primary h5 collapsed">
-                              <i className="fal fa-chevron-down color-primary " />
-                              &nbsp;Flight Detail
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3">
-                        <div className="flight-area">
-                          <div className="airline-name">
-                            <img src={Airindia} alt="" />
-                            <div>
-                              <h5 className="lightest-black mb-8"> Air India</h5>
-                              <h6 className="dark-gray">AI 777-90</h6>
-                            </div>
-                          </div>
-                          <div className="flight-detail">
-                            <div className="flight-departure">
-                              <h5 className="color-black text-end">12:00</h5>
-                              <h5 className="dark-gray text-end">DLI</h5>
-                            </div>
-                            <div className="d-inline-flex align-items-center gap-8">
-                              <span className="">From</span>
-                              <div className="from-to text-center">
-                                <h5 className="dark-gray">0h 50m</h5>
-                                <img src={Routeplan} alt="" />
-                                <h6 className="color-black">1 Stop</h6>
-                              </div>
-                              <span className="">To</span>
-                            </div>
-                            <div className="flight-departure">
-                              <h5 className="color-black">12:50</h5>
-                              <h5 className="dark-gray">BOM</h5>
-                            </div>
-                          </div>
-                          <div className="flight-button">
-                            <div className="amount">
-                              <h5 className="color-black">₹2240</h5>
-                              <h6 className="dark-gray text-end">Price</h6>
-                            </div>
-                            <button className="btn btn-primary">
-                              Book Now
-                            </button>
-                          </div>
-                        </div>
-                        <hr className="bg-light-gray mt-24 mb-24" />
-                        <div className="d-flex justify-content-between align-items-center">
-                          <h5 className="color-black">Monday 24 August</h5>
-                          <div>
-                            <a href="#" className="accordion-button color-primary h5 collapsed">
-                              <i className="fal fa-chevron-down color-primary " />
-                              &nbsp;Flight Detail
-                            </a>
-                          </div>
-                        </div>
-                      </div>*/}
+                      </div>)}
+
+
                     </div>
                   </div>
                 </div>

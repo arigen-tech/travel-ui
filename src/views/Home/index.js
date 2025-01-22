@@ -45,8 +45,8 @@ const HomePage = () => {
         returnDate:selectedReturnDate,
         from: fromAirport,
         to: toAirport,
-        travellerCounts:travellerCounts
-
+        travellerCounts:travellerCounts,
+        tripType:tripType
     };
 
 
@@ -545,9 +545,8 @@ const HomePage = () => {
                                                                                 {["adults", "children", "infants"].map((type, index) => (
                                                                                     <div key={index}
                                                                                          className="traveller-control col-md-4">
-                                                    <span>{`${type.charAt(0).toUpperCase() + type.slice(1)}${
-                                                        type === "adults" ? " (12+ Yrs)" : type === "children" ? " (2-12 Yrs)" : " (0-2 Yrs)"
-                                                    }`}</span>
+                                                                                <span>{`${type.charAt(0).toUpperCase() + type.slice(1)}${
+                                                                                        type === "adults" ? " (12+ Yrs)" : type === "children" ? " (2-12 Yrs)" : " (0-2 Yrs)"}`}</span>
                                                                                         <div>
                                                                                             <button
                                                                                                 type="button"
