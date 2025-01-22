@@ -897,7 +897,6 @@ const Flightlist = () => {
                                     id="afternoon"
                                     className="radio-button"
                                     type="radio"
-                                    name="clock-time"
                                     defaultValue="afternoon"
                                     name="departure-time"
                                     value="afternoon"
@@ -1173,14 +1172,13 @@ const Flightlist = () => {
                             </div>
                             {currentFlights.map((flight, index) => (
                             <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">
+                              {flight.sg.map((flightSegment, ser) => (<>
                               <div className="flight-area">
-
-                                {flight.sg.map((flightSegment, ser) => (<>
                                 <div className="airline-name">
                                   <img src={Airindia} alt=""/>
                                   <div className="mt-1">
                                     <h5 className="lightest-black mb-1"> {flightSegment.al.alN}</h5>
-                                    <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
+                                    <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC + flightSegment.al.fN}</h6>
                                   </div>
                                 </div>
                                 <div className="flight-detail">
@@ -1218,11 +1216,9 @@ const Flightlist = () => {
 
 
                                 </div>
-                                </>))}
-
-
                               </div>
                               <hr className="bg-light-gray mt-24 mb-24"/>
+                              </>))}
                               <div className="d-flex justify-content-between align-items-center">
                                 <h5 className="color-black">{formatedDate(flight.sg[0].or.dT)}</h5>
                                 <div>
@@ -1350,13 +1346,13 @@ const Flightlist = () => {
                             </div>
                             {currentFlightsInbound.map((flight, index) => (
                             <div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">
+                              {flight.sg.map((flightSegment, ser) => (<>
                               <div className="flight-area">
-                                {flight.sg.map((flightSegment, ser) => (<>
                                 <div className="airline-name">
                                   <img src={Airindia} alt=""/>
                                   <div className="mt-1">
                                     <h5 className="lightest-black mb-1"> {flightSegment.al.alN}</h5>
-                                    <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
+                                    <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC + flightSegment.al.fN}</h6>
                                   </div>
                                 </div>
                                 <div className="flight-detail">
@@ -1394,9 +1390,9 @@ const Flightlist = () => {
 
 
                                 </div>
-                                </>))}
                               </div>
                               <hr className="bg-light-gray mt-24 mb-24"/>
+                              </>))}
                               <div className="d-flex justify-content-between align-items-center">
                                 <h5 className="color-black">{formatedDate(flight.sg[0].or.dT)}</h5>
                                 <div>

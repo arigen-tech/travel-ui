@@ -300,7 +300,7 @@ hr{
 }
 .fastestbt::before {
     content: '';
-    /*background: url('../../assets/img/fastest-gry.svg') no-repeat;*/
+    background: url('../../assets/img/fastest-gry.svg') no-repeat;
     width: 28px;
     float: left;
     background-position: center center;
@@ -312,7 +312,7 @@ hr{
 }
 .gr-bdr::before {
     content: '';
-    /*background: url('../../assets/img/cheapest-clr.svg') no-repeat;*/
+    background: url('../../assets/img/cheapest-clr.svg') no-repeat;
     width: 28px;
     float: left;
     background-position: center center;
