@@ -13,7 +13,16 @@ import Select from "react-select";
 import { useLocation } from 'react-router-dom';
 import {getRequest, postRequest} from "../../service/apiService";
 import {GET_DEFAULT_AIRPORT, GET_FLIGHT, GET_SEARCH_AIRPORT} from "../../config/apiConfig";
+const importAllImages = (requireContext) => {
+  const images = {};
+  requireContext.keys().forEach((key) => {
+    const fileName = key.replace('./', '').replace('.png', ''); // Extract file name without extension
+    images[fileName] = requireContext(key);
+  });
+  return images;
+};
 
+const images = importAllImages(require.context('../../assets/img/tc_airline_icons', false, /\.png$/)); // Adjust the path as needed
 const Flightlist = () => {
   const location = useLocation();
   const constants = location.state || {};
@@ -46,6 +55,7 @@ const Flightlist = () => {
   const [fromAirport, setFromAirport] = useState(constants.from);
   const [toAirport, setToAirport] = useState(constants.to);
   const [multiAirport, setMultiAirport] = useState([]);
+
 
   // Get flights for the current page
 
@@ -1039,7 +1049,7 @@ const Flightlist = () => {
                                         <h5 className="badge">Departure</h5>
                                         <div className="flightrow">
                                           <div className="airline-name">
-                                            <img src={Airindia} alt=""/>
+                                            <img src={images[flightSegment.al.alC]} alt=""/>
                                             <div>
                                               <h5 className="lightest-black mb-8"> {flightSegment.al.alN}</h5>
                                               <h6 className="dark-gray">{flightSegment.al.alC} {flightSegment.al.fN}</h6>
@@ -1175,7 +1185,7 @@ const Flightlist = () => {
                               {flight.sg.map((flightSegment, ser) => (<>
                               <div className="flight-area">
                                 <div className="airline-name">
-                                  <img src={Airindia} alt=""/>
+                                  <img src={images[flightSegment.al.alC]} alt=""/>
                                   <div className="mt-1">
                                     <h5 className="lightest-black mb-1"> {flightSegment.al.alN}</h5>
                                     <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC + flightSegment.al.fN}</h6>
@@ -1349,7 +1359,7 @@ const Flightlist = () => {
                               {flight.sg.map((flightSegment, ser) => (<>
                               <div className="flight-area">
                                 <div className="airline-name">
-                                  <img src={Airindia} alt=""/>
+                                  <img src={images[flightSegment.al.alC]} alt=""/>
                                   <div className="mt-1">
                                     <h5 className="lightest-black mb-1"> {flightSegment.al.alN}</h5>
                                     <h6 className="dark-gray mt-0 mb-md-0">{flightSegment.al.alC + flightSegment.al.fN}</h6>
