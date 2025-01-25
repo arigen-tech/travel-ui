@@ -174,7 +174,7 @@ button#travellersDropdown{
   border-width: 0px !important;
 }
 .react-select__value-container{
-  height: 42px;
+  height: 45px;
   padding: 0px 0px !important;
 }
 .react-select__input{
@@ -187,12 +187,19 @@ button#travellersDropdown{
   box-shadow: 0 0 0 .25rem rgba(13, 110, 253, .25) !important;
   
 }
-.react-select__menu .react-select__option:hover {
+.react-select__menu .react-select__option:hover{
   background: var(--it-theme-2) !important;
+  color: #fff !important;
+}
+.react-select__menu .react-select__option:hover span{
+  color: #fff !important;
+}
+.react-select__menu .react-select__option--is-selected span{
   color: #fff !important;
 }
 .react-select__menu .react-select__option--is-selected {
   background: var(--it-theme-2) !important;
+  color: #fff !important;
 }
 .btn-link{
  color: var(--it-theme-2) !important;

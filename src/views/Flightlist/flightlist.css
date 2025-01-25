@@ -173,11 +173,18 @@ h6, .h6 {
 hr{
     margin: 10px 0 !important;
 }
-.rountrip-list h5{
+.rountrip-list h5, h6{
     font-size: 13px !important;
 }
 .rountrip-list .airline-name{
     display: block !important;
+}
+.rountrip-list .amount{
+    display: flex;
+    justify-content: space-between;
+}
+.rountrip-list .airline-name img{
+    width: 80%;
 }
 .flight-button .form-check{
     padding-left: 0px !important;
@@ -326,6 +333,83 @@ hr{
     padding: 6px 8px;
     float: right;
     padding-left: 4px;
+}
+.nav-pills{
+    background: #F6F4F4;
+    justify-content: space-between;
+    border-radius: 30px;
+}
+.nav-pills .nav-item{
+    padding: 0px;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+    border-radius: 30px;
+
+}
+.nav-pills .nav-link{
+    color: var(--accent-2);
+}
+.fon12 {
+    font-size: 12px;
+}
+.border-bot4 {
+    border-bottom: 1px solid #CCC;
+    display: flex;
+    padding: 0 10px;
+}
+.hz3 {
+    height: 30px;
+    line-height: 30px;
+}
+.txt-al-rt {
+    text-align: right;
+}
+.border-b2 {
+    border: 1px solid #CCC;
+}
+.bood {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+.txt-d4 {
+    font-size: 14px;
+    color: #121111;
+}
+.refund {
+    height: 20px;
+    background: #fff;
+    border-radius: 20px;
+    text-align: center;
+    line-height: 20px;
+    color: #2dca1c;
+    font-size: 11px;
+    float: right;
+    border: 1px solid #2dca1c;
+    padding: 0 6px;
+}
+.fareRuls, .baggagerule {
+    margin-bottom: 12px;
+}
+.fareRuls table, .baggagerule table {
+    font-size: 12px;
+    border: 1px solid #cecece;
+}
+.fareRuls table tr th, .fareRuls table tr td {
+    padding: 7px;
+}
+.fareRuls table tr th, .baggagerule table tr th {
+    background: #f5f5f5;
+    font-weight: normal;
+    text-align: left;
+}
+.frtbl_hd {
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0;
+}
+.frtbl_sml {
+    font-size: 11px;
+    margin: 0;
 }
 @media (max-width: 1699px) {
     .flight-listing-page .flight-block .flight-area .flight-detail {
