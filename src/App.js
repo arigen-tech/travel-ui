@@ -8,6 +8,7 @@ const Layout =  React.lazy(() => import('./views/layout/index'));
 const Home = React.lazy(() => import('./views/Home/index'));
 const Contact = React.lazy(() => import('./views/Contact/index'));
 const FlightList = React.lazy(() => import('./views/Flightlist/index'));
+const FlightBookingPage = React.lazy(() => import('./views/FlightBooking/index'));
 
 const isAuthenticated = () => {
   // Replace this with real authentication check logic
@@ -26,6 +27,7 @@ function App() {
             <Route path="/" element={<Home />} /> 
             <Route path="/flightList" element={<FlightList />} /> 
             <Route path="/contact-us" element={<Contact />} /> 
+            <Route path="/flightBooking" element={<FlightBookingPage />} />
           </Route>
         </Routes>
       </Suspense>

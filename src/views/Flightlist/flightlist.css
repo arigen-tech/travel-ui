@@ -392,7 +392,7 @@ hr{
 }
 .fareRuls table, .baggagerule table {
     font-size: 12px;
-    border: 1px solid #cecece;
+    border: 1px solid #cecece !important;
 }
 .fareRuls table tr th, .fareRuls table tr td {
     padding: 7px;
@@ -410,6 +410,13 @@ hr{
 .frtbl_sml {
     font-size: 11px;
     margin: 0;
+}
+.frtbl_sml p{
+    font-size: 11px;
+    margin: 0;
+}
+.baggagerule table tr th, .baggagerule table tr td {
+    padding: 10px 13px;
 }
 @media (max-width: 1699px) {
     .flight-listing-page .flight-block .flight-area .flight-detail {
@@ -496,9 +503,9 @@ hr{
     }
 }
 
-.flight-listing-page .accordion-button:not(.collapsed) i.fa-chevron-down:before {
+/* .flight-listing-page .accordion-button:not(.collapsed) i.fa-chevron-down:before {
     content: "\f077" !important;
-}
+} */
 
 .time-detail {
     padding-top: 40px;
