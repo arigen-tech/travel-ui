@@ -13,6 +13,7 @@ import Select from "react-select";
 import { useLocation } from "react-router-dom";
 import { getRequest, postRequest } from "../../service/apiService";
 import {
+  FARE_RULE,
   GET_DEFAULT_AIRPORT,
   GET_FLIGHT,
   GET_SEARCH_AIRPORT,
@@ -32,7 +33,7 @@ const images = importAllImages(
 const Flightlist = () => {
   const location = useLocation();
   const constants = location.state || {};
-  console.log(constants);
+  // console.log(constants);
   const [searchResponse, setSearchResponse] = useState(
     localStorage.getItem("flightSearchResponse") != null
       ? JSON.parse(localStorage.getItem("flightSearchResponse")).response
@@ -65,7 +66,7 @@ const Flightlist = () => {
   ); // State for return date
   const itemsPerPage = 5; // Number of flights to show per page
   const [currentPage, setCurrentPage] = useState(1);
-  const totalFlights = searchResponse.results.outboundFlights.length;
+  const totalFlights = searchResponse.results?searchResponse.results.outboundFlights.length:0;
   const [selectedAirlines, setSelectedAirlines] = useState([]);
   const [value, setValue] = React.useState([100, 100000]); // Price range
   const [departureTime, setDepartureTime] = React.useState(""); // Selected departure time range
@@ -75,15 +76,41 @@ const Flightlist = () => {
   const [fromAirports, setFromAirports] = useState([]);
   const [toAirports, setToAirports] = useState([]);
   const [defaultAirports, setDefaultAirports] = useState([]);
-  const [fromAirport, setFromAirport] = useState(constants.from);
-  const [toAirport, setToAirport] = useState(constants.to);
+  const [fromAirport, setFromAirport] = useState(constants.from?constants.from:{});
+  const [toAirport, setToAirport] = useState(constants.to?constants.to:{});
   const [multiAirport, setMultiAirport] = useState([]);
+  const [fareRule,setFareRule]=useState([]);
 
   // Get flights for the current page
 
   // Handle page change
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const getFareDetails = async (flight) => {
+
+    // setCurrentPage(page);
+    let json = {
+      traceId: searchResponse.traceId,
+      resultIndex:flight.rI
+    }
+    // console.log(flight);
+    // setLoading(true);
+    const data = await postRequest(FARE_RULE, json);
+    console.log(data.status);
+    // console.log(data.response);
+    // console.log(JSON.parse(data.response).results[0].fareRuleDetail);
+    if (data?.status === 200 && Array.isArray(JSON.parse(data.response).results)) {
+      // console.log(data.response);
+      await setFareRule((prev) => ({
+        ...prev,
+        [flight.rI]: JSON.parse(data.response).results, // Add/Update the response in the fareRules array at key flight.rI
+      }));
+      console.log(fareRule);
+    }
+
+    // setLoading(false);
   };
 
   const locationOptions = [
@@ -224,8 +251,13 @@ const Flightlist = () => {
     setLoading(true);
     const data = await postRequest(GET_FLIGHT, json);
     setLoading(false);
-    localStorage.setItem("flightSearchResponse", JSON.stringify(data));
-    setSearchResponse(data.response);
+    if(data.status === 200){
+      localStorage.setItem("flightSearchResponse", data.response);
+      setSearchResponse(await JSON.parse(data.response).response);
+    }
+
+
+
     // navigate('/flightList',{ state: constants });
     // setFlightSearchResponse(data.response);
   }
@@ -259,8 +291,8 @@ const Flightlist = () => {
         setFromAirports(data.response);
         setToAirports(data.response);
         setDefaultAirports(data.response);
-        // setFromAirport(data.response[0]);
-        // setToAirport(data.response[1]);
+        setFromAirport(constants.from?constants.from:data.response[0]);
+        setToAirport(constants.to?constants.to:data.response[1]);
         // setMultiAirport([{fromAirport:data.response[0],toAirport:data.response[1]}]);
       } else {
         setFromAirports([]);
@@ -338,8 +370,8 @@ const Flightlist = () => {
     );
   };
 
-  const currentFlightsInbound = searchResponse.results.inboundFlights;
-  const currentFlights = searchResponse.results.outboundFlights.filter(
+  const currentFlightsInbound = searchResponse.results?searchResponse.results.inboundFlights:undefined;
+  const currentFlights = searchResponse.results?searchResponse.results.outboundFlights.filter(
     (flight) => {
       const isAirlineMatched = selectedAirlines.length
         ? flight.sg.some((segment) => selectedAirlines.includes(segment.al.alC))
@@ -356,7 +388,7 @@ const Flightlist = () => {
       const isArrivalTimeMatched = arrivalTime
         ? flight.sg.some((segment) => isTimeInRange(segment.ds.aT, arrivalTime))
         : true;
-      const stops = flight.sg.length - 1;
+      const stops = flight.sg?(flight.sg.length - 1):0;
 
       return (
         (selectedStops.length === 0 || selectedStops.includes(stops)) &&
@@ -366,11 +398,8 @@ const Flightlist = () => {
         isArrivalTimeMatched
       );
     }
-  );
-  const paginatedFlights = currentFlights.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  ):[];
+
   const totalPages = Math.ceil(currentFlights.length / itemsPerPage);
 
   const handleStopsChange = (stopCount) => {
@@ -944,31 +973,32 @@ const Flightlist = () => {
 
             <section className="flight-listing-page mb-60">
               <div className="container">
-                <div className="row">
+                {constants.fromDate?(<div className="row">
                   <div className="col-lg-3 col-md-3">
                     <h5>{currentFlights.length} Flights Found</h5>
                   </div>
                   <div className="col-lg-9 col-md-9">
                     <h5>
-                      {fromAirport.city} <ArrowRightAltIcon /> {toAirport.city}
+                      {fromAirport.city} <ArrowRightAltIcon/> {toAirport.city}
                       {/*<ArrowRightAltIcon />Bengaluru */}
                       {formatedDate(constants.fromDate)}
                     </h5>
                   </div>
-                </div>
+                </div>):""}
+
                 <div className="row">
                   <div className="col-xl-3 col-lg-3 mb-xl-0 mb-3">
                     <div className="sidebar bg-white rounded-3 light-shadow p-3">
                       <div className="sidebar-title">
                         <h5 className="lightest-black">
-                          <FilterAltIcon /> Filter Search
+                          <FilterAltIcon/> Filter Search
                         </h5>
                       </div>
-                      <hr className="bg-light-gray mt-24 mb-24" />
+                      <hr className="bg-light-gray mt-24 mb-24"/>
                       <div className="filtersection">
                         <h5 className="lightest-black">Airlines (Outbound)</h5>
                         <ul class="list-group">
-                          {searchResponse.facets.airlines.outbound.map(
+                          {searchResponse.facets?searchResponse.facets.airlines.outbound.map(
                             (airline, index) => (
                               <li key={index} className="list-group-item">
                                 <input
@@ -987,7 +1017,7 @@ const Flightlist = () => {
                                 {/*<span className="text-muted">({airline.count})</span>*/}
                               </li>
                             )
-                          )}
+                          ):""}
                         </ul>
                       </div>
                       <hr className="bg-light-gray mt-24 mb-24" />
@@ -1258,14 +1288,14 @@ const Flightlist = () => {
                     {/*Flight lists */}
                     {currentFlightsInbound === undefined ? (
                       <div>
-                        {paginatedFlights.map((flight, index) => (
+                        {currentFlights.map((flight, index) => (
                           <div
                             key={index}
                             className="flight-block bg-white light-shadow p-3 rounded-3 mb-3"
                           >
                             <div className="flight-area multi-flight">
                               <div className="flight-left col-md-9">
-                                {flight.sg.map((flightSegment, ser) => (
+                                {flight.sg&&flight.sg.map((flightSegment, ser) => (
                                   <div key={ser}>
                                     <h5 className="badge">Departure</h5>
                                     <div className="flightrow">
@@ -1343,7 +1373,7 @@ const Flightlist = () => {
                                 {isRefundable(flight.iR)}
                               </h5>
                               <h6 className="color-black">
-                                {flight.sg.length - 1} Stop
+                                {flight.sg?flight.sg.length - 1:0} Stop
                               </h6>
                               <div>
                                 <button
@@ -1393,6 +1423,7 @@ const Flightlist = () => {
                                     role="tab"
                                     aria-controls={`rules-${index}`}
                                     aria-selected="false"
+                                    onClick={() => getFareDetails(flight)}
                                   >
                                     Fare Details & Rules
                                   </button>
@@ -1439,7 +1470,7 @@ const Flightlist = () => {
                                 >
                                   <div className="flight-area multi-flight">
                                     <div className="flight-left col-md-12">
-                                      {flight.sg.map((flightSegment, ser) => (
+                                      {flight.sg?flight.sg.map((flightSegment, ser) => (
                                         <div key={ser}>
                                           <h5 className="badge">Departure</h5>
                                           <div className="flightrow">
@@ -1506,7 +1537,7 @@ const Flightlist = () => {
                                             </div>
                                           </div>
                                         </div>
-                                      ))}
+                                      )):""}
                                     </div>
                                   </div>
                                 </div>
@@ -1587,11 +1618,7 @@ const Flightlist = () => {
                                             Fare Rules
                                           </div>
                                           <div className="col-md-6 col-sm-6 col-xs-12 hei txt-c mg-btm m-10 mb-2">
-                                            <div
-                                              className="refund"
-                                            >
-                                              Refundable
-                                            </div>
+                                            {flight.iR?<div className="refund">Refundable</div>:""}
                                           </div>
                                         </div>
 
@@ -1602,7 +1629,7 @@ const Flightlist = () => {
                                           >
                                             {/*Cancel new panel*/}
                                             <div className="fareRuls">
-                                              <table
+                                              {/*<table
                                                 width="100%"
                                                 rules="all"
                                                 border={1}
@@ -1673,11 +1700,11 @@ const Flightlist = () => {
                                                     </td>
                                                   </tr>
                                                 </tbody>
-                                              </table>
+                                              </table>*/}
                                             </div>
 
                                             <div className="fareRuls">
-                                              <table
+                                              {/*<table
                                                 width="100%"
                                                 rules="all"
                                                 border={1}
@@ -1743,18 +1770,19 @@ const Flightlist = () => {
                                                     </td>
                                                   </tr>
                                                 </tbody>
-                                              </table>
+                                              </table>*/}
                                             </div>
                                             {/*reschedule new panel end*/}
                                           </div>
                                         </div>
                                         <div className="row">
-                                          <div className="col-md-12 col-sm-12 col-xs-12 terms-h">
-                                            Terms &amp; Conditions
-                                          </div>
+                                          {/*<div className="col-md-12 col-sm-12 col-xs-12 terms-h">*/}
+                                          {/*  Terms &amp; Conditions*/}
+                                          {/*</div>*/}
                                           <div className="col-md-12 col-sm-12 col-xs-12">
                                             <div className="terms mar10">
                                               <ul style={{ display: "none" }}>
+
                                                 <li>
                                                   The charges will be on per
                                                   passenger per sector
@@ -1801,7 +1829,17 @@ const Flightlist = () => {
                                                 </li>
                                               </ul>
                                               <ul>
-                                                <li>
+                                                {/* Check if the fareRule for the flight exists */}
+                                                {fareRule[flight.rI] && fareRule[flight.rI].map((flightFareRule, ind) => (
+                                                  <div key={ind}>
+                                                    <span><b>{flightFareRule.airline} - {flightFareRule.destination}</b></span>
+
+                                                    <div
+                                                        dangerouslySetInnerHTML={{ __html: flightFareRule.fareRuleDetail }}
+                                                    />
+                                                  </div>
+                                                ))}
+                                                {/*<li>
                                                   Total Rescheduling Charges
                                                   Airlines Rescheduling fees
                                                   Fare Difference if applicable
@@ -1841,7 +1879,7 @@ const Flightlist = () => {
                                                   should be reconfirmed before
                                                   requesting for a cancellation
                                                   or amendment
-                                                </li>
+                                                </li>*/}
                                               </ul>
                                             </div>
                                           </div>
@@ -1870,34 +1908,38 @@ const Flightlist = () => {
           <p className="frtbl_hd">Cabin Baggage</p>
         </th>
       </tr>
-      <tr>
+      {flight.sg?flight.sg.map((flightSeg,index) =>
+      <tr key={index}>
         <td>
           <div className="flgi-l">
           <img
-            src=""
+            src={images[flightSeg.al.alC]}
             alt=""
           />
           </div>
-          <div >
+
+          <div>
+
             <p >
-              Indigo
+              {flightSeg.al.alN}
             </p>
-            <p>6E- 6814</p>
+            <p>{flightSeg.al.alC} - {flightSeg.al.fN}</p>
           </div>
         </td>
-        <td>15kgs</td>
+        <td>{flightSeg.bg}</td>
         <td>
-          7kg
+          {flightSeg.cBg}
         </td>
 
       </tr>
+      ):""}
       <tr>
         <td colSpan={3}>
           <div className="termsbagg">
             <ul>
               <li>
                 Baggage information mentioned above is obtained from airline's
-                reservation system, EaseMyTrip does not guarantee the accuracy
+                reservation system, Hindustan Holidays does not guarantee the accuracy
                 of this information.
               </li>
               <li>
@@ -1927,7 +1969,7 @@ const Flightlist = () => {
                         ))}
 
                         {/* Pagination Controls */}
-                        <div className="pagination d-flex justify-content-center mt-3">
+                        {/*<div className="pagination d-flex justify-content-center mt-3">
                           {Array.from(
                             { length: totalPages },
                             (_, i) => i + 1
@@ -1944,7 +1986,7 @@ const Flightlist = () => {
                               {page}
                             </button>
                           ))}
-                        </div>
+                        </div>*/}
                       </div>
                     ) : (
                       <div>
@@ -2094,60 +2136,6 @@ const Flightlist = () => {
                                 </div>
                               </div>
                             ))}
-                            {/*<div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">*/}
-                            {/*  <div className="flight-area">*/}
-                            {/*    <div className="airline-name">*/}
-                            {/*      <img src={Airindia} alt=""/>*/}
-                            {/*      <div className="mt-1">*/}
-                            {/*        <h5 className="lightest-black mb-1"> Air India</h5>*/}
-                            {/*        <h6 className="dark-gray mt-0 mb-md-0">AI 777-90</h6>*/}
-                            {/*      </div>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="flight-detail">*/}
-                            {/*      <div className="flight-departure">*/}
-                            {/*        <h5 className="color-black text-end">12:00</h5>*/}
-                            {/*        <h5 className="dark-gray text-end">DLI</h5>*/}
-                            {/*      </div>*/}
-                            {/*      <div className="d-inline-flex align-items-center gap-8">*/}
-                            {/*        <span className="">From</span>*/}
-                            {/*        <div className="from-to text-center">*/}
-                            {/*          <h5 className="dark-gray">0h 50m</h5>*/}
-                            {/*          <img src={Routeplan} alt=""/>*/}
-                            {/*          <h6 className="color-black">1 Stop</h6>*/}
-                            {/*        </div>*/}
-                            {/*        <span className="">To</span>*/}
-                            {/*      </div>*/}
-                            {/*      <div className="flight-departure">*/}
-                            {/*        <h5 className="color-black">12:50</h5>*/}
-                            {/*        <h5 className="dark-gray">BOM</h5>*/}
-                            {/*      </div>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="flight-button ps-2">*/}
-                            {/*      <div className="amount">*/}
-                            {/*        <h5 className="color-black">₹2240</h5>*/}
-                            {/*        <h6 className="dark-gray text-end">Price</h6>*/}
-                            {/*      </div>*/}
-                            {/*      <div className="form-check">*/}
-                            {/*        <input*/}
-                            {/*            className="form-check-input mt-0"*/}
-                            {/*            type="radio"*/}
-                            {/*            name="onwardflight"*/}
-                            {/*        />*/}
-                            {/*      </div>*/}
-
-                            {/*    </div>*/}
-                            {/*  </div>*/}
-                            {/*  <hr className="bg-light-gray mt-24 mb-24"/>*/}
-                            {/*  <div className="d-flex justify-content-between align-items-center">*/}
-                            {/*    <h5 className="color-black">Monday 24 August</h5>*/}
-                            {/*    <div>*/}
-                            {/*      <a href="#" className="accordion-button color-primary h5 collapsed">*/}
-                            {/*        <i className="fal fa-chevron-down color-primary "/>*/}
-                            {/*        &nbsp;Flight Detail*/}
-                            {/*      </a>*/}
-                            {/*    </div>*/}
-                            {/*  </div>*/}
-                            {/*</div>*/}
                           </div>
                           <div className="col-md-6">
                             <div className="row n-w-ron-bg m-0 mb-1">
@@ -2294,60 +2282,6 @@ const Flightlist = () => {
                                 </div>
                               </div>
                             ))}
-                            {/*<div className="flight-block bg-white light-shadow p-3 rounded-3 mb-3 position-relative">*/}
-                            {/*  <div className="flight-area">*/}
-                            {/*    <div className="airline-name">*/}
-                            {/*      <img src={Airindia} alt=""/>*/}
-                            {/*      <div className="mt-1">*/}
-                            {/*        <h5 className="lightest-black mb-1"> Air India</h5>*/}
-                            {/*        <h6 className="dark-gray mt-0 mb-md-0">AI 777-90</h6>*/}
-                            {/*      </div>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="flight-detail">*/}
-                            {/*      <div className="flight-departure">*/}
-                            {/*        <h5 className="color-black text-end">12:00</h5>*/}
-                            {/*        <h5 className="dark-gray text-end">DLI</h5>*/}
-                            {/*      </div>*/}
-                            {/*      <div className="d-inline-flex align-items-center gap-8">*/}
-                            {/*        <span className="">From</span>*/}
-                            {/*        <div className="from-to text-center">*/}
-                            {/*          <h5 className="dark-gray">0h 50m</h5>*/}
-                            {/*          <img src={Routeplan} alt=""/>*/}
-                            {/*          <h6 className="color-black">1 Stop</h6>*/}
-                            {/*        </div>*/}
-                            {/*        <span className="">To</span>*/}
-                            {/*      </div>*/}
-                            {/*      <div className="flight-departure">*/}
-                            {/*        <h5 className="color-black">12:50</h5>*/}
-                            {/*        <h5 className="dark-gray">BOM</h5>*/}
-                            {/*      </div>*/}
-                            {/*    </div>*/}
-                            {/*    <div className="flight-button ps-2">*/}
-                            {/*      <div className="amount">*/}
-                            {/*        <h5 className="color-black">₹2240</h5>*/}
-                            {/*        <h6 className="dark-gray text-end">Price</h6>*/}
-                            {/*      </div>*/}
-                            {/*      <div className="form-check">*/}
-                            {/*        <input*/}
-                            {/*            className="form-check-input mt-0"*/}
-                            {/*            type="radio"*/}
-                            {/*            name="returnflight"*/}
-                            {/*        />*/}
-                            {/*      </div>*/}
-
-                            {/*    </div>*/}
-                            {/*  </div>*/}
-                            {/*  <hr className="bg-light-gray mt-24 mb-24"/>*/}
-                            {/*  <div className="d-flex justify-content-between align-items-center">*/}
-                            {/*    <h5 className="color-black">Monday 26 August</h5>*/}
-                            {/*    <div>*/}
-                            {/*      <a href="#" className="accordion-button color-primary h5 collapsed">*/}
-                            {/*        <i className="fal fa-chevron-down color-primary "/>*/}
-                            {/*        &nbsp;Flight Detail*/}
-                            {/*      </a>*/}
-                            {/*    </div>*/}
-                            {/*  </div>*/}
-                            {/*</div>*/}
                           </div>
                         </div>
                       </div>

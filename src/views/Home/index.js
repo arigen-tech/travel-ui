@@ -147,8 +147,14 @@ const HomePage = () => {
         setLoading(true);
         const data = await postRequest(GET_FLIGHT, json);
         setLoading(false);
-        localStorage.setItem('flightSearchResponse',JSON.stringify(data));
-        navigate('/flightList',{ state: constants });
+        if(data.status === 200){
+            localStorage.setItem('flightSearchResponse',data.response);
+            navigate('/flightList',{ state: constants });
+        }
+        else{
+            console.log(data.message);
+        }
+
         // setFlightSearchResponse(data.response);
     }
 
