@@ -1,0 +1,216 @@
+/* General Styles */
+
+.breadcrumb-item+.breadcrumb-item::before{
+  display: none;
+}
+.breadcrumb-item a{
+  color:#555;
+}
+.breadcrumb-item.active a{
+  color:var(--it-theme-1);
+  font-weight: 600;
+}
+  h5.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .card {
+    border-radius: 8px;
+    border: 1px solid #dad6d6;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  /* Flight Detail Section */
+  h6 {
+    font-size: 1rem;
+    color: #555;
+    margin: 0;
+  }
+  
+  p {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0.5rem 0;
+  }
+  
+  .list-inline-item {
+    font-size: 0.85rem;
+    color: #555;
+  }
+  
+  .text-center h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #444;
+  }
+  
+  .text-center p {
+    font-size: 0.85rem;
+    color: #666;
+  }
+  
+  /* Services Section */
+  .form-check-label {
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  .form-check-input:checked {
+    background-color: #ff5722;
+    border-color: #ff5722;
+  }
+  
+  .form-check-input:focus {
+    box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+  }
+  
+  /* Price Summary Section */
+  .card-title {
+    color: #444;
+    font-weight: bold;
+  }
+  
+  .list-group-item {
+    font-size: 0.95rem;
+    border: none;
+    padding: 0.75rem 1rem;
+  }
+  
+  .list-group-item:last-child {
+    font-weight: bold;
+    color: #222;
+    font-size: 1rem;
+  }
+  
+  .btn-primary {
+    background-color: #ff5722;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .btn-primary:hover {
+    background-color: #e64a19;
+  }
+  .stp {
+    width: 100%;
+    float: left;
+    color: #6a6868;
+    font-size: 12px;
+    text-align: center;
+}
+.lin2 {
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px dotted #b0aeae;
+  float: left;
+  position: absolute;
+  right: 0;
+  top: 34px;
+}
+.lindvd::before {
+  float: left;
+  content: " ";
+  background: url("../../assets/img/img-sprite.png");
+  width: 10px;
+  height: 10px;
+  background-position: -290px -58px;
+  margin-top: -3px;
+}
+
+.fli-i {
+  width: 32px;
+  height: 32px;
+  background: url("../../assets/img/img-sprite.png");
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: -12px;
+  background-position: -265px -3px;
+}
+.lindvd::after {
+  float: right;
+  content: " ";
+  background: url("../../assets/img/img-sprite.png");
+  width: 10px;
+  height: 10px;
+  background-position: -290px -58px;
+  margin-top: -3px;
+  margin-right: -3px;
+}
+
+.ref {
+  float: left;
+  width: 100%;
+  text-align: center;
+}
+
+.ref span {
+  margin: 40px auto 10px;
+}
+
+.ref span {
+  width: 50%;
+  display: block;
+  background: #ffffff;
+  border-radius: 45px;
+  font-size: 10px;
+  color: #2dca1c;
+  border: 1px solid #2dca1c;
+  margin: 40px auto 15px;
+  text-align: center;
+  padding: 2px 0px;
+  text-transform: uppercase;
+}
+.fli3{
+  position: relative;
+    width: 25%;
+}
+.clr {
+  clear: both;
+}
+.booking-detail-header{
+  background: var(--it-theme-2);
+  color: #ffffff;
+}
+.dprtBg {
+  background-color: #5d5a5a;
+  padding: 3px 10px;
+  width: 63px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 10px;
+  margin-left: -10px;
+  border-radius: 10px 0px 14px 0;
+}
+.card-text{
+  border: 1px solid #dad6d6;
+  border-radius: 10px;
+  padding: 0 10px;
+}
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .card-body {
+      padding: 1rem;
+    }
+  
+    h5.card-title {
+      font-size: 1.1rem;
+    }
+  
+    .btn-primary {
+      font-size: 0.9rem;
+    }
+  }
+  

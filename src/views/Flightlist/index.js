@@ -411,6 +411,20 @@ const Flightlist = () => {
     );
   };
 
+  const [openDetails, setOpenDetails] = useState({});
+
+  const toggleDetail = (index) => {
+    setOpenDetails((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index],
+    }));
+  };
+
+  const navigate = useNavigate();
+  const handleBookNow = () => {
+    navigate("/flightBooking");
+  }
+
   return (
     <>
       {loading ? (
@@ -1361,7 +1375,7 @@ const Flightlist = () => {
                                   </h5>
                                   <h6 className="dark-gray text-end">Price</h6>
                                 </div>
-                                <button className="btn btn-primary">
+                                <button className="btn btn-primary" onClick={handleBookNow}>
                                   Book Now
                                 </button>
                               </div>
@@ -1376,24 +1390,29 @@ const Flightlist = () => {
                                 {flight.sg?flight.sg.length - 1:0} Stop
                               </h6>
                               <div>
-                                <button
-                                  className="accordion-button color-primary h5 collapsed"
-                                  type="button"
-                                  data-bs-toggle="collapse"
-                                  data-bs-target={`#flightDetail-${index}`}
-                                  aria-expanded="false"
-                                  aria-controls={`flightDetail-${index}`}
-                                >
-                                  <i className="fal fa-chevron-down color-primary" />
-                                  &nbsp;Flight Detail
-                                </button>
+                              <button
+                                className="accordion-button color-primary h5"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                aria-expanded={openDetails[index] || false}
+                                aria-controls={`flightDetail-${index}`}
+                                onClick={() => toggleDetail(index)}
+                              >
+
+                                Flight Detail&nbsp;
+                                <i
+                                  className={`${
+                                    openDetails[index] ? "fal fa-chevron-up" : "fas fa-chevron-down"
+                                  } color-primary`}
+                                />
+                              </button>
                               </div>
                             </div>
 
                             <div
-                              id={`flightDetail-${index}`}
-                              className="collapse mt-3"
-                            >
+                                id={`flightDetail-${index}`}
+                                className={`collapse ${openDetails[index] ? "show" : ""} mt-3`}
+                              >
                               <ul
                                 className="nav nav-pills mb-3"
                                 id={`tabs-${index}`}
@@ -1782,7 +1801,6 @@ const Flightlist = () => {
                                           <div className="col-md-12 col-sm-12 col-xs-12">
                                             <div className="terms mar10">
                                               <ul style={{ display: "none" }}>
-
                                                 <li>
                                                   The charges will be on per
                                                   passenger per sector
@@ -1879,7 +1897,7 @@ const Flightlist = () => {
                                                   should be reconfirmed before
                                                   requesting for a cancellation
                                                   or amendment
-                                                </li>*/}
+                                                </li>
                                               </ul>
                                             </div>
                                           </div>
@@ -1961,7 +1979,274 @@ const Flightlist = () => {
                                   role="tabpanel"
                                   aria-labelledby={`cancelation-tab-${index}`}
                                 >
-                                  <p>Cancellation details go here.</p>
+                                <div className="col-md-12  col-sm-12 pad-0 pad-btmm">
+                                      <div className="bood mg-btm">
+                                        <div className="row">
+                                          <div className="col-md-6 col-sm-6 pad-top-bot txt-d4 txt-c mb-2">
+                                            Fare Rules
+                                          </div>
+                                          <div className="col-md-6 col-sm-6 col-xs-12 hei txt-c mg-btm m-10 mb-2">
+                                            <div
+                                              className="refund"
+                                            >
+                                              Refundable
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div className="row">
+                                          <div
+                                            className="col-md-12"
+                                            id="newFareRule"
+                                          >
+                                            {/*Cancel new panel*/}
+                                            <div className="fareRuls">
+                                              <table
+                                                width="100%"
+                                                rules="all"
+                                                border={1}
+                                              >
+                                                <tbody>
+                                                  <tr>
+                                                    <th>
+                                                      <p className="frtbl_hd">
+                                                        Time Frame to cancel
+                                                      </p>
+                                                      <p className="frtbl_sml">
+                                                        Before scheduled
+                                                        departure time
+                                                      </p>
+                                                    </th>
+                                                    <th>
+                                                      <p className="frtbl_hd">
+                                                        Airline Fees
+                                                      </p>
+                                                      <p className="frtbl_sml">
+                                                        per passenger
+                                                      </p>
+                                                    </th>
+                                                    <th>
+                                                      <p className="frtbl_hd">
+                                                        EMT Fees
+                                                      </p>
+                                                      <p className="frtbl_sml">
+                                                        per passenger
+                                                      </p>
+                                                    </th>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>
+                                                      Cancel Before 72 hours of
+                                                      departure time.
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      <span>
+                                                        3209
+                                                      </span>
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      <span>
+                                                        300
+                                                      </span>
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>
+                                                      Cancel within 72 hours
+                                                      &amp; before 4 hours of
+                                                      departure time.
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      <span>
+                                                        4279
+                                                      </span>
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      <span>
+                                                        300
+                                                      </span>
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+
+                                            <div className="fareRuls">
+                                              <table
+                                                width="100%"
+                                                rules="all"
+                                                border={1}
+                                                style={{
+                                                  border: "1px solid #ddd",
+                                                }}
+                                              >
+                                                <tbody>
+                                                  <tr>
+                                                    <th>
+                                                      <p className="frtbl_hd">
+                                                        Time Frame to reschedule
+                                                      </p>
+                                                      <p className="frtbl_sml">
+                                                        Before scheduled
+                                                        departure time
+                                                      </p>
+                                                    </th>
+                                                    <th>
+                                                      <p className="frtbl_hd">
+                                                        Airline Fees
+                                                      </p>
+                                                      <p className="frtbl_sml">
+                                                        per passenger
+                                                      </p>
+                                                    </th>
+                                                    <th>
+                                                      <p className="frtbl_hd">
+                                                        EMT Fees
+                                                      </p>
+                                                      <p className="frtbl_sml">
+                                                        per passenger
+                                                      </p>
+                                                    </th>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>
+                                                      Reschedule before 72 hours
+                                                      of departure time.
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      2999
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      300
+                                                    </td>
+                                                  </tr>
+                                                  <tr>
+                                                    <td>
+                                                      Reschedule within 72 hours
+                                                      &amp; before 4 hours of
+                                                      departure time.
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      2999
+                                                    </td>
+                                                    <td>
+                                                      <span className="CurrncyCD_Rs" />
+                                                      300
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                            {/*reschedule new panel end*/}
+                                          </div>
+                                        </div>
+                                        <div className="row">
+                                          <div className="col-md-12 col-sm-12 col-xs-12 terms-h">
+                                            Terms &amp; Conditions
+                                          </div>
+                                          <div className="col-md-12 col-sm-12 col-xs-12">
+                                            <div className="terms mar10">
+                                              <ul style={{ display: "none" }}>
+                                                <li>
+                                                  The charges will be on per
+                                                  passenger per sector
+                                                </li>
+                                                <li>
+                                                  Rescheduling Charges =
+                                                  Rescheduling/Change Penalty +
+                                                  Fare Difference (if
+                                                  applicable)
+                                                </li>
+                                                <li>
+                                                  Partial cancellation is not
+                                                  allowed on the flight tickets
+                                                  which are book under special
+                                                  discounted fares
+                                                </li>
+                                                <li>
+                                                  In case, the customer have not
+                                                  cancelled the ticket within
+                                                  the stipulated time or no show
+                                                  then only statutory taxes are
+                                                  refundable from the respective
+                                                  airlines
+                                                </li>
+                                                <li>
+                                                  For infants there is no
+                                                  baggage allowance
+                                                </li>
+                                                <li>
+                                                  In certain situations of
+                                                  restricted cases, no
+                                                  amendments and cancellation is
+                                                  allowed
+                                                </li>
+                                                <li>
+                                                  Penalty from airlines needs to
+                                                  be reconfirmed before any
+                                                  cancellation or amendments
+                                                </li>
+                                                <li>
+                                                  Penalty changes in airline are
+                                                  indicative and can be changed
+                                                  without any prior notice
+                                                </li>
+                                              </ul>
+                                              <ul>
+                                                <li>
+                                                  Total Rescheduling Charges
+                                                  Airlines Rescheduling fees
+                                                  Fare Difference if applicable
+                                                  + EMT Fees.
+                                                </li>
+                                                <li>
+                                                  The airline cancel reschedule
+                                                  fees is indicative and can be
+                                                  changed without any prior
+                                                  notice by the airlines..
+                                                </li>
+                                                <li>
+                                                  EaseMyTrip does not guarantee
+                                                  the accuracy of cancel
+                                                  reschedule fees.
+                                                </li>
+                                                <li>
+                                                  Partial cancellation is not
+                                                  allowed on the flight tickets
+                                                  which are book under special
+                                                  round trip discounted fares.
+                                                </li>
+                                                <li>
+                                                  Airlines doesnt allow any
+                                                  additional baggage allowance
+                                                  for any infant added in the
+                                                  booking
+                                                </li>
+                                                <li>
+                                                  In certain situations of
+                                                  restricted cases, no
+                                                  amendments and cancellation is
+                                                  allowed
+                                                </li>
+                                                <li>
+                                                  Airlines cancel reschedule
+                                                  should be reconfirmed before
+                                                  requesting for a cancellation
+                                                  or amendment
+                                                </li>
+                                              </ul>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
                                 </div>
                               </div>
                             </div>

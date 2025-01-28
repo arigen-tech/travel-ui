@@ -103,6 +103,7 @@ button#travellersDropdown{
 .form-check-input{
   padding: 0 !important;
   height: 13px !important;
+  width: 13px !important;
 }
 .form-check-input:checked {
   background-color: var(--it-theme-2) !important;
