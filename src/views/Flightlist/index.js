@@ -17,6 +17,7 @@ import {
   GET_DEFAULT_AIRPORT,
   GET_FLIGHT,
   GET_SEARCH_AIRPORT,
+  ITINERARY
 } from "../../config/apiConfig";
 const importAllImages = (requireContext) => {
   const images = {};
@@ -68,7 +69,7 @@ const Flightlist = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalFlights = searchResponse.results?searchResponse.results.outboundFlights.length:0;
   const [selectedAirlines, setSelectedAirlines] = useState([]);
-  const [value, setValue] = React.useState([100, 100000]); // Price range
+  const [value, setValue] = React.useState([100, 10000000]); // Price range
   const [departureTime, setDepartureTime] = React.useState(""); // Selected departure time range
   const [arrivalTime, setArrivalTime] = React.useState("");
   const [selectedStops, setSelectedStops] = React.useState([]);
@@ -422,8 +423,24 @@ const Flightlist = () => {
   };
 
   const navigate = useNavigate();
-  const handleBookNow = () => {
-    navigate("/flightBooking");
+  const handleBookNow = async (flight) => {
+
+    let json = {
+      items: [{
+        type: "FLIGHT",
+        resultIndex: flight.rI
+      }],
+      traceId: searchResponse.traceId,
+    }
+    const data = await postRequest(ITINERARY,json);
+    if(data.status === 200){
+      // console.log(data.response);
+      sessionStorage.setItem(`itinerary`,data.response);
+      navigate("/flightBooking",{ state: JSON.parse(data.response) });
+    }
+
+
+    // navigate("/flightBooking");
   }
 
   return (
@@ -1053,7 +1070,7 @@ const Flightlist = () => {
                             value={value}
                             onChange={handlePriceChange}
                             min={100}
-                            max={100000}
+                            max={100000000}
                             valueLabelDisplay="auto"
                           />
                         </Box>
@@ -1376,7 +1393,7 @@ const Flightlist = () => {
                                   </h5>
                                   <h6 className="dark-gray text-end">Price</h6>
                                 </div>
-                                <button className="btn btn-primary" onClick={handleBookNow}>
+                                <button className="btn btn-primary" onClick={() => handleBookNow(flight)}>
                                   Book Now
                                 </button>
                               </div>

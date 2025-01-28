@@ -1,18 +1,49 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useFetchers, useLocation} from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import "./flightBooking.css";
 
 const FlightBookingPage = () => {
+  const location = useLocation();
+  const [constants, setConstants] = useState(location.state || {});
   const [activeTab, setActiveTab] = useState("review"); // Controls the active section
-
+  const flights=constants.results?constants.results.itineraryItems.filter(item => item.type === "FLIGHT"):[];
+  const cabinClass=["All","Economy", "Premium Economy", "Business","Premium Business", "First Class"];
   const handleContinueBooking = () => {
     setActiveTab("travellers");
+  };
+  const convertMinutesToDuration = (minutes) => {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours}h ${remainingMinutes}m`;
+  };
+  const formatTime = (dateTime) => {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+  const formatedDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const options = {
+      weekday: "long",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    };
+    return date.toLocaleDateString("en-GB", options);
   };
 
   const showReviewSection = () => {
     setActiveTab("review");
   };
+  useEffect(key => {
+    console.log(constants);
+    if(constants.results=== undefined){
+      setConstants(JSON.parse(sessionStorage.getItem(`itinerary`)));
+    }
+  }, []);
 
   return (
     <div className="container my-5">
@@ -56,26 +87,29 @@ const FlightBookingPage = () => {
               <h5 className="mb-0">Flight Detail</h5>
             </div>
             <div className="card-body">
-              <div className="card-text">
+              {flights.map((flight, index) => (
+                  flight.itemFlight.segments.map((segment,segmentIndex) => (
+                      segment.map((sg,sgI)=>
+              <div  className="card-text">
                 <div className="dprtBg">DEPART</div>
                 <div className="d-flex justify-content-between">
                   <div>
                     <h6>
-                      <i className="fas fa-map-marker-alt me-2"></i>Delhi - Mumbai | Fri, 31 Jan 2025
+                      <i className="fas fa-map-marker-alt me-2"></i>{sg.or.cN} - {sg.ds.cN} | {formatedDate(sg.or.dT)}
                     </h6>
                     <p>
-                      <i className="fas fa-plane me-2"></i>Indigo 6E-628 | Economy
+                      <i className="fas fa-plane me-2"></i>{sg.al.alN} {sg.al.alC}-{sg.al.fN} | {cabinClass[sg.cC]}
                     </p>
                   </div>
                   <div className="text-center">
                     <h6>
-                      <i className="far fa-clock me-2"></i>06:00
+                      <i className="far fa-clock me-2"></i>{formatTime(sg.or.dT)}
                     </h6>
-                    <p>Delhi (DEL)</p>
+                    <p>{sg.or.cN} ({sg.or.cC})</p>
                   </div>
                   <div className="fli3">
                     <div className="stp">
-                      <span>02h 15m</span>
+                      <span>{convertMinutesToDuration(sg.dr)}</span>
                     </div>
                     <div className="lin2 lindvd">
                       <div className="fli-i"></div>
@@ -89,9 +123,9 @@ const FlightBookingPage = () => {
 
                   <div className="text-center">
                     <h6>
-                      <i className="far fa-clock me-2"></i>08:15
+                      <i className="far fa-clock me-2"></i>{formatTime(sg.ds.aT)}
                     </h6>
-                    <p>Mumbai (BOM)</p>
+                    <p>{sg.ds.cN} ({sg.ds.cC})</p>
                   </div>
                 </div>
                 <div className="mt-3">
@@ -110,7 +144,7 @@ const FlightBookingPage = () => {
                     </li>
                   </ul>
                 </div>
-              </div>
+              </div>)))))}
             </div>
                </div>
 
@@ -371,9 +405,9 @@ const FlightBookingPage = () => {
             <div className="card-header booking-detail-header d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Price Summary</h5>
               <div>
-                <i className="fas fa-male me-1"></i> 2 {/* Adults */}
-                <i className="fas fa-child mx-1"></i> 0 {/* Children */}
-                <i className="fas fa-baby-carriage mx-1"></i> 0 {/* Infants */}
+                <i className="fas fa-male me-1"></i> {constants.results?constants.results.adultCount:0} {/* Adults */}
+                <i className="fas fa-child mx-1"></i> {constants.results?constants.results.childCount:0} {/* Children */}
+                <i className="fas fa-baby-carriage mx-1"></i> {constants.results?constants.results.infantCount:0} {/* Infants */}
               </div>
             </div>
             <div className="card-body">
