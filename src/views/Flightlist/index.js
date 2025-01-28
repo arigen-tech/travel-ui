@@ -361,6 +361,7 @@ const Flightlist = () => {
     });
   };
 
+
   const handleCheckboxChangeAirline = (code) => {
     setSelectedAirlines(
       (prevSelected) =>
@@ -1857,6 +1858,7 @@ const Flightlist = () => {
                                                     />
                                                   </div>
                                                 ))}
+
                                                 {/*<li>
                                                   Total Rescheduling Charges
                                                   Airlines Rescheduling fees
@@ -1897,7 +1899,7 @@ const Flightlist = () => {
                                                   should be reconfirmed before
                                                   requesting for a cancellation
                                                   or amendment
-                                                </li>
+                                                </li>*/}
                                               </ul>
                                             </div>
                                           </div>
@@ -2580,7 +2582,7 @@ const Flightlist = () => {
         </>
       )}
     </>
-  );
+  )
 };
 
 export default Flightlist;
