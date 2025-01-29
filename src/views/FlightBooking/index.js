@@ -7,7 +7,7 @@ const FlightBookingPage = () => {
   const location = useLocation();
   const [constants, setConstants] = useState(location.state || {});
   const [activeTab, setActiveTab] = useState("review"); // Controls the active section
-  const flights=constants.results?constants.results.itineraryItems.filter(item => item.type === "FLIGHT"):[];
+  const flights=constants&&constants.results?constants.results.itineraryItems.filter(item => item.type === "FLIGHT"):[];
   const cabinClass=["All","Economy", "Premium Economy", "Business","Premium Business", "First Class"];
   const handleContinueBooking = () => {
     setActiveTab("travellers");
@@ -405,9 +405,9 @@ const FlightBookingPage = () => {
             <div className="card-header booking-detail-header d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Price Summary</h5>
               <div>
-                <i className="fas fa-male me-1"></i> {constants.results?constants.results.adultCount:0} {/* Adults */}
-                <i className="fas fa-child mx-1"></i> {constants.results?constants.results.childCount:0} {/* Children */}
-                <i className="fas fa-baby-carriage mx-1"></i> {constants.results?constants.results.infantCount:0} {/* Infants */}
+                <i className="fas fa-male me-1"></i> {constants&&constants.results?constants.results.adultCount:0} {/* Adults */}
+                <i className="fas fa-child mx-1"></i> {constants&&constants.results?constants.results.childCount:0} {/* Children */}
+                <i className="fas fa-baby-carriage mx-1"></i> {constants&&constants.results?constants.results.infantCount:0} {/* Infants */}
               </div>
             </div>
             <div className="card-body">
