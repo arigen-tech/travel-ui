@@ -38,6 +38,17 @@ const FlightBookingPage = () => {
   const showReviewSection = () => {
     setActiveTab("review");
   };
+  const calculateLayover = (arrivalTime, departureTime) => {
+    const arrival = new Date(arrivalTime);
+    const departure = new Date(departureTime);
+    const diffMinutes = Math.floor((departure - arrival) / (1000 * 60));
+  
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+  
+    return `${hours}h ${minutes}m`;
+  };
+  
   useEffect(key => {
     console.log(constants);
     if(constants.results=== undefined){
@@ -88,64 +99,76 @@ const FlightBookingPage = () => {
             </div>
             <div className="card-body">
               {flights.map((flight, index) => (
-                  flight.itemFlight.segments.map((segment,segmentIndex) => (
-                      segment.map((sg,sgI)=>
-              <div  className="card-text">
-                <div className="dprtBg">DEPART</div>
-                <div className="d-flex justify-content-between">
-                  <div>
-                    <h6>
-                      <i className="fas fa-map-marker-alt me-2"></i>{sg.or.cN} - {sg.ds.cN} | {formatedDate(sg.or.dT)}
-                    </h6>
-                    <p>
-                      <i className="fas fa-plane me-2"></i>{sg.al.alN} {sg.al.alC}-{sg.al.fN} | {cabinClass[sg.cC]}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <h6>
-                      <i className="far fa-clock me-2"></i>{formatTime(sg.or.dT)}
-                    </h6>
-                    <p>{sg.or.cN} ({sg.or.cC})</p>
-                  </div>
-                  <div className="fli3">
-                    <div className="stp">
-                      <span>{convertMinutesToDuration(sg.dr)}</span>
-                    </div>
-                    <div className="lin2 lindvd">
-                      <div className="fli-i"></div>
-                    </div>
-                    <div className="clr"></div>
-                    <div className="ref" id="spnRefundable">
-                      <span className="Refundable">Refundable</span>
-                    </div>
-                    <div className="clr"></div>
-                  </div>
-
-                  <div className="text-center">
-                    <h6>
-                      <i className="far fa-clock me-2"></i>{formatTime(sg.ds.aT)}
-                    </h6>
-                    <p>{sg.ds.cN} ({sg.ds.cC})</p>
-                  </div>
-                </div>
-                <div className="mt-3">
-                  <p>
-                    <i className="fas fa-concierge-bell me-2"></i>Amenities:
-                  </p>
-                  <ul className="list-inline">
-                    <li className="list-inline-item">
-                      <i className="fas fa-wifi me-2" /> No Wi-Fi
-                    </li>
-                    <li className="list-inline-item">
-                      <i className="fas fa-plug me-2" /> No power outlet
-                    </li>
-                    <li className="list-inline-item">
-                      <i className="fas fa-play me-2" /> No Entertainment
-                    </li>
-                  </ul>
-                </div>
-              </div>)))))}
+                flight.itemFlight.segments.map((segment, segmentIndex) => (
+                  segment.map((sg, sgI) => (
+                    <>
+                      <div className="card-text mb-2">
+                        <div className="dprtBg">DEPART</div>
+                        <div className="d-flex justify-content-between">
+                          <div>
+                            <h6>
+                              <i className="fas fa-map-marker-alt me-2"></i>{sg.or.cN} - {sg.ds.cN} | {formatedDate(sg.or.dT)}
+                            </h6>
+                            <p>
+                              <i className="fas fa-plane me-2"></i>{sg.al.alN} {sg.al.alC}-{sg.al.fN} | {cabinClass[sg.cC]}
+                            </p>
+                          </div>
+                          <div className="text-center">
+                            <h6>
+                              <i className="far fa-clock me-2"></i>{formatTime(sg.or.dT)}
+                            </h6>
+                            <p>{sg.or.cN} ({sg.or.cC})</p>
+                          </div>
+                          <div className="fli3">
+                            <div className="stp">
+                              <span>{convertMinutesToDuration(sg.dr)}</span>
+                            </div>
+                            <div className="lin2 lindvd">
+                              <div className="fli-i"></div>
+                            </div>
+                            <div className="clr"></div>
+                            <div className="ref" id="spnRefundable">
+                              <span className="Refundable">Refundable</span>
+                            </div>
+                            <div className="clr"></div>
+                          </div>
+                          <div className="text-center">
+                            <h6>
+                              <i className="far fa-clock me-2"></i>{formatTime(sg.ds.aT)}
+                            </h6>
+                            <p>{sg.ds.cN} ({sg.ds.cC})</p>
+                          </div>
+                        </div>
+                        <div className="mt-3">
+                          <p>
+                            <i className="fas fa-concierge-bell me-2"></i>Amenities:
+                          </p>
+                          <ul className="list-inline">
+                            <li className="list-inline-item">
+                              <i className="fas fa-wifi me-2" /> No Wi-Fi
+                            </li>
+                            <li className="list-inline-item">
+                              <i className="fas fa-plug me-2" /> No power outlet
+                            </li>
+                            <li className="list-inline-item">
+                              <i className="fas fa-play me-2" /> No Entertainment
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      {sgI < segment.length - 1 && (
+                        <div className="layover">
+                          <p>
+                            <i className="fas fa-clock me-2"></i>Layover: {calculateLayover(segment[sgI].ds.aT, segment[sgI + 1].or.dT)} at {segment[sgI].ds.cN}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  ))
+                ))
+              ))}
             </div>
+
                </div>
 
               {/* Services Section */}
@@ -261,140 +284,101 @@ const FlightBookingPage = () => {
 
           {activeTab === "travellers" && (
             <>
-              {/* Traveller Details Section */}
-              <div className="card mb-4">
-                <div className="card-header booking-detail-header">
-                  <h5 className="mb-0">Traveller Details</h5>
+            {/* Traveller Details Section */}
+            <div className="card mb-4">
+              <div className="card-header booking-detail-header">
+                <h5 className="mb-0">Traveller Details</h5>
+              </div>
+              <div className="card-body">
+                <div className="mb-3">
+                  <label htmlFor="title" className="form-label">Title</label>
+                  <select className="form-control" id="title">
+                    <option>Mr</option>
+                    <option>Mrs</option>
+                    <option>Ms</option>
+                  </select>
                 </div>
-                <div className="card-body">
-                  <div className="mb-3">
-                    <label htmlFor="traveller1" className="form-label">
-                      Traveller 1
-                    </label>
-                    <div className="row">
-                      <div className="col-md-4 mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="firstName1"
-                          placeholder="First Name"
-                        />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="middleName1"
-                          placeholder="Middle Name (Optional)"
-                        />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="lastName1"
-                          placeholder="Last Name"
-                        />
-                      </div>
-                    </div>
+                <div className="row">
+                  <div className="col-md-4 mb-3">
+                    <input type="text" className="form-control" id="firstName" placeholder="First Name" />
                   </div>
-                  <hr />
-                  <div className="mb-3">
-                    <label htmlFor="traveller2" className="form-label">
-                      Traveller 2
-                    </label>
-                    <div className="row">
-                      <div className="col-md-4 mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="firstName2"
-                          placeholder="First Name"
-                        />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="middleName2"
-                          placeholder="Middle Name (Optional)"
-                        />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="lastName2"
-                          placeholder="Last Name"
-                        />
-                      </div>
-                    </div>
+                  <div className="col-md-4 mb-3">
+                    <input type="text" className="form-control" id="middleName" placeholder="Middle Name (Optional)" />
                   </div>
+                  <div className="col-md-4 mb-3">
+                    <input type="text" className="form-control" id="lastName" placeholder="Last Name" />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="passportNumber" className="form-label">Passport Number</label>
+                  <input type="text" className="form-control" id="passportNumber" placeholder="Passport Number" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="passportExpiry" className="form-label">Passport Expiry</label>
+                  <input type="date" className="form-control" id="passportExpiry" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="gender" className="form-label">Gender</label>
+                  <select className="form-control" id="gender">
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="dob" className="form-label">Date of Birth</label>
+                  <input type="date" className="form-control" id="dob" />
                 </div>
               </div>
-
-              {/* Contact Details Section */}
-              <div className="card mb-4">
-                <div className="card-header booking-detail-header">
-                  <h5 className="mb-0">Contact Details</h5>
+            </div>
+          
+            {/* Contact Details Section */}
+            <div className="card mb-4">
+              <div className="card-header booking-detail-header">
+                <h5 className="mb-0">Contact Details</h5>
+              </div>
+              <div className="card-body">
+                <div className="mb-3">
+                  <label htmlFor="contactNumber" className="form-label">Mobile Number</label>
+                  <input type="text" className="form-control" id="contactNumber" placeholder="+91 9876543210" />
                 </div>
-                <div className="card-body">
-                  <div className="mb-3">
-                    <label htmlFor="contactNumber" className="form-label">
-                      Mobile Number
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="contactNumber"
-                      placeholder="+91 9876543210"
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="emailAddress" className="form-label">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      className="form-control"
-                      id="emailAddress"
-                      placeholder="email@example.com"
-                    />
-                  </div>
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">Email Address</label>
+                  <input type="email" className="form-control" id="email" placeholder="email@example.com" />
                 </div>
               </div>
-
-              {/* GST Section */}
-              <div className="card mb-4">
-                <div className="card-header booking-detail-header">
-                  <h5 className="mb-0">GST Details (Optional)</h5>
+            </div>
+          
+            {/* GST Section */}
+            <div className="card mb-4">
+              <div className="card-header booking-detail-header">
+                <h5 className="mb-0">GST Details (Optional)</h5>
+              </div>
+              <div className="card-body">
+                <div className="mb-3">
+                  <label htmlFor="gstNumber" className="form-label">GST Number</label>
+                  <input type="text" className="form-control" id="gstNumber" placeholder="Enter GST Number" />
                 </div>
-                <div className="card-body">
-                  <div className="mb-3">
-                    <label htmlFor="gstNumber" className="form-label">
-                      GST Number
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="gstNumber"
-                      placeholder="Enter GST Number"
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="companyName" className="form-label">
-                      Company Name
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="companyName"
-                      placeholder="Enter Company Name"
-                    />
-                  </div>
+                <div className="mb-3">
+                  <label htmlFor="companyName" className="form-label">Company Name</label>
+                  <input type="text" className="form-control" id="companyName" placeholder="Enter Company Name" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="gstCompanyEmail" className="form-label">Company Email</label>
+                  <input type="email" className="form-control" id="gstCompanyEmail" placeholder="Enter Company Email" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="gstCompanyContact" className="form-label">Company Contact Number</label>
+                  <input type="text" className="form-control" id="gstCompanyContact" placeholder="Enter Contact Number" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="gstCompanyAddress" className="form-label">Company Address</label>
+                  <input type="text" className="form-control" id="gstCompanyAddress" placeholder="Enter Company Address" />
                 </div>
               </div>
-            </>
+            </div>
+          </>
+          
           )}
         </div>
 
