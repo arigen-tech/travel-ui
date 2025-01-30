@@ -9,8 +9,16 @@ const FlightBookingPage = () => {
   const [activeTab, setActiveTab] = useState("review"); // Controls the active section
   const flights=constants&&constants.results?constants.results.itineraryItems.filter(item => item.type === "FLIGHT"):[];
   const cabinClass=["All","Economy", "Premium Economy", "Business","Premium Business", "First Class"];
+  const [travellers, setTravellers] = useState([{ id: 1 }]);
+
+  const addTraveller = () => {
+    setTravellers([...travellers, { id: travellers.length + 1 }]);
+  };
   const handleContinueBooking = () => {
     setActiveTab("travellers");
+  };
+  const removeTraveller = (id) => {
+    setTravellers(travellers.filter(traveller => traveller.id !== id));
   };
   const convertMinutesToDuration = (minutes) => {
     const hours = Math.floor(minutes / 60);
@@ -290,45 +298,74 @@ const FlightBookingPage = () => {
                 <h5 className="mb-0">Traveller Details</h5>
               </div>
               <div className="card-body">
-                <div className="mb-3">
-                  <label htmlFor="title" className="form-label">Title</label>
-                  <select className="form-control" id="title">
-                    <option>Mr</option>
-                    <option>Mrs</option>
-                    <option>Ms</option>
-                  </select>
-                </div>
+
+              <div className="accordion" id="travellerAccordion">
+        {travellers.map((traveller, index) => (
+          <div className="accordion-item" key={traveller.id}>
+            <h2 className="accordion-header d-flex justify-content-between align-items-center" id={`heading${index}`}>
+              <button
+                className="accordion-button flex-grow-1"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target={`#collapse${index}`}
+                aria-expanded="true"
+                aria-controls={`collapse${index}`}
+              >
+                Traveller {index + 1}
+              </button>
+              <button className="btn btn-danger btn-sm ms-2 me-2" onClick={() => removeTraveller(traveller.id)}>Remove</button>
+            </h2>
+            <div
+              id={`collapse${index}`}
+              className="accordion-collapse collapse"
+              aria-labelledby={`heading${index}`}
+              data-bs-parent="#travellerAccordion"
+            >
+              <div className="accordion-body">
                 <div className="row">
-                  <div className="col-md-4 mb-3">
-                    <input type="text" className="form-control" id="firstName" placeholder="First Name" />
+                  <div className="col-md-2 mb-3">
+                    <label className="form-label">Title</label>
+                    <select className="form-control">
+                      <option>Mr</option>
+                      <option>Mrs</option>
+                      <option>Ms</option>
+                    </select>
                   </div>
-                  <div className="col-md-4 mb-3">
-                    <input type="text" className="form-control" id="middleName" placeholder="Middle Name (Optional)" />
+                  <div className="col-md-5 mb-3">
+                    <label className="form-label">First Name & Middle Name</label>
+                    <input type="text" className="form-control" placeholder="First Name" />
                   </div>
-                  <div className="col-md-4 mb-3">
-                    <input type="text" className="form-control" id="lastName" placeholder="Last Name" />
+                  <div className="col-md-5 mb-3">
+                    <label className="form-label">Last Name</label>
+                    <input type="text" className="form-control" placeholder="Last Name" />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Passport Number</label>
+                    <input type="text" className="form-control" placeholder="Passport Number" />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Passport Expiry</label>
+                    <input type="date" className="form-control" />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Gender</label>
+                    <select className="form-control">
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">Date of Birth</label>
+                    <input type="date" className="form-control" />
                   </div>
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="passportNumber" className="form-label">Passport Number</label>
-                  <input type="text" className="form-control" id="passportNumber" placeholder="Passport Number" />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="passportExpiry" className="form-label">Passport Expiry</label>
-                  <input type="date" className="form-control" id="passportExpiry" />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="gender" className="form-label">Gender</label>
-                  <select className="form-control" id="gender">
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="dob" className="form-label">Date of Birth</label>
-                  <input type="date" className="form-control" id="dob" />
-                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button className="btn btn-primary mt-3" onClick={addTraveller}>Add Traveller</button>
               </div>
             </div>
           
