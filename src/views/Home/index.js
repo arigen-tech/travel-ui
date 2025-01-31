@@ -49,7 +49,14 @@ const HomePage = () => {
         tripType:tripType
     };
 
-
+    const flightCabinClass = [
+        { key: 1, value: "ALL" },
+        { key: 2, value: "ECONOMY" },
+        { key: 3, value: "PREMIUM ECONOMY" },
+        { key: 4, value: "BUSINESS" },
+        { key: 5, value: "PREMIUM BUSINESS" },
+        { key: 6, value: "FIRST CLASS" }
+    ];
     // Format date to "10 Jan'2025"
     const formatDate = (date) => {
         if (!date) return "";
@@ -159,14 +166,16 @@ const HomePage = () => {
     }
 
     const handleSubmitTravellercount = (e) => {
+        debugger;
+        let cc=flightCabinClass.find(item => item.value.toLowerCase() === cabinClass.toLowerCase());
 
         let json= {
             directFlight: "false",
             adultCount: travellerCounts.adults,
             childCount: travellerCounts.children,
             infantCount: travellerCounts.infants,
-            flightCabinClass: "1",
-            journeyType: tripType==="oneway"?1:2,
+            flightCabinClass: cc.key,
+            journeyType: tripType!=="multiway"?(tripType==="oneway"?1:2):3,
             preferredDepartureTime: selectedFromDate.toISOString().split('.')[0],
             origin: fromAirport.iataCode,
             destination: toAirport.iataCode,

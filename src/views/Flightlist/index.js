@@ -81,7 +81,14 @@ const Flightlist = () => {
   const [toAirport, setToAirport] = useState(constants.to?constants.to:{});
   const [multiAirport, setMultiAirport] = useState([]);
   const [fareRule,setFareRule]=useState([]);
-
+  const flightCabinClass = [
+    { key: 1, value: "ALL" },
+    { key: 2, value: "ECONOMY" },
+    { key: 3, value: "PREMIUM ECONOMY" },
+    { key: 4, value: "BUSINESS" },
+    { key: 5, value: "PREMIUM BUSINESS" },
+    { key: 6, value: "FIRST CLASS" }
+  ];
   // Get flights for the current page
 
   // Handle page change
@@ -1329,7 +1336,7 @@ const Flightlist = () => {
                               <div className="flight-left col-md-9">
                                 {flight.sg&&flight.sg.map((flightSegment, ser) => (
                                   <div key={ser}>
-                                    <h5 className="badge">Departure</h5>
+                                    <h5 className="badge">{(flightCabinClass.find(item => item.key === flightSegment.cC)).value}</h5>
                                     <div className="flightrow">
                                       <div className="airline-name">
                                         <img

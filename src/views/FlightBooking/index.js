@@ -110,7 +110,7 @@ const FlightBookingPage = () => {
                               <i className="fas fa-map-marker-alt me-2"></i>{sg.or.cN} - {sg.ds.cN} | {formatedDate(sg.or.dT)}
                             </h6>
                             <p>
-                              <i className="fas fa-plane me-2"></i>{sg.al.alN} {sg.al.alC}-{sg.al.fN} | {cabinClass[sg.cC]}
+                              <i className="fas fa-plane me-2"></i>{sg.al.alN} {sg.al.alC}-{sg.al.fN} | {cabinClass[sg.cC-1]}
                             </p>
                           </div>
                           <div className="text-center">
@@ -128,7 +128,7 @@ const FlightBookingPage = () => {
                             </div>
                             <div className="clr"></div>
                             <div className="ref" id="spnRefundable">
-                              <span className="Refundable">Refundable</span>
+                              <span className="Refundable">{flight.itemFlight.isRefundable?"Refundable":"Non-Refundable"}</span>
                             </div>
                             <div className="clr"></div>
                           </div>
@@ -397,20 +397,20 @@ const FlightBookingPage = () => {
             <div className="card-body">
               <ul className="list-group list-group-flush">
                 <li className="list-group-item d-flex justify-content-between">
-                  <span>Adult x 1</span>
-                  <span>₹4,768</span>
+                  <span>Base Fare</span>
+                  <span>₹{constants&&constants.results?constants.results.baseFare:0}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between">
                   <span>Total Taxes</span>
-                  <span>₹731</span>
+                  <span>₹{constants&&constants.results?constants.results.taxAndSurcharge:0}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between">
                   <span>Discount</span>
-                  <span>-₹350</span>
+                  <span>₹0</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between font-weight-bold">
                   <span>Grand Total</span>
-                  <span>₹5,149</span>
+                  <span>₹{constants&&constants.results?constants.results.totalAmount:0}</span>
                 </li>
               </ul>
             </div>
