@@ -421,7 +421,7 @@ const Header = () => {
                                   <span>Bus</span>
                                 </Link>
                               </li>
-                              <li className="nav-item me-3">
+                              <li className={`nav-item me-3 ${isActive('') ? 'active' : ''}`}>
                                 <Link className="nav-link" to="/holidays">
                                   <BeachAccessOutlinedIcon />
                                   <span>Holidays</span>
