@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import Loader from './assets/img/loader.gif';
+import Holidays from './views/Holidays';
 
 const Layout =  React.lazy(() => import('./views/layout/index'));
 const Home = React.lazy(() => import('./views/Home/index'));
@@ -28,7 +29,8 @@ function App() {
             <Route path="/flightList" element={<FlightList />} /> 
             <Route path="/contact-us" element={<Contact />} /> 
             <Route path="/flightBooking" element={<FlightBookingPage />} />
-          </Route>
+            <Route path="/Holidays" element={<Holidays/>} />
+           </Route>
         </Routes>
       </Suspense>
     </Router>
