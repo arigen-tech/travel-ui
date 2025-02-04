@@ -507,6 +507,15 @@ const FlightBookingPage = () => {
                           onChange={(e) => handleInputChange(traveller.id, "dob", e.target.value)}
                       />
                     </div>
+                    {/* Contact Details  */}
+                    <div className="col-md-6 mb-3">
+                  <label htmlFor="contactNumber" className="form-label">Mobile Number</label>
+                  <input type="text" className="form-control" id="contactNumber" placeholder="+91 9876543210" />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label htmlFor="email" className="form-label">Email Address</label>
+                  <input type="email" className="form-control" id="email" placeholder="email@example.com" />
+                </div>
                   </div>
                 </div>
               </div>
@@ -518,7 +527,7 @@ const FlightBookingPage = () => {
             </div>
           
             {/* Contact Details Section */}
-            <div className="card mb-4">
+            {/* <div className="card mb-4">
               <div className="card-header booking-detail-header">
                 <h5 className="mb-0">Contact Details</h5>
               </div>
@@ -532,7 +541,7 @@ const FlightBookingPage = () => {
                   <input type="email" className="form-control" id="email" placeholder="email@example.com" />
                 </div>
               </div>
-            </div>
+            </div> */}
           
             {/* GST Section */}
             <div className="card mb-4">
@@ -598,7 +607,7 @@ const FlightBookingPage = () => {
                   <span>₹{constants && constants.results ? constants.results.totalAmount : 0}</span>
                 </li>
               </ul>
-              <button className="btn btn-primary mt-3" onClick={addTravellerToItinerary}>Submit</button>
+              <button className="btn btn-primary w-100 mt-3" onClick={addTravellerToItinerary}>Submit</button>
             </div>
           </div>
 
