@@ -9,7 +9,14 @@ const FlightBookingPage = () => {
   const [activeTab, setActiveTab] = useState("review"); // Controls the active section
   const flights=constants&&constants.results?constants.results.itineraryItems.filter(item => item.type === "FLIGHT"):[];
   const cabinClass=["All","Economy", "Premium Economy", "Business","Premium Business", "First Class"];
-  const [travellers, setTravellers] = useState([{ id: 1 }]);
+  const [travellers, setTravellers] = useState(constants.results?(Array.from({ length: constants.results.paxCount }, (_, index) => ({       id: index + 1,
+    title: "",
+    firstName: "",
+    lastName: "",
+    passportNumber: "",
+    passportExpiry: "",
+    gender: "",
+    dob: "" }))):(Array.from({ length: (JSON.parse(sessionStorage.getItem(`itinerary`))).results.paxCount }, (_, index) => ({ id: index + 1 }))));
 
   const addTraveller = () => {
     setTravellers([...travellers, { id: travellers.length + 1 }]);
@@ -62,8 +69,18 @@ const FlightBookingPage = () => {
     if(constants.results=== undefined){
       setConstants(JSON.parse(sessionStorage.getItem(`itinerary`)));
     }
-  }, []);
+  } , []);
+  const handleInputChange = (id, field, value) => {
+    setTravellers((prevTravellers) =>
+        prevTravellers.map((traveller) =>
+            traveller.id === id ? { ...traveller, [field]: value } : traveller
+        )
+    );
+  };
+  const addTravellerToItinerary = () => {
+    console.log(travellers);
 
+  };
   return (
     <div className="container my-5">
       <div className="row">
@@ -260,7 +277,7 @@ const FlightBookingPage = () => {
               <div className="card mb-4">
                 <div className="card-body">
                   <h5 className="card-title">
-                    <i className="fas fa-envelope me-2"></i>Email Information
+                    <i className="fas fa-envelope me-2"></i>Contact Information
                   </h5>
                   <div className="form-group mb-3">
                     <label htmlFor="primaryEmail">
@@ -271,10 +288,26 @@ const FlightBookingPage = () => {
                         <i className="fas fa-envelope"></i>
                       </span>
                       <input
-                        type="email"
-                        className="form-control"
-                        id="primaryEmail"
-                        placeholder="Enter your primary email"
+                          type="email"
+                          className="form-control"
+                          id="primaryEmail"
+                          placeholder="Enter your primary email"
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group mb-3">
+                    <label htmlFor="primaryEmail">
+                      Primary Mobile <span className="text-danger">*</span>
+                    </label>
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-phone"></i>
+                      </span>
+                      <input
+                          type="mobile"
+                          className="form-control"
+                          id="primaryMob"
+                          placeholder="Enter your primary Mobile No."
                       />
                     </div>
                   </div>
@@ -291,17 +324,17 @@ const FlightBookingPage = () => {
           )}
 
           {activeTab === "travellers" && (
-            <>
-            {/* Traveller Details Section */}
-            <div className="card mb-4">
-              <div className="card-header booking-detail-header">
-                <h5 className="mb-0">Traveller Details</h5>
-              </div>
-              <div className="card-body">
+              <>
+                {/* Traveller Details Section */}
+                <div className="card mb-4">
+                  <div className="card-header booking-detail-header">
+                    <h5 className="mb-0">Traveller Details</h5>
+                  </div>
+                  <div className="card-body">
 
-              <div className="accordion" id="travellerAccordion">
+                    <div className="accordion" id="travellerAccordion">
         {travellers.map((traveller, index) => (
-          <div className="accordion-item" key={traveller.id}>
+          /*<div className="accordion-item" key={traveller.id}>
             <h2 className="accordion-header d-flex justify-content-between align-items-center" id={`heading${index}`}>
               <button
                 className="accordion-button flex-grow-1"
@@ -313,7 +346,7 @@ const FlightBookingPage = () => {
               >
                 Traveller {index + 1}
               </button>
-              <button className="btn btn-danger btn-sm ms-2 me-2" onClick={() => removeTraveller(traveller.id)}>Remove</button>
+              {/!*<button className="btn btn-danger btn-sm ms-2 me-2" onClick={() => removeTraveller(traveller.id)}>Remove</button>*!/}
             </h2>
             <div
               id={`collapse${index}`}
@@ -362,10 +395,125 @@ const FlightBookingPage = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div>*/
+            <div className="accordion-item" key={traveller.id}>
+              <h2
+                  className="accordion-header d-flex justify-content-between align-items-center"
+                  id={`heading${index}`}
+              >
+                <button
+                    className="accordion-button flex-grow-1"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target={`#collapse${index}`}
+                    aria-expanded="true"
+                    aria-controls={`collapse${index}`}
+                >
+                  Traveller {index + 1}
+                </button>
+              </h2>
+              <div
+                  id={`collapse${index}`}
+                  className="accordion-collapse collapse"
+                  aria-labelledby={`heading${index}`}
+                  data-bs-parent="#travellerAccordion"
+              >
+                <div className="accordion-body">
+                  <div className="row">
+                    {/* Title */}
+                    <div className="col-md-2 mb-3">
+                      <label className="form-label">Title</label>
+                      <select
+                          className="form-control"
+                          value={traveller.title}
+                          onChange={(e) => handleInputChange(traveller.id, "title", e.target.value)}
+                      >
+                        <option value="">Select</option>
+                        <option>Mr</option>
+                        <option>Mrs</option>
+                        <option>Ms</option>
+                      </select>
+                    </div>
+
+                    {/* First Name & Middle Name */}
+                    <div className="col-md-5 mb-3">
+                      <label className="form-label">First Name & Middle Name</label>
+                      <input
+                          type="text"
+                          className="form-control"
+                          placeholder="First Name"
+                          value={traveller.firstName}
+                          onChange={(e) => handleInputChange(traveller.id, "firstName", e.target.value)}
+                      />
+                    </div>
+
+                    {/* Last Name */}
+                    <div className="col-md-5 mb-3">
+                      <label className="form-label">Last Name</label>
+                      <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Last Name"
+                          value={traveller.lastName}
+                          onChange={(e) => handleInputChange(traveller.id, "lastName", e.target.value)}
+                      />
+                    </div>
+
+                    {/* Passport Number */}
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Passport Number</label>
+                      <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Passport Number"
+                          value={traveller.passportNumber}
+                          onChange={(e) => handleInputChange(traveller.id, "passportNumber", e.target.value)}
+                      />
+                    </div>
+
+                    {/* Passport Expiry */}
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Passport Expiry</label>
+                      <input
+                          type="date"
+                          className="form-control"
+                          value={traveller.passportExpiry}
+                          onChange={(e) => handleInputChange(traveller.id, "passportExpiry", e.target.value)}
+                      />
+                    </div>
+
+                    {/* Gender */}
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Gender</label>
+                      <select
+                          className="form-control"
+                          value={traveller.gender}
+                          onChange={(e) => handleInputChange(traveller.id, "gender", e.target.value)}
+                      >
+                        <option value="">Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+
+                    {/* Date of Birth */}
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Date of Birth</label>
+                      <input
+                          type="date"
+                          className="form-control"
+                          value={traveller.dob}
+                          onChange={(e) => handleInputChange(traveller.id, "dob", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
         ))}
       </div>
-      <button className="btn btn-primary mt-3" onClick={addTraveller}>Add Traveller</button>
+      {/*<button className="btn btn-primary mt-3" onClick={addTraveller}>Add Traveller</button>*/}
               </div>
             </div>
           
@@ -435,11 +583,11 @@ const FlightBookingPage = () => {
               <ul className="list-group list-group-flush">
                 <li className="list-group-item d-flex justify-content-between">
                   <span>Base Fare</span>
-                  <span>₹{constants&&constants.results?constants.results.baseFare:0}</span>
+                  <span>₹{constants && constants.results ? constants.results.baseFare : 0}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between">
                   <span>Total Taxes</span>
-                  <span>₹{constants&&constants.results?constants.results.taxAndSurcharge:0}</span>
+                  <span>₹{constants && constants.results ? constants.results.taxAndSurcharge : 0}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between">
                   <span>Discount</span>
@@ -447,9 +595,10 @@ const FlightBookingPage = () => {
                 </li>
                 <li className="list-group-item d-flex justify-content-between font-weight-bold">
                   <span>Grand Total</span>
-                  <span>₹{constants&&constants.results?constants.results.totalAmount:0}</span>
+                  <span>₹{constants && constants.results ? constants.results.totalAmount : 0}</span>
                 </li>
               </ul>
+              <button className="btn btn-primary mt-3" onClick={addTravellerToItinerary}>Submit</button>
             </div>
           </div>
 

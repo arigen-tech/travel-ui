@@ -43,6 +43,7 @@ const Flightlist = () => {
           facets: { airlines: { outbound: [] } },
         }
   );
+  const [sortBy,setSortBy]=useState(0);
   const [loading, setLoading] = useState(true); // Preloader visible initially
   const [tripType, setTripType] = useState(
     constants.tripType ? constants.tripType : "oneway"
@@ -160,6 +161,11 @@ const Flightlist = () => {
   const handleArrivalTimeChange = (event) => {
     setArrivalTime(event.target.value); // Update arrival time preference
   };
+  const handleSort=async (value) => {
+    await setSortBy(value);
+    console.log(value);
+  }
+
   const isTimeInRange = (time, range) => {
     const hours = new Date(time).getHours();
     switch (range) {
@@ -380,7 +386,8 @@ const Flightlist = () => {
   };
 
   const currentFlightsInbound = searchResponse.results?searchResponse.results.inboundFlights:undefined;
-  const currentFlights = searchResponse.results?searchResponse.results.outboundFlights.filter(
+
+  const currentFlights = (searchResponse.results?(searchResponse.results.outboundFlights.filter(
     (flight) => {
       const isAirlineMatched = selectedAirlines.length
         ? flight.sg.some((segment) => selectedAirlines.includes(segment.al.alC))
@@ -407,7 +414,7 @@ const Flightlist = () => {
         isArrivalTimeMatched
       );
     }
-  ):[];
+  )):[]);
 
   const totalPages = Math.ceil(currentFlights.length / itemsPerPage);
 
@@ -1308,10 +1315,10 @@ const Flightlist = () => {
                       <div className="fascolm col-md-4">
                         <div className="sortby">Sort By:</div>
                         <div className="chepestbt gr-bdr">
-                          <span className="cheptxt">Cheapest</span>
+                          <span className="cheptxt" onClick={()=>handleSort(0)}>Cheapest</span>
                         </div>
                         <div className="fastestbt">
-                          <span className="cheptxt">Fastest</span>
+                          <span className="cheptxt" onClick={()=>handleSort(1)}>Fastest</span>
                         </div>
                       </div>
                       <div className="col-md-3 col-xs-12 fltr txt-fon1">
