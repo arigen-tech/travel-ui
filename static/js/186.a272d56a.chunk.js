@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkholiday_travel_fontend=self.webpackChunkholiday_travel_fontend||[]).push([[186],{80186:(e,t,a)=>{a.r(t),a.d(t,{default:()=>d});a(65043);var n=a(70579);const d=()=>(0,n.jsx)("div",{children:"contact us"})}}]);
+//# sourceMappingURL=186.a272d56a.chunk.js.map

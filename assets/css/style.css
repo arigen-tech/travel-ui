@@ -10505,8 +10505,8 @@ p.checkout-coupon input[type=text]:focus {
   font-size: 24px;
   text-transform: uppercase;
   color: var(--it-common-black);
-  padding-bottom: 30px;
-  margin-bottom: 30px;
+  padding-bottom: 4px;
+  margin-bottom: 0px;
   border-bottom: 1px solid rgba(107, 111, 106, 0.3);
 }
 @media (max-width: 767px) {
