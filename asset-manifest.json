@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/travel-ui/static/css/main.9c073c59.css",
-    "main.js": "/travel-ui/static/js/main.91fa73d5.js",
+    "main.js": "/travel-ui/static/js/main.b125aab1.js",
     "static/css/433.e6c03a9e.chunk.css": "/travel-ui/static/css/433.e6c03a9e.chunk.css",
     "static/js/433.a34ac58f.chunk.js": "/travel-ui/static/js/433.a34ac58f.chunk.js",
     "static/js/825.5cd94aa6.chunk.js": "/travel-ui/static/js/825.5cd94aa6.chunk.js",
@@ -46,7 +46,7 @@
     "static/media/cheapest-clr.svg": "/travel-ui/static/media/cheapest-clr.a56915c07c33a89673f2.svg",
     "static/media/fastest-gry.svg": "/travel-ui/static/media/fastest-gry.f974dc8c2462b6e66130.svg",
     "main.9c073c59.css.map": "/travel-ui/static/css/main.9c073c59.css.map",
-    "main.91fa73d5.js.map": "/travel-ui/static/js/main.91fa73d5.js.map",
+    "main.b125aab1.js.map": "/travel-ui/static/js/main.b125aab1.js.map",
     "433.e6c03a9e.chunk.css.map": "/travel-ui/static/css/433.e6c03a9e.chunk.css.map",
     "433.a34ac58f.chunk.js.map": "/travel-ui/static/js/433.a34ac58f.chunk.js.map",
     "825.5cd94aa6.chunk.js.map": "/travel-ui/static/js/825.5cd94aa6.chunk.js.map",
@@ -63,6 +63,6 @@
   },
   "entrypoints": [
     "static/css/main.9c073c59.css",
-    "static/js/main.91fa73d5.js"
+    "static/js/main.b125aab1.js"
   ]
 }
